@@ -30,12 +30,16 @@ server.listen(process.env.port || process.env.PORT || 3978, function () {
    console.log('%s listening to %s', server.name, server.url); 
 });
 
-// Create chat connector for communicating with the Bot Framework Service
+/*// Create chat connector for communicating with the Bot Framework Service
 var connector = new builder.ChatConnector({
     appId: process.env.MICROSOFT_APP_ID,
     appPassword: process.env.MICROSOFT_APP_PASSWORD
 });
+*/
 
+//Create chat bot
+var connector = new builder.ChatConnector
+({ appId:'f529a65d-4900-451c-b04e-36371442f69a',appPassword:'S4qOp6L0ifSfbbbi8O58Bvk'});
 // Listen for messages from users 
 server.post('/api/messages', connector.listen());
 
