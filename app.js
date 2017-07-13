@@ -1,4 +1,4 @@
-//Add your requirement
+/*//Add your requirement
 var restify = require('restify');
 var builder = require('botbuilder');
 
@@ -19,9 +19,9 @@ server.post('/api/messages',connector.listen());
 //Create bot dialogs
 bot.dialog('/',function(session){
     session.send("Hello World");
-}); 
+}); */
 
-/*var restify = require('restify');
+var restify = require('restify');
 var builder = require('botbuilder');
 
 // Setup Restify Server
@@ -42,4 +42,4 @@ server.post('/api/messages', connector.listen());
 // Receive messages from the user and respond by echoing each message back (prefixed with 'You said:')
 var bot = new builder.UniversalBot(connector, function (session) {
     session.send("You said: %s", session.message.text);
-});*/
+});
