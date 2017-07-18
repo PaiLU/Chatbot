@@ -22,6 +22,7 @@
   "homepage": "https://github.com/PaiLU/Chatbot#readme",
   "dependencies": {
     "botbuilder": "^3.8.4",
+    "https": "^1.0.0",
     "restify": "^5.0.0"
   }
 }
