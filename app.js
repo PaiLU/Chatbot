@@ -86,9 +86,9 @@ bot.dialog('/profile', [
     }
 ]);
 
+*/
 
 server.get('/', restify.plugins.serveStatic({
  directory: __dirname,
  default: '/index.html'
 }));
-*/
