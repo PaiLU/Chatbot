@@ -33,7 +33,7 @@ bot.dialog('BookFlight', [
         session.send('Welcome to the Flight Booking Engine! We are analyzing your message: \'%s\'', session.message.text);
 
         // try extracting entities
-        var ToLocation = builder.EntityRecognizer.findEntity(args.intent.entities, 'ToLocation');
+        var ToLocation = builder.EntityRecognizer.findEntity(args.intent.entities, 'Location::ToLocation');
         if (ToLocation) {
             // city entity detected, continue to next step
             session.dialogData.searchType = 'ToLocation';
@@ -47,7 +47,7 @@ bot.dialog('BookFlight', [
     function (session, results) {
         var destination = results.response;
 
-        var message = 'Looking for flights';
+        var message = 'Looking for flights ';
         message += 'to %s...';
         session.send(message, destination);
     }
