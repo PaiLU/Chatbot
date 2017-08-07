@@ -188,11 +188,9 @@ bot.dialog('BookFlight', [
     
 ]).triggerAction({
     matches: 'BookFlight'
-});
+});*/
 
 server.get('/', restify.plugins.serveStatic({
  directory: __dirname,
  default: '/index.html'
 }));
-*/
-
