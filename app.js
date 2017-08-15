@@ -7,8 +7,10 @@ server.listen(process.env.port || process.env.PORT || 3978, function () {
    console.log('%s listening to %s', server.name, server.url); 
 })
 var connector = new builder.ChatConnector({
-    appId: process.env.MY_APP_ID,
-    appPassword: process.env.MY_APP_PASSWORD
+        appId: process.env.MICROSOFT_APP_ID,
+    appPassword: process.env.MICROSOFT_APP_PASSWORD
+    //appId: process.env.MY_APP_ID,
+    //appPassword: process.env.MY_APP_PASSWORD
 });
 
 
@@ -46,8 +48,9 @@ bot.recognizer(recognizer);
 
 // Set time object and get time zone offset
 var d = new Date();
+var halfDayOffset = -12*60*60*1000;
 var offset = d.getTimezoneOffset()*60*1000;
-
+var d1 = Object() , d2 = Object
 bot.dialog('applyLeave',[
     function(session,args,next){
         session.send("We are analyzing your request:\'%s\'",session.message.text);        
@@ -61,16 +64,16 @@ bot.dialog('applyLeave',[
         }else if(date){
             session.beginDialog('Date',date);
         }else if(duration){
-            session.beginDialog('askForDate',duration);
+            session.beginDialog('AskForDate',duration);
         }else{
             session.send('nothing operating...');    
             session.beginDialog();
             //既不是range 也不是 date, 要求重新输入
         }
     },
-    function(session,results){
-        session.send('start date:%s. <br/>end date:%s.',results.startDate,results.endDate);
-        session.endDialog();
+    function(session,conversationData){
+        session.send('start date:%s,%s. <br/>end date:%s,%s.',conversationData.startDate,typeof(conversationData.startDate),conversationData.endDate,typeof(conversationData.endDate));
+        session.endConversation();
     }
 ]).triggerAction({
     matches: 'applyLeave'
@@ -78,22 +81,21 @@ bot.dialog('applyLeave',[
 .beginDialogAction('helpApplyLeaveAction','helpApplyLeave',{
     matches: /^help$/i
 });
-
 bot.dialog('helpApplyLeave',function(session){
-    session.endDialog('You can type sentences like \'I want to apply leave from 2 Aug 2017 to 5 Aug 2017 \' to apply for leaves. <br\>You can also type \'main help\' for more helps, but that will cancel your current request.');
+    session.endDialog('You can type sentences like \'I want to apply leave from 2 Aug to 5 Aug\' to apply for leaves. <br\>You can also type \'main help\' for more helps, but that will cancel your current request.');
 });
 bot.dialog('Range',[
     function(session,args,next){
         session.send('Range operating...');
         //先默认value[1]是对的，之后要改
-        const d1_obj = new Date(args.resolution.values[1]['start']);
-        var d1 = Date.parse(d1_obj)+offset;
-        var d1_t = new Date(d.setTime(d1));
-        const d2_obj = new Date(args.resolution.values[1]['end']);
-        var d2 = Date.parse(d2_obj)+offset;
-        var d2_t = new Date(d.setTime(d2));
-        session.dialogData.startDate = d1_t;
-        session.dialogData.endDate = d2_t;
+        d1.obj = new Date(args.resolution.values[1]['start']);
+        d1.d = Date.parse(d1.obj)+offset;
+        d1.t = new Date(d.setTime(d1.d));
+        d2.obj = new Date(args.resolution.values[1]['end']);
+        d2.d = Date.parse(d2.obj)+offset;
+        d2.t = new Date(d.setTime(d2.d));
+        //session.dialogData.startDate = d1.t;
+        //session.dialogData.endDate = d2.t;
         next();
     },
     function(session){
@@ -118,25 +120,36 @@ bot.dialog('DateAndDuration',[
 ]);
 bot.dialog('Date',[
     function(session,args){
-        session.send('Date operating...');
-        const d1_obj = new Date(args.resolution.values[1]['value']);
-        var d1 = Date.parse(d1_obj)+offset;
-        var d1_t = new Date(d.setTime(d1));
-        session.dialogData.startDate = d1_t;
+        session.send('Date operating...');     
+        var x = JSON.stringify(args);
+        session.send('%s',x);
+        d1.obj = new Date(args.resolution.values[1]['value']);
+        d1.d = Date.parse(d1.obj) + offset;
+        session.send('%s',typeof(d1.d));
+        d1.t = new Date(d.setTime(d1.d));
+        session.send('%s',d1.t);
+        session.conversationData.startDate = d1.t;        
+        session.send('%s,%s',session.conversationData.startDate,typeof(session.conversationData.startDate));
         builder.Prompts.time(session, 'When will you be back?');
     },
-    function(session,results,next){
-        const d2_obj = new Date(results.response);
-        var d2 = Date.parse(d2_obj) + offset;
-        var d2_t = new Date(d.setTime(d2));
-        session.dialogData.endDate = d2_t
-        next()
+    function(session,args,next){
+        d2.obj = new Date(args.response.resolution.start);
+        d2.d = Date.parse(d2.obj)+halfDayOffset;
+        session.send('%s',typeof(d2.d));
+        d2.t = new Date(d.setTime(d2.d));
+        session.send('%s',typeof(d2.t));
+        if (d2.t < d1.t){
+            d2.t = dateAdd("y ",1,d2.t);
+        }
+        session.conversationData.endDate = d2.t;        
+        session.send('%s,%s',session.conversationData.startDate,typeof(session.conversationData.startDate));
+        next();
     },
     function(session){
-        session.endDialogWithResult(session.dialogData);
+        session.endDialogWithResult(session.conversationData);
     }
 ]);
-bot.dialog('askForDate',[
+bot.dialog('AskForDate',[
     function(session,args,next){
         session.send('Duration operating...');
         session.dialogData.duration =  Number(args.resolution.values[0].value)/86400;
@@ -156,9 +169,25 @@ bot.dialog('askForDate',[
         session.endDialogWithResult(session.dialogData)
     }
 ]);
+bot.dialog('requestLeaveStatus',[
+    function(session,args,next){
+        session.send("We are analyzing your request:\'%s\'",session.message.text);
+        session.send
+    }
+])
+.triggerAction({
+    matches:'requestLeaveStatus'
+})
+.beginDialogAction('helpRequestLeaveStatusAction','helpRequestLeaveStatus',{
+    matches:/^help$/i
+});
+bot.dialog('helpRequestLeaveStatus',function(session){
+    session.endDialog('You can type sentences like \'Get my outstanding leave status\' to check your outstanding leave status.');
+});
 bot.dialog('help',[
     function(session){
-        session.endDialog('Hi, This is main help')
+        session.send('You can enter your requests like \'I want to take a leave from 2 Aug to 5 Aug\' to apply leave;<br>Or you can enter \'Get my outstanding leave status\' to check your outstanding leave status.');
+        session.endDialog('Ending main help');
     }
 ]).triggerAction({matches: /^help$|^main help$/i,});
 /*
@@ -194,3 +223,53 @@ server.get('/', restify.plugins.serveStatic({
  directory: __dirname,
  default: '/index.html'
 }));
+
+function dateAdd(interval, number, date) {
+    switch (interval) {
+    case "y ": {
+        date.setFullYear(date.getFullYear() + number);
+        return date;
+        break;
+    }
+    case "q ": {
+        date.setMonth(date.getMonth() + number * 3);
+        return date;
+        break;
+    }
+    case "m ": {
+        date.setMonth(date.getMonth() + number);
+        return date;
+        break;
+    }
+    case "w ": {
+        date.setDate(date.getDate() + number * 7);
+        return date;
+        break;
+    }
+    case "d ": {
+        date.setDate(date.getDate() + number);
+        return date;
+        break;
+    }
+    case "h ": {
+        date.setHours(date.getHours() + number);
+        return date;
+        break;
+    }
+    case "m ": {
+        date.setMinutes(date.getMinutes() + number);
+        return date;
+        break;
+    }
+    case "s ": {
+        date.setSeconds(date.getSeconds() + number);
+        return date;
+        break;
+    }
+    default: {
+        date.setDate(d.getDate() + number);
+        return date;
+        break;
+    }
+    }
+}
