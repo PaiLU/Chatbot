@@ -132,12 +132,7 @@ bot.dialog('Date',[
     },
     function(session,args,next){
         d2.obj = new Date(args.response.resolution.start);
-        d2.obj = dateAdd("h ",-6,d2.obj)
-        /*d2.d = Date.parse(d2.obj)+halfDayOffset;
-        session.send('%s',typeof(d2.d));
-        d2.t = new Date(d.setTime(d2.d));
-        session.send('%s',typeof(d2.t));*/
-        d2.t = d2.obj;
+        d2.t = dateAdd("h ",-6,d2.obj);
         if (d2.t < d1.t){
             d2.t = dateAdd("y ",1,d2.t);
         }
