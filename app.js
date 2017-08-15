@@ -13,7 +13,6 @@ var connector = new builder.ChatConnector({
     //appPassword: process.env.MY_APP_PASSWORD
 });
 
-
 // Listen for messages from users and Receive messages
 server.post('/api/messages', connector.listen());
 
@@ -30,7 +29,6 @@ server.post('/api/messages', connector.listen());
         session.endDialog('Hello %s!', results.response);
     }
 ]);
-
 bot.dialog('testing',[
     function(session,args){
         session.send('This is tesing dialog with input %s',args[0]);
@@ -48,9 +46,9 @@ bot.recognizer(recognizer);
 
 // Set time object and get time zone offset
 var d = new Date();
-var halfDayOffset = -12*60*60*1000;
+//var halfDayOffset = -12*60*60*1000;
 var offset = d.getTimezoneOffset()*60*1000;
-var d1 = Object() , d2 = Object
+var d1 = Object() , d2 = Object();
 bot.dialog('applyLeave',[
     function(session,args,next){
         session.send("We are analyzing your request:\'%s\'",session.message.text);        
@@ -73,6 +71,8 @@ bot.dialog('applyLeave',[
     },
     function(session,conversationData){
         session.send('start date:%s,%s. <br/>end date:%s,%s.',conversationData.startDate,typeof(conversationData.startDate),conversationData.endDate,typeof(conversationData.endDate));
+        //get api url
+        
         session.endConversation();
     }
 ]).triggerAction({
@@ -127,20 +127,21 @@ bot.dialog('Date',[
         d1.d = Date.parse(d1.obj) + offset;
         session.send('%s',typeof(d1.d));
         d1.t = new Date(d.setTime(d1.d));
-        session.send('%s',d1.t);
-        session.conversationData.startDate = d1.t;        
-        session.send('%s,%s',session.conversationData.startDate,typeof(session.conversationData.startDate));
+        session.send('%s',d1.t);      
         builder.Prompts.time(session, 'When will you be back?');
     },
     function(session,args,next){
         d2.obj = new Date(args.response.resolution.start);
-        d2.d = Date.parse(d2.obj)+halfDayOffset;
+        d2.obj = dateAdd("h ",-6,d2.obj)
+        /*d2.d = Date.parse(d2.obj)+halfDayOffset;
         session.send('%s',typeof(d2.d));
         d2.t = new Date(d.setTime(d2.d));
-        session.send('%s',typeof(d2.t));
+        session.send('%s',typeof(d2.t));*/
+        d2.t = d2.obj;
         if (d2.t < d1.t){
             d2.t = dateAdd("y ",1,d2.t);
         }
+        session.conversationData.startDate = d1.t;  
         session.conversationData.endDate = d2.t;        
         session.send('%s,%s',session.conversationData.startDate,typeof(session.conversationData.startDate));
         next();
@@ -256,7 +257,7 @@ function dateAdd(interval, number, date) {
         return date;
         break;
     }
-    case "m ": {
+    case "min ": {
         date.setMinutes(date.getMinutes() + number);
         return date;
         break;
