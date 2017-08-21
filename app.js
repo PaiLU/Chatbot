@@ -206,7 +206,7 @@ bot.dialog('AskForDate',[
 bot.dialog('requestLeaveStatus',[
     function(session,args,next){
         session.send("You are getting your leave status...");
-        session.send("'The information has gathered, and sent to server successfully.");
+        session.send("The server will get the information to you once the app is online");
         session.endConversation();
     }
 ])
