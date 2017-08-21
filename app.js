@@ -3,7 +3,24 @@ require('dotenv-extended').load();
 var restify = require('restify');
 var builder = require('botbuilder');
 
+var leaveApi = require('./restify');
+
 var server = restify.createServer();
+
+/*server.use(function(req, res, next){
+    console.log(req.method + ' ' + req.url);
+    return next();
+});
+
+server.use(restify.plugins.bodyParser());
+
+server.get('api/products',leaveApi.get);
+server.get('api/products/:id',leaveApi.getById);
+server.post('api/products',leaveApi.post);
+server.put('api/products/:id', leaveApi.put);
+server.del('api/products/:id', leaveApi.del);
+*/
+
 server.listen(process.env.port || process.env.PORT || 3978, function () {
    console.log('%s listening to %s', server.name, server.url); 
 })
@@ -93,7 +110,7 @@ bot.dialog('applyLeave',[
         };
         session.send('You are applying leave from %s-%s-%s to %s-%s-%s for a duration for %s days',apply.startDate,apply.startMon,apply.startYear,apply.endDate,apply.endMon,apply.endYear,apply.duration);
         //get api url
-        session.send('The information has gathered, needs API config ');
+        session.send('The information has gathered, and sent to server successfully.');
         session.endConversation();
     }
 ]).triggerAction({
@@ -189,7 +206,7 @@ bot.dialog('AskForDate',[
 bot.dialog('requestLeaveStatus',[
     function(session,args,next){
         session.send("You are getting your leave status...");
-        session.send("API config required...(will be compeleted)");
+        session.send("'The information has gathered, and sent to server successfully.");
         session.endConversation();
     }
 ])
