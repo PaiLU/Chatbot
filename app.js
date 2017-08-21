@@ -24,9 +24,8 @@ var apiConfig = {
 }
 
 apiConfig.authorityUrl = apiConfig.hostUri + apiConfig.account;
-apiConfig.tempAuthUrl = apiConfig.authorityUrl +
-                        apiConfig.account + '/feed' +
-                        '?access_token' + apiConfig.accessToken
+apiConfig.tempAuthUrl = apiConfig.authorityUrl + apiConfig.account + '/feed' + '?access_token' + apiConfig.accessToken;
+
 /*var bot = new builder.UniversalBot(connector, [
     function (session) {
         builder.Prompts.time(session, 'Hi! What is your time');},
@@ -61,7 +60,7 @@ var offset = d.getTimezoneOffset()*60*1000;
 var d1 = Object() , d2 = Object();
 bot.dialog('applyLeave',[
     function(session,args,next){
-        session.send("We are analyzing your request:\'%s\'",session.message.text);        
+        //session.send("We are analyzing your request:\'%s\'",session.message.text);        
         var daterange = builder.EntityRecognizer.findEntity(args.intent.entities|| {},'builtin.datetimeV2.daterange');
         var date = builder.EntityRecognizer.findEntity(args.intent.entities|| {},'builtin.datetimeV2.date');
         var duration =builder.EntityRecognizer.findEntity(args.intent.entities|| {},'builtin.datetimeV2.duration');
@@ -90,7 +89,7 @@ bot.dialog('applyLeave',[
         apply.duration = apply.endDate - apply.startDate;
         session.send('You are applying leave from %s-%s-%s to %s-%s-%s for a duration for %s days',apply.startDate,apply.startMon,apply.startYear,apply.endDate,apply.endMon,apply.endYear,apply.duration);
         //get api url
-        
+        session.semd('The information has gathered, needs API config ')
         session.endConversation();
     }
 ]).triggerAction({
@@ -104,7 +103,7 @@ bot.dialog('helpApplyLeave',function(session){
 });
 bot.dialog('Range',[
     function(session,args,next){
-        session.send('You have entered the leave starting date and the ending date...');
+        //session.send('You have entered the leave starting date and the ending date...');
         //默认values[1]是对的
         d1.obj = new Date(args.resolution.values[1]['start']);
         d1.d = Date.parse(d1.obj)+offset;
@@ -122,7 +121,7 @@ bot.dialog('Range',[
 ]);
 bot.dialog('DateAndDuration',[
     function(session,args,next){
-        session.send('You have entered the leave staring date and duration...');
+        //session.send('You have entered the leave staring date and duration...');
         d1.obj = new Date(args[0].resolution.values[1]['value']);
         d1.d = Date.parse(d1.obj)+offset;
         d1.t = new Date(d.setTime(d1.d));
@@ -138,7 +137,7 @@ bot.dialog('DateAndDuration',[
 ]);
 bot.dialog('Date',[
     function(session,args){
-        session.send('You have entered the leave starting date...');     
+        //session.send('You have entered the leave starting date...');     
         var x = JSON.stringify(args);
         session.send('%s',x);
         d1.obj = new Date(args.resolution.values[1]['value']);
@@ -165,7 +164,7 @@ bot.dialog('Date',[
 ]);
 bot.dialog('AskForDate',[
     function(session,args,next){
-        session.send('You have entered a range...');
+        //session.send('You have entered a range...');
         session.dialogData.duration =  Number(args.resolution.values[0].value)/86400;
         next()
     },
@@ -185,7 +184,7 @@ bot.dialog('AskForDate',[
 ]);
 bot.dialog('requestLeaveStatus',[
     function(session,args,next){
-        session.send("We are analyzing your request:\'%s\'",session.message.text);
+        //session.send("We are analyzing your request:\'%s\'",session.message.text);
         session.send("API config required...(will be compeleted)");
         session.endConversation();
     }
