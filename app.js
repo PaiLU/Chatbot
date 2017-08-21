@@ -73,7 +73,7 @@ bot.dialog('applyLeave',[
         }else if(duration){
             session.beginDialog('AskForDate',duration);
         }else{
-            session.send('nothing operating...');    
+            //session.send('nothing operating...');    
             session.endDialog('I can\'t understand what you are entered. <br\>Talk to me with your request like \'I want to apply leave from 2 Aug to 5 Aug\' to apply for leaves.');
             //既不是range 也不是 date, 要求重新输入
         }
@@ -87,9 +87,13 @@ bot.dialog('applyLeave',[
         apply.endMon = results.endDate.getMonth()+1;
         apply.endYear = results.endDate.getFullYear();
         apply.duration = apply.endDate - apply.startDate;
+        if (results.startDate > results.endDate){
+            session.send('I can\'t send your request:;leave from %s-%s-%s to %s-%s-%s for a duration for %s days',apply.startDate,apply.startMon,apply.startYear,apply.endDate,apply.endMon,apply.endYear,apply.duration);
+            session.endConversation('Please restart...');
+        };
         session.send('You are applying leave from %s-%s-%s to %s-%s-%s for a duration for %s days',apply.startDate,apply.startMon,apply.startYear,apply.endDate,apply.endMon,apply.endYear,apply.duration);
         //get api url
-        session.semd('The information has gathered, needs API config ')
+        session.send('The information has gathered, needs API config ');
         session.endConversation();
     }
 ]).triggerAction({
@@ -139,12 +143,12 @@ bot.dialog('Date',[
     function(session,args){
         //session.send('You have entered the leave starting date...');     
         var x = JSON.stringify(args);
-        session.send('%s',x);
+        //session.send('%s',x);
         d1.obj = new Date(args.resolution.values[1]['value']);
         d1.d = Date.parse(d1.obj) + offset;
-        session.send('%s',typeof(d1.d));
+        //session.send('%s',typeof(d1.d));
         d1.t = new Date(d.setTime(d1.d));
-        session.send('%s',d1.t);      
+        //session.send('%s',d1.t);      
         builder.Prompts.time(session, 'When will you be back?');
     },
     function(session,args,next){
@@ -155,7 +159,7 @@ bot.dialog('Date',[
         }
         session.conversationData.startDate = d1.t;  
         session.conversationData.endDate = d2.t;        
-        session.send('%s,%s',session.conversationData.startDate,typeof(session.conversationData.startDate));
+        //session.send('%s,%s',session.conversationData.startDate,typeof(session.conversationData.startDate));
         next();
     },
     function(session){
@@ -184,7 +188,7 @@ bot.dialog('AskForDate',[
 ]);
 bot.dialog('requestLeaveStatus',[
     function(session,args,next){
-        //session.send("We are analyzing your request:\'%s\'",session.message.text);
+        session.send("You are getting your leave status...");
         session.send("API config required...(will be compeleted)");
         session.endConversation();
     }
