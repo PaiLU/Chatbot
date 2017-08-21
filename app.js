@@ -1,3 +1,4 @@
+"use strict";
 require('dotenv-extended').load();
 var restify = require('restify');
 var builder = require('botbuilder');
@@ -7,15 +8,25 @@ server.listen(process.env.port || process.env.PORT || 3978, function () {
    console.log('%s listening to %s', server.name, server.url); 
 })
 var connector = new builder.ChatConnector({
-    //appId: process.env.MICROSOFT_APP_ID,
-    //appPassword: process.env.MICROSOFT_APP_PASSWORD
-    appId: process.env.MY_APP_ID,
-    appPassword: process.env.MY_APP_PASSWORD
+    appId: process.env.MICROSOFT_APP_ID,
+    appPassword: process.env.MICROSOFT_APP_PASSWORD
+    //appId: process.env.MY_APP_ID,
+    //appPassword: process.env.MY_APP_PASSWORD
 });
 
 // Listen for messages from users and Receive messages
 server.post('/api/messages', connector.listen());
 
+var apiConfig = {
+    'hostUri' : 'https://graph.facebook.com/',
+    'account':'361440487592731',
+    'accessToken': 'DQVJ2ZAHNiNUU3WEp5SUctREV0VDZArVE1qVjRGUzhnUTlaczhOUkk5VmQ2QnFWNFhDSEtFSVY2bmVDUE1PVlo4aVBqbTV1RERCT0xPRHFRRG91a3JvM01NdE5KeDV0aVJ1ZA0EzbjB6by0zN1pGdjJFOU5qb3RteHpuUzJxWHFjUWNVOU5BLVpyQnI0M21jSENKM1Bidk1ZAMG51NjNhTV9kaG5tRjEwZA0tmN0lyTGJKZAW1aU0tsMzNBNzBwS0ctVTUwS19iZAFpR',
+}
+
+apiConfig.authorityUrl = apiConfig.hostUri + apiConfig.account;
+apiConfig.tempAuthUrl = apiConfig.authorityUrl +
+                        apiConfig.account + '/feed' +
+                        '?access_token' + apiConfig.accessToken
 /*var bot = new builder.UniversalBot(connector, [
     function (session) {
         builder.Prompts.time(session, 'Hi! What is your time');},
@@ -38,7 +49,7 @@ bot.dialog('testing',[
 ]);*/
 
 var bot = new builder.UniversalBot(connector, function(session){
-    session.send('Hi, this is a leave apllication bot. Talk to me with your request or type \'help\' anytime if you need assistance');
+    session.send('Hi, this is a leave apllication bot. I can\'t understand what you are entered. <br\>Talk to me with your request or type \'help\' anytime if you need assistance');
 })
 // Connect to LUIS bot
 var recognizer = new builder.LuisRecognizer(process.env.LUIS_MODEL_URL);
@@ -46,7 +57,6 @@ bot.recognizer(recognizer);
 
 // Set time object and get time zone offset
 var d = new Date();
-//var halfDayOffset = -12*60*60*1000;
 var offset = d.getTimezoneOffset()*60*1000;
 var d1 = Object() , d2 = Object();
 bot.dialog('applyLeave',[
@@ -65,12 +75,20 @@ bot.dialog('applyLeave',[
             session.beginDialog('AskForDate',duration);
         }else{
             session.send('nothing operating...');    
-            session.beginDialog();
+            session.endDialog('I can\'t understand what you are entered. <br\>Talk to me with your request like \'I want to apply leave from 2 Aug to 5 Aug\' to apply for leaves.');
             //既不是range 也不是 date, 要求重新输入
         }
     },
-    function(session,conversationData){
-        session.send('start date:%s,%s. <br/>end date:%s,%s.',conversationData.startDate,typeof(conversationData.startDate),conversationData.endDate,typeof(conversationData.endDate));
+    function(session,results){
+        var apply = new Object();
+        apply.startDate = results.startDate.getDate();
+        apply.startMon = results.startDate.getMonth()+1;
+        apply.startYear = results.startDate.getFullYear();
+        apply.endDate = results.endDate.getDate();
+        apply.endMon = results.endDate.getMonth()+1;
+        apply.endYear = results.endDate.getFullYear();
+        apply.duration = apply.endDate - apply.startDate;
+        session.send('You are applying leave from %s-%s-%s to %s-%s-%s for a duration for %s days',apply.startDate,apply.startMon,apply.startYear,apply.endDate,apply.endMon,apply.endYear,apply.duration);
         //get api url
         
         session.endConversation();
@@ -86,16 +104,16 @@ bot.dialog('helpApplyLeave',function(session){
 });
 bot.dialog('Range',[
     function(session,args,next){
-        session.send('Range operating...');
-        //先默认value[1]是对的，之后要改
+        session.send('You have entered the leave starting date and the ending date...');
+        //默认values[1]是对的
         d1.obj = new Date(args.resolution.values[1]['start']);
         d1.d = Date.parse(d1.obj)+offset;
         d1.t = new Date(d.setTime(d1.d));
         d2.obj = new Date(args.resolution.values[1]['end']);
         d2.d = Date.parse(d2.obj)+offset;
         d2.t = new Date(d.setTime(d2.d));
-        //session.dialogData.startDate = d1.t;
-        //session.dialogData.endDate = d2.t;
+        session.dialogData.startDate = d1.t;
+        session.dialogData.endDate = d2.t;
         next();
     },
     function(session){
@@ -104,14 +122,14 @@ bot.dialog('Range',[
 ]);
 bot.dialog('DateAndDuration',[
     function(session,args,next){
-        session.send('Date and duration operating...');
-        const d1_obj = new Date(args[0].resolution.values[1]['value']);
-        var d1 = Date.parse(d1_obj)+offset;
-        var d1_t = new Date(d.setTime(d1));
-        session.dialogData.startDate = d1_t;
-        var d3 = Number(args[1].resolution.values[0].value)*1000;
-        var d2_t = new Date(d.setTime(d1 + d3));
-        session.dialogData.endDate = d2_t;
+        session.send('You have entered the leave staring date and duration...');
+        d1.obj = new Date(args[0].resolution.values[1]['value']);
+        d1.d = Date.parse(d1.obj)+offset;
+        d1.t = new Date(d.setTime(d1.d));
+        session.dialogData.startDate = d1.t;
+        d2.d = Number(args[1].resolution.values[0].value)*1000;
+        d2.t = new Date(d.setTime(d1.d + d2.d));
+        session.dialogData.endDate = d2.t;
         next();
     },
     function(session){
@@ -120,7 +138,7 @@ bot.dialog('DateAndDuration',[
 ]);
 bot.dialog('Date',[
     function(session,args){
-        session.send('Date operating...');     
+        session.send('You have entered the leave starting date...');     
         var x = JSON.stringify(args);
         session.send('%s',x);
         d1.obj = new Date(args.resolution.values[1]['value']);
@@ -132,7 +150,7 @@ bot.dialog('Date',[
     },
     function(session,args,next){
         d2.obj = new Date(args.response.resolution.start);
-        d2.t = dateAdd("h ",-6,d2.obj);
+        d2.t = dateAdd("h ",-12,d2.obj);
         if (d2.t < d1.t){
             d2.t = dateAdd("y ",1,d2.t);
         }
@@ -147,7 +165,7 @@ bot.dialog('Date',[
 ]);
 bot.dialog('AskForDate',[
     function(session,args,next){
-        session.send('Duration operating...');
+        session.send('You have entered a range...');
         session.dialogData.duration =  Number(args.resolution.values[0].value)/86400;
         next()
     },
@@ -157,10 +175,10 @@ bot.dialog('AskForDate',[
     },
     function(session,results){
         session.dialogData.startDate = new Date(result.response);
-        var d1 = Date.parse(session.dialogData.startDate);
-        d.setTime(d1);
+        d1.d = Date.parse(session.dialogData.startDate);
+        d.setTime(d1.d);
         session.dialogData.startDate = d;
-        d.setTime(d1 + Number(args[1].resolution.values[0].value)*1000);
+        d.setTime(d1.d + Number(args[1].resolution.values[0].value)*1000);
         session.dialogData.endDate = d;
         session.endDialogWithResult(session.dialogData)
     }
@@ -168,7 +186,8 @@ bot.dialog('AskForDate',[
 bot.dialog('requestLeaveStatus',[
     function(session,args,next){
         session.send("We are analyzing your request:\'%s\'",session.message.text);
-        session.send
+        session.send("API config required...(will be compeleted)");
+        session.endConversation();
     }
 ])
 .triggerAction({
@@ -183,7 +202,7 @@ bot.dialog('helpRequestLeaveStatus',function(session){
 bot.dialog('help',[
     function(session){
         session.send('You can enter your requests like \'I want to take a leave from 2 Aug to 5 Aug\' to apply leave;<br>Or you can enter \'Get my outstanding leave status\' to check your outstanding leave status.');
-        session.endDialog('Ending main help');
+        session.endDialog('Ending help');
     }
 ]).triggerAction({matches: /^help$|^main help$/i,});
 /*

@@ -58,3 +58,6 @@ typings/
 # dotenv environment variables file
 .env
 
+# server site testing file
+restify.js
+script.js
