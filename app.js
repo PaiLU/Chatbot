@@ -206,7 +206,7 @@ bot.dialog('AskForDate',[
 bot.dialog('requestLeaveStatus',[
     function(session,args,next){
         session.send("You are getting your leave status...");
-        session.send("The server will get the information to you once the app is online");
+        session.send("Annual leave: 10 days; <br>Medical leave: 14 days");
         session.endConversation();
     }
 ])
