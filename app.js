@@ -222,7 +222,7 @@ bot.dialog('helpRequestLeaveStatus',function(session){
 bot.dialog('help',[
     function(session){
         session.send('You can enter your requests like \'I want to take a leave from 2 Aug to 5 Aug\' to apply leave;<br>Or you can enter \'Get my outstanding leave status\' to check your outstanding leave status.');
-        session.endDialog('Ending help');
+        session.endDialog();
     }
 ]).triggerAction({matches: /^help$|^main help$/i,});
 /*
