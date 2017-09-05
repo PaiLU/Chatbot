@@ -61,3 +61,4 @@ typings/
 # server site testing file
 restify.js
 script.js
+app_notinuse.js

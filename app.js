@@ -7,8 +7,8 @@ server.listen(process.env.port || 3978, function(){
     console.log('%s listening to %s', server.name, server.url);
 })
 var connector = new builder.ChatConnector({
-    //appId: process.env.MICROSOFT_APP_ID,
-    //appPassword: process.env.MICROSOFT_APP_PASSWORD,
+    // appId: process.env.MICROSOFT_APP_ID,
+    // appPassword: process.env.MICROSOFT_APP_PASSWORD,
     appId: process.env.MY_APP_ID,
     appPassword: process.env.MY_APP_PASSWORD,
 });
@@ -91,7 +91,7 @@ bot.dialog('applyLeave',[
             session.beginDialog('AskForDate',duration);
         }else{
             session.send('nothing operating...');    
-            session.endDialog('I can\'t understand what you are entered. <br\>Talk to me with your request like \'I want to apply leave from 2 Aug to 5 Aug\' to apply for leaves.');
+            session.endConversation('I can\'t understand what you are entered. <br\>Talk to me with your request like \'I want to apply leave from 2 Aug to 5 Aug\' to apply for leaves.');
             //既不是range 也不是 date, 要求重新输入
         }
     },
@@ -114,9 +114,6 @@ bot.dialog('applyLeave',[
         session.endConversation();
     }
 ])
-.triggerAction({
-    matches: 'applyLeave'
-})
 .beginDialogAction('helpApplyLeaveAction','helpApplyLeave',{
     matches: /^help$/i
 });
