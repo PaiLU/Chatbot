@@ -2,79 +2,79 @@
 require('dotenv-extended').load();
 var restify = require('restify');
 var builder = require('botbuilder');
-
-//var leaveApi = require('./restify');
-
 var server = restify.createServer();
-
-/*server.use(function(req, res, next){
-    console.log(req.method + ' ' + req.url);
-    return next();
-});
-
-server.use(restify.plugins.bodyParser());
-
-server.get('api/products',leaveApi.get);
-server.get('api/products/:id',leaveApi.getById);
-server.post('api/products',leaveApi.post);
-server.put('api/products/:id', leaveApi.put);
-server.del('api/products/:id', leaveApi.del);
-*/
-
-server.listen(process.env.port || process.env.PORT || 3978, function () {
-   console.log('%s listening to %s', server.name, server.url); 
+server.listen(process.env.port || 3978, function(){
+    console.log('%s listening to %s', server.name, server.url);
 })
 var connector = new builder.ChatConnector({
     //appId: process.env.MICROSOFT_APP_ID,
-    //appPassword: process.env.MICROSOFT_APP_PASSWORD
+    //appPassword: process.env.MICROSOFT_APP_PASSWORD,
     appId: process.env.MY_APP_ID,
-    appPassword: process.env.MY_APP_PASSWORD
+    appPassword: process.env.MY_APP_PASSWORD,
 });
-
-// Listen for messages from users and Receive messages
-server.post('/api/messages', connector.listen());
-
-var apiConfig = {
-    'hostUri' : 'https://graph.facebook.com/',
-    'account':'361440487592731',
-    'accessToken': 'DQVJ2ZAHNiNUU3WEp5SUctREV0VDZArVE1qVjRGUzhnUTlaczhOUkk5VmQ2QnFWNFhDSEtFSVY2bmVDUE1PVlo4aVBqbTV1RERCT0xPRHFRRG91a3JvM01NdE5KeDV0aVJ1ZA0EzbjB6by0zN1pGdjJFOU5qb3RteHpuUzJxWHFjUWNVOU5BLVpyQnI0M21jSENKM1Bidk1ZAMG51NjNhTV9kaG5tRjEwZA0tmN0lyTGJKZAW1aU0tsMzNBNzBwS0ctVTUwS19iZAFpR',
-}
-
-apiConfig.authorityUrl = apiConfig.hostUri + apiConfig.account;
-apiConfig.tempAuthUrl = apiConfig.authorityUrl + apiConfig.account + '/feed' + '?access_token' + apiConfig.accessToken;
-
-/*var bot = new builder.UniversalBot(connector, [
-    function (session) {
-        builder.Prompts.time(session, 'Hi! What is your time');},
-    function (session, results) {
-        var testtime = builder.EntityRecognizer.resolveTime([results.response]);
-        var hello = 'hello';
-        session.send('%s',testtime);
-        session.beginDialog('testing',[testtime,hello]);
-    },
-    function(session,results){
-        session.endDialog('Hello %s!', results.response);
-    }
-]);
-bot.dialog('testing',[
-    function(session,args){
-        session.send('This is tesing dialog with input %s',args[0]);
-        session.dialogData.profile = args[0];
-        session.endDialogWithResult({response:session.dialogData.profile});
-    }
-]);*/
-
+server.post('api/messages',connector.listen());
 var bot = new builder.UniversalBot(connector, function(session){
-    session.send('Hi, this is a leave apllication bot. I can\'t understand what you are entered. <br\>Talk to me with your request or type \'help\' anytime if you need assistance');
-})
-// Connect to LUIS bot
-var recognizer = new builder.LuisRecognizer(process.env.LUIS_MODEL_URL);
+    session.send('Hi, this is a leave bot. I can\'t understand what you are entered. <br\>Talk to me with your request or type \'help\' anytime if you need assistance');
+});
+var recognizer = new builder.LuisRecognizer(process.env.LUIS_MODEL_URL_LeaveBot);
 bot.recognizer(recognizer);
 
-// Set time object and get time zone offset
 var d = new Date();
 var offset = d.getTimezoneOffset()*60*1000;
 var d1 = Object() , d2 = Object();
+
+bot.dialog('help',[
+    function(session){
+        session.endDialog('main help context');
+    }
+]).triggerAction({
+    matches: /^help$|^main help$/i
+})
+bot.dialog('reqStatus', [
+    function(session, args, next){
+        session.endConversation("getting status");
+    }
+])
+.triggerAction({
+    matches: 'reqStatus'
+})
+.beginDialogAction('helpReqStatusAaction','helpReqStatus',{
+    matches: /^help$/i
+});
+bot.dialog('helpReqStatus', function(session){
+    session.endDialog('helpReqStatus context');
+});
+
+bot.dialog('applyAnnualLeave',[
+    function(session, args, next){
+        session.conversationData.leaveType = "Annual Leave";
+        session.beginDialog('applyLeave',args);
+    }
+])
+.triggerAction({
+    matches: 'applyAnnualLeave'
+})
+.beginDialogAction('helpApplyLeaveAction','helpApplyLeave',{
+    matches: /^help$/i
+});
+
+bot.dialog('applySickLeave',[
+    function(session, args, next){
+        session.conversationData.leaveType = "Sick Leave";
+        session.send("applying sick leave")
+        session.beginDialog('applyLeave',args);
+    }
+])
+.triggerAction({
+    matches: "applySickLeave"
+})
+.beginDialogAction('helpApplyLeaveAction','helpApplyLeave',{
+    matches:/^help$/i
+})
+
+bot.dialog('helpApplyLeave',function(session){
+    session.endDialog('helpApplyLeave context')
+});
 bot.dialog('applyLeave',[
     function(session,args,next){
         session.send("We are analyzing your request:\'%s\'",session.message.text);        
@@ -108,19 +108,17 @@ bot.dialog('applyLeave',[
             session.send('I can\'t send your request:;leave from %s-%s-%s to %s-%s-%s for a duration for %s days',apply.startDate,apply.startMon,apply.startYear,apply.endDate,apply.endMon,apply.endYear,apply.duration);
             session.endConversation('Please restart...');
         };
-        session.send('You are applying leave from %s-%s-%s to %s-%s-%s for a duration for %s days',apply.startDate,apply.startMon,apply.startYear,apply.endDate,apply.endMon,apply.endYear,apply.duration);
+        session.send('You are applying %s leave from %s-%s-%s to %s-%s-%s for a duration for %s days',session.conversationData.leaveType, apply.startDate,apply.startMon,apply.startYear,apply.endDate,apply.endMon,apply.endYear,apply.duration);
         //get api url
         session.send('The information has gathered, and sent to server successfully.');
         session.endConversation();
     }
-]).triggerAction({
+])
+.triggerAction({
     matches: 'applyLeave'
 })
 .beginDialogAction('helpApplyLeaveAction','helpApplyLeave',{
     matches: /^help$/i
-});
-bot.dialog('helpApplyLeave',function(session){
-    session.endDialog('You can type sentences like \'I want to apply leave from 2 Aug to 5 Aug\' to apply for leaves. <br\>You can also type \'main help\' for more helps, but that will cancel your current request.');
 });
 bot.dialog('Range',[
     function(session,args,next){
@@ -203,62 +201,6 @@ bot.dialog('AskForDate',[
         session.endDialogWithResult(session.dialogData)
     }
 ]);
-bot.dialog('reqStatus',[
-    function(session,args,next){
-        session.send("You are getting your leave status...");
-        session.send("Annual leave: 10 days; <br>Medical leave: 14 days");
-        session.endConversation();
-    }
-])
-.triggerAction({
-    matches:'reqStatus'
-})
-.beginDialogAction('helpRequestLeaveStatusAction','helpRequestLeaveStatus',{
-    matches:/^help$/i
-});
-bot.dialog('helpRequestLeaveStatus',function(session){
-    session.endDialog('You can type sentences like \'Get my outstanding leave status\' to check your outstanding leave status.');
-});
-bot.dialog('help',[
-    function(session){
-        session.send('You can enter your requests like \'I want to take a leave from 2 Aug to 5 Aug\' to apply leave;<br>Or you can enter \'Get my outstanding leave status\' to check your outstanding leave status.');
-        session.endDialog();
-    }
-]).triggerAction({matches: /^help$|^main help$/i,});
-/*
-bot.dialog('BookFlight', [
-    function (session, args, next) {
-        session.send('Welcome to the Flight Booking Engine! We are analyzing your message: \'%s\'', session.message.text);
-
-        // try extracting entities
-        var ToLocation = builder.EntityRecognizer.findEntity(args.intent.entities || {} , 'Location::ToLocation');
-        if (ToLocation) {
-            // city entity detected, continue to next step
-            session.dialogData.searchType = 'ToLocation';
-            next({ response: ToLocation.entity });
-        }  else {
-            // no entities detected, ask user for a destination
-            builder.Prompts.text(session, 'Please enter your destination');
-        }
-    }, 
-
-    function (session, results) {
-        var destination = results.response;
-
-        var message = 'Looking for flights ';
-        message += 'to %s...';
-        session.endDialog(message, destination);
-    }
-    
-]).triggerAction({
-    matches: 'BookFlight'
-});*/
-
-server.get('/', restify.plugins.serveStatic({
- directory: __dirname,
- default: '/index.html'
-}));
-
 function dateAdd(interval, number, date) {
     switch (interval) {
     case "y ": {

@@ -2,8 +2,7 @@
   "name": "chatbot",
   "version": "1.0.0",
   "description": "\"Build a bot in Node.js on Microsoft Bot Framwork.\"",
-  //"main": "app.js",
-  "main": "Chatbot.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
