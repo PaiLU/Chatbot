@@ -45,33 +45,6 @@ bot.dialog('helpReqStatus', function(session){
     session.endDialog('helpReqStatus context');
 });
 
-// bot.dialog('applyAnnualLeave',[
-//     function(session, args, next){
-//         session.conversationData.leaveType = "Annual Leave";
-//         session.beginDialog('applyLeave',args);
-//     }
-// ])
-// .triggerAction({
-//     matches: ['applyAnnualLeave',"applySickLeave"]
-// })
-// .beginDialogAction('helpApplyLeaveAction','helpApplyLeave',{
-//     matches: /^help$/i
-// });
-// bot.dialog('applySickLeave',[
-//     function(session, args, next){
-//         session.conversationData.leaveType = "Sick Leave";
-//         session.send("applying sick leave")
-//         session.beginDialog('applyLeave',args);
-//     }
-// ])
-// .triggerAction({
-//     matches: ["applySickLeave"]
-// })
-// .beginDialogAction('helpApplyLeaveAction','helpApplyLeave',{
-//     matches:/^help$/i
-// })
-
-
 bot.dialog('applyLeave',[
     function(session,args,next){
         session.send("We are analyzing your request:\'%s\'",session.message.text);
@@ -89,9 +62,7 @@ bot.dialog('applyLeave',[
         }else if(duration){
             session.beginDialog('AskForDate',duration);
         }else{
-            // session.send('nothing operating...');    
             session.endConversation('I can\'t understand what you have entered.<br\>Talk to me with your leave starting, ending date, and leavetype.<br\>Like \'I want to apply Annual leave from 2 Aug to 5 Aug\'.');
-            //既不是range 也不是 date, 要求重新输入
         }
     },
     function(session,results){
@@ -127,8 +98,6 @@ bot.dialog('helpApplyLeave',function(session){
 
 bot.dialog('Range',[
     function(session,args,next){
-        //session.send('You have entered the leave starting date and the ending date...');
-        //默认values[1]是对的
         if(args.resolution.values[1] != null){
             d1.obj = new Date(args.resolution.values[1]['start']);
             d2.obj = new Date(args.resolution.values[1]['end']);
@@ -142,16 +111,11 @@ bot.dialog('Range',[
         d2.t = new Date(d.setTime(d2.d));
         session.dialogData.startDate = d1.t;
         session.dialogData.endDate = d2.t;
-    //     next();
-    // },
-    // function(session){
         session.endDialogWithResult(session.dialogData);
     }
 ]);
 bot.dialog('DateAndDuration',[
     function(session,args,next){
-        //session.send('You have entered the leave staring date and duration...');
-        //默认values[1]是对的
         if(args[0].resolution.values[1] != null){
             d1.obj = new Date(args[0].resolution.values[1]['value']);
         }else{
@@ -163,26 +127,19 @@ bot.dialog('DateAndDuration',[
         d2.d = Number(args[1].resolution.values[0].value)*1000;
         d2.t = new Date(d.setTime(d1.d + d2.d));
         session.dialogData.endDate = d2.t;
-    //     next();
-    // },
-    // function(session){
         session.endDialogWithResult(session.dialogData);
     }
 ]);
 bot.dialog('Date',[
-    function(session,args){  
-        // var x = JSON.stringify(args);
-        //session.send('%s',x);
+    function(session,args){
         if(args.resolution.values[1] != null){
             d1.obj = new Date(args.resolution.values[1]['value']);
         }else{
             d1.obj = new Date(args.resolution.values[0]['value']);
         }
         d1.d = Date.parse(d1.obj) + offset;
-        //session.send('%s',typeof(d1.d));
         d1.t = new Date(d.setTime(d1.d));
-        session.send('You are applying leave from %s', d1.t);   
-        //session.send('%s',d1.t);      
+        session.send('You are applying leave from %s', d1.t);
         builder.Prompts.time(session, 'Please enter youe leave ending date.');
     },
     function(session,results,next){
@@ -193,7 +150,6 @@ bot.dialog('Date',[
         }
         session.conversationData.startDate = d1.t;  
         session.conversationData.endDate = d2.t;        
-        //session.send('%s,%s',session.conversationData.startDate,typeof(session.conversationData.startDate));
         next();
     },
     function(session){
@@ -202,17 +158,11 @@ bot.dialog('Date',[
 ]);
 bot.dialog('AskForDate',[
     function(session,args,next){
-        // session.send('You have entered a range...');
         session.dialogData.duration =  Number(args.resolution.values[0].value);
-        // next()
-    // },
-    // function(session){
         session.send('You are applying a leave for %s days.', session.dialogData.duration/86400);
         builder.Prompts.time(session,'When is your first day of leave?');
     },
     function(session,results){
-        // var x = results.response.resolution.start;
-        // session.send('%s<br\>%s',x,JSON.stringify(x));
         session.dialogData.startDate = new Date(results.response.resolution.start);
         d1.d = Date.parse(session.dialogData.startDate);
         d.setTime(d1.d);
