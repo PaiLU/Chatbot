@@ -7,14 +7,14 @@ server.listen(process.env.port || 3978, function(){
     console.log('%s listening to %s', server.name, server.url);
 })
 var connector = new builder.ChatConnector({
-    // appId: process.env.MICROSOFT_APP_ID,
-    // appPassword: process.env.MICROSOFT_APP_PASSWORD,
-    appId: process.env.MY_APP_ID,
-    appPassword: process.env.MY_APP_PASSWORD,
+    appId: process.env.MICROSOFT_APP_ID,
+    appPassword: process.env.MICROSOFT_APP_PASSWORD,
+    // appId: process.env.MY_APP_ID,
+    // appPassword: process.env.MY_APP_PASSWORD,
 });
 server.post('api/messages',connector.listen());
 var bot = new builder.UniversalBot(connector, function(session){
-    session.send('Hi, this is a leave bot. I can\'t understand what you are entered. <br\>Talk to me with your request or type \'help\' anytime if you need assistance');
+    session.send('Hi, I can\'t understand what you are entered. <br\>You can apply leave or ask for your leave balance <be\>Type \'help\' anytime if you need assistance');
 });
 var recognizer = new builder.LuisRecognizer(process.env.LUIS_MODEL_URL_LeaveBot);
 bot.recognizer(recognizer);
@@ -25,14 +25,14 @@ var d1 = Object() , d2 = Object();
 
 bot.dialog('help',[
     function(session){
-        session.endDialog('main help context');
+        session.endDialog('You can apply leave by specifying your leave type and starting, ending date. <br\>or ask for your leave balance by sentences like\"Get my leave balance\"');
     }
 ]).triggerAction({
     matches: /^help$|^main help$/i
 })
 bot.dialog('reqStatus', [
     function(session, args, next){
-        session.endConversation("getting status");
+        session.endConversation("Getting your leave status");
     }
 ])
 .triggerAction({
@@ -62,7 +62,7 @@ bot.dialog('applyLeave',[
         }else if(duration){
             session.beginDialog('AskForDate',duration);
         }else{
-            session.endConversation('I can\'t understand what you have entered.<br\>Talk to me with your leave starting, ending date, and leavetype.<br\>Like \'I want to apply Annual leave from 2 Aug to 5 Aug\'.');
+            session.endConversation('I can\'t understand what you have entered.<br\>Please specify your leave type and starting, ending date like:<br\>\'I want to apply Annual leave from 2 Aug 2017 to 5 Aug 2017\'.');
         }
     },
     function(session,results){
@@ -155,7 +155,9 @@ bot.dialog('Date',[
     function(session){
         session.endDialogWithResult(session.conversationData);
     }
-]);
+]).beginDialogAction('helpApplyLeaveAction','helpApplyLeave',{
+    matches: /^help$/i
+});
 bot.dialog('AskForDate',[
     function(session,args,next){
         session.dialogData.duration =  Number(args.resolution.values[0].value);
@@ -171,7 +173,9 @@ bot.dialog('AskForDate',[
         session.dialogData.endDate = d;
         session.endDialogWithResult(session.dialogData)
     }
-]);
+]).beginDialogAction('helpApplyLeaveAction','helpApplyLeave',{
+    matches: /^help$/i
+});
 function dateAdd(interval, number, date) {
     switch (interval) {
     case "y ": {
