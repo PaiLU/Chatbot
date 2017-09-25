@@ -59,9 +59,5 @@ typings/
 .env
 
 # server site testing file
-restify.js
-script.js
 app_notinuse.js
-botbuilder_documentation.md
 app2.js
-test.js

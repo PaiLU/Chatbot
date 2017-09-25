@@ -93,7 +93,7 @@ bot.dialog('applyLeave',[
     matches: /^help$/i
 });
 bot.dialog('helpApplyLeave',function(session){
-    session.endDialog('helpApplyLeave context')
+    session.endDialog('You can apply leave by specifying your leave type and starting, ending date.')
 });
 
 bot.dialog('Range',[
