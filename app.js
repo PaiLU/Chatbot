@@ -8,10 +8,10 @@ server.listen(process.env.port || 3978, function(){
     console.log('%s listening to %s', server.name, server.url);
 })
 var connector = new builder.ChatConnector({
-    appId: process.env.MICROSOFT_APP_ID,
-    appPassword: process.env.MICROSOFT_APP_PASSWORD,
-    // appId: process.env.MY_APP_ID,
-    // appPassword: process.env.MY_APP_PASSWORD,
+    // appId: process.env.MICROSOFT_APP_ID,
+    // appPassword: process.env.MICROSOFT_APP_PASSWORD,
+    appId: process.env.MY_APP_ID,
+    appPassword: process.env.MY_APP_PASSWORD,
 });
 server.post('api/messages',connector.listen());
 var bot = new builder.UniversalBot(connector, function(session){
@@ -34,7 +34,7 @@ bot.dialog('help',[
 bot.dialog('reqStatus', [
     function(session, args, next){
         var options = {
-            host: localhost,
+            host: 'localhost',
             port: 80,
             path: '/api/leave',
             method: 'GET'
