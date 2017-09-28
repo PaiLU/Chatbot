@@ -35,7 +35,7 @@ bot.dialog('reqStatus', [
     function(session, args, next){
         var options = {
             host: 'localhost',
-            port: 80,
+            port: 3000,
             path: '/api/leave',
             method: 'GET'
         };
