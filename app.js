@@ -32,7 +32,18 @@ bot.dialog('help',[
 })
 bot.dialog('reqStatus', [
     function(session, args, next){
-        session.endConversation("Getting your leave status");
+        var options = {
+            host: localhost,
+            port: 80,
+            path: '/api/leavedetail',
+            method: 'GET'
+        };
+        http.request(options, function(res) {
+            res.setEncoding('utf8');
+            res.on('data', function (d) {
+                session.endConversation("Getting your leave status" + d);
+            });
+        }).end();
     }
 ])
 .triggerAction({

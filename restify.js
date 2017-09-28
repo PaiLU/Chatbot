@@ -1,7 +1,7 @@
-function ProductsController(){
+function LeaveApplication(){
     var that = this;
     that.store = [];
-    var findProductById = function(req){
+    var findPersonById = function(req){
         var found = that.store.filter(function(p){
             return p.id === parseInt(req.params.id);
         });
@@ -15,37 +15,37 @@ function ProductsController(){
         return next();
     };
     that.getById = function(req, res, next){
-        var found = findProductById(req);
+        var found = findPersonById(req);
         if(found){
             res.send(200, found);
         }else{
-            res.send(404, "product not found");
+            res.send(404, "entity not found");
         }
         return next();
     };
     that.post = function(req, res, next){
-        if(!req.body.hasOwnProperty('id') || !req.body.hasOwnProperty('name')){
+        if(!req.body.hasOwnProperty('id') || !req.body.hasOwnProperty('leavedays')){
             res.send(500);
         }else{
             that.store.push({
                 id : parseInt(req.body.id),
-                name : req.body.name
+                leavedays : req.body.leavedays
             });
             res.send(201);
         }
         return next();
     };
     that.put = function(req, res, next){
-        if(!req.body.hasOwnProperty('name')){
+        if(!req.body.hasOwnProperty('leavedays')){
             res.send(500);
             return next();
         }
-        var found = findProductById(req);
+        var found = findPeopleById(req);
         if(found){
-            found.name = req.body.name;
+            found.leavedays = req.body.leavedays;
             res.send(200, found);
         }else{
-            res.send(404, "product not found");
+            res.send(404, "entity not found");
         }
         return next();
     };
@@ -59,4 +59,4 @@ function ProductsController(){
 
 };
 
-module.exports = new ProductsController();
+module.exports = new LeaveApplication();

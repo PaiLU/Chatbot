@@ -11,40 +11,40 @@ server.use(function(req, res, next){
 
 server.use(restify.plugins.bodyParser());
 
-server.get('api/products',leaveApi.get);
-server.get('api/products/:id',leaveApi.getById);
-server.post('api/products',leaveApi.post);
-server.put('api/products/:id', leaveApi.put);
-server.del('api/products/:id', leaveApi.del);
+server.get('api/leave',leaveApi.get);
+server.get('api/leave/:id',leaveApi.getById);
+server.post('api/leave',leaveApi.post);
+server.put('api/leave/:id', leaveApi.put);
+server.del('api/leave/:id', leaveApi.del);
+//
+    // var that = this;
+    // var i = 1;
+    // that.pushthis = [{
+    //     id : i,
+    //     ok : 'no problem'
+    // }];
 
-var that = this;
-var i = 1;
-that.pushthis = [{
-    id : i,
-    ok : 'no problem'
-}];
+    // server.post('api/leavedetail', function(req, res, next){
+    //     that.pushthis.push({
+    //         id : i,
+    //         ok : 'no problem'
+    //     });
+    //     res.send(201);
+    //     return next();
+    // });
+    // server.get('api/leavedetail',function(req, res, next){
+    //     res.send(200, that.pushthis);
+    //     return next();
+    // });
 
-// server.post('api/leavedetail', function(req, res, next){
-//     that.pushthis.push({
-//         id : i,
-//         ok : 'no problem'
-//     });
-//     res.send(201);
-//     return next();
-// });
-server.get('api/leavedetail',function(req, res, next){
-    res.send(200, that.pushthis);
-    return next();
-});
+    // function respond(req, res, next){
+    //     res.send('hello ' + req.params.name);
+    //     next();
+    // };
+    // server.get('api/products/2/:name/hi', respond);
+    // server.post('api/procucts/2/:name/hi',respond);
 
-function respond(req, res, next){
-    res.send('hello ' + req.params.name);
-    next();
-};
-server.get('api/products/2/:name/hi', respond);
-server.post('api/procucts/2/:name/hi',respond);
-
-server.listen(process.env.port || process.env.PORT || 3978, function () {
+server.listen(process.env.port || process.env.PORT || 3000, function () {
    console.log('%s listening to %s', server.name, server.url); 
 });
 
