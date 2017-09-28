@@ -15,7 +15,6 @@ var connector = new builder.ChatConnector({
 });
 server.post('api/messages',connector.listen());
 var bot = new builder.UniversalBot(connector, function(session){
-    session.send('%s listening to %s', JSON.stringify(server.name), JSON.stringify(server));
     session.endConversation('Hi, I can\'t understand what you are entered. <br\>You can apply leave or ask for your leave balance <be\>Type \'help\' anytime if you need assistance');
 });
 var recognizer = new builder.LuisRecognizer(process.env.LUIS_MODEL_URL_LeaveBot);
