@@ -9,7 +9,7 @@ body{
     font-family: sans-serif;
 }
 iframe{
-    height: 90%;
-    min-height: 600px;
+    height: 502px;
+    min-height: 502px;
     /* min-height: 502px; */
 }
