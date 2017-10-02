@@ -49,17 +49,17 @@ bot.dialog('reqStatus', [
 ])
 .triggerAction({
     matches: 'reqStatus'
-})
-.beginDialogAction('helpReqStatusAaction','helpReqStatus',{
-    matches: /^help$/i
 });
-bot.dialog('helpReqStatus', function(session){
-    session.endDialog('helpReqStatus context');
-});
+// .beginDialogAction('helpReqStatusAaction','helpReqStatus',{
+//     matches: /^help$/i
+// });
+// bot.dialog('helpReqStatus', function(session){
+//     session.endDialog('helpReqStatus context');
+// });
 
 bot.dialog('applyLeave',[
     function(session,args,next){
-        session.send("We are analyzing your request:\'%s\'",session.message.text);
+        //session.send("We are analyzing your request:\'%s\'",session.message.text);
         var daterange = builder.EntityRecognizer.findEntity(args.intent.entities|| {},'builtin.datetimeV2.daterange');
         var date = builder.EntityRecognizer.findEntity(args.intent.entities|| {},'builtin.datetimeV2.date');
         var duration =builder.EntityRecognizer.findEntity(args.intent.entities|| {},'builtin.datetimeV2.duration');
@@ -92,7 +92,7 @@ bot.dialog('applyLeave',[
             session.send('I can\'t send your request:;leave from %s-%s-%s to %s-%s-%s for a duration for %s days',apply.startDate,apply.startMon,apply.startYear,apply.endDate,apply.endMon,apply.endYear,apply.duration);
             session.endConversation('Please restart...');
         };
-        session.send('You are applying %s leave from %s-%s-%s to %s-%s-%s',session.conversationData.leaveType, apply.startDate,apply.startMon,apply.startYear,apply.endDate,apply.endMon,apply.endYear);
+        session.send('You are applying %s from %s-%s-%s to %s-%s-%s',session.conversationData.leaveType, apply.startDate,apply.startMon,apply.startYear,apply.endDate,apply.endMon,apply.endYear);
         //get api url+
         session.send('The information has gathered, and sent to server successfully.');
         session.endConversation();
@@ -183,11 +183,16 @@ bot.dialog('AskForDate',[
         session.dialogData.startDate = d;
         d.setTime(d1.d + Number(session.dialogData.duration)*1000);
         session.dialogData.endDate = d;
-        session.endDialogWithResult(session.dialogData)
+        session.endDialogWithResult(session.dialogData);
     }
 ]).beginDialogAction('helpApplyLeaveAction','helpApplyLeave',{
     matches: /^help$/i
 });
+server.get('/', restify.plugins.serveStatic({
+    directory: __dirname,
+    default: '/index.html'
+   }));
+
 function dateAdd(interval, number, date) {
     switch (interval) {
     case "y ": {

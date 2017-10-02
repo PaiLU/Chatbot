@@ -1,0 +1,10 @@
+body{
+    background-color: #ffffff;
+    margin-left:1px;
+    margin-right: 1px;
+    font-family: sans-serif;
+}
+iframe{
+    height: 600px;
+    /* min-height: 502px; */
+}
