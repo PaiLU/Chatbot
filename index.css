@@ -1,11 +1,15 @@
+html{
+    height: 100%;
+}
 body{
     background-color: #ffffff;
+    height:100%;
     margin-left:1px;
     margin-right: 1px;
     font-family: sans-serif;
 }
 iframe{
-    height: 600px;
+    height: 90%;
     min-height: 600px;
     /* min-height: 502px; */
 }
