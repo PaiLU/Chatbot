@@ -8,10 +8,10 @@ server.listen(process.env.port || 3978, function(){
     console.log('%s listening to %s', server.name, server.url);
 })
 var connector = new builder.ChatConnector({
-    appId: process.env.MICROSOFT_APP_ID,
-    appPassword: process.env.MICROSOFT_APP_PASSWORD,
-    // appId: process.env.MY_APP_ID,
-    // appPassword: process.env.MY_APP_PASSWORD,
+    // appId: process.env.MICROSOFT_APP_ID,
+    // appPassword: process.env.MICROSOFT_APP_PASSWORD,
+    appId: process.env.MY_APP_ID,
+    appPassword: process.env.MY_APP_PASSWORD,
 });
 server.post('api/messages',connector.listen());
 var bot = new builder.UniversalBot(connector, function(session){
@@ -34,27 +34,19 @@ bot.dialog('help',[
 bot.dialog('reqStatus', [
     function(session, args, next){
         var options = {
-            // host: 'heypiapi.azurewebsites.net',
-            // port: 80,
+            host: 'heypiapi.azurewebsites.net',
+            port: 80,
             // path: '/contacts',
-            host: 'localhost',
-            port: 3000,
+            // host: 'localhost',
+            // port: 3000,
             path:'/api/leave',
             method: 'GET'
         };
-        // http.request(options, function(res) {
-        //     res.setEncoding('utf8');
-        //     res.on('data', function (d) {
-        //         var receive = JSON.parse(d);
-        //         session.send('%s',JSON.stringify(d));
-        //         session.endConversation();
-        //     });
-        // }).end();
         http.request(options, function(res) {
             res.setEncoding('utf8');
             res.on('data', function (d) {
                 var receive = JSON.parse(d);
-                session.endConversation("Your Employee ID: %s <br\>Your remaining annual leaves: %s day(s)<br\>Your current pending leaves: %s day(s)", receive[0].id, receive[0].annualLeave, receive[0].pending);
+                session.endConversation("Your Employee ID: %s <br\>Your remaining annual leaves: %s day(s)<br\>Your current pending leaves: %s day(s)", receive[0].id, receive[0].annualLeave, receive[0].pending||0);
             });
         }).end();
     }
