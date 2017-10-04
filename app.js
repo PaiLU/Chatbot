@@ -8,10 +8,10 @@ server.listen(process.env.port || 3978, function(){
     console.log('%s listening to %s', server.name, server.url);
 })
 var connector = new builder.ChatConnector({
-    // appId: process.env.MICROSOFT_APP_ID,
-    // appPassword: process.env.MICROSOFT_APP_PASSWORD,
-    appId: process.env.MY_APP_ID,
-    appPassword: process.env.MY_APP_PASSWORD,
+    appId: process.env.MICROSOFT_APP_ID,
+    appPassword: process.env.MICROSOFT_APP_PASSWORD,
+    // appId: process.env.MY_APP_ID,
+    // appPassword: process.env.MY_APP_PASSWORD,
 });
 server.post('api/messages',connector.listen());
 var bot = new builder.UniversalBot(connector, function(session){
@@ -34,15 +34,27 @@ bot.dialog('help',[
 bot.dialog('reqStatus', [
     function(session, args, next){
         var options = {
+            // host: 'heypiapi.azurewebsites.net',
+            // port: 80,
+            // path: '/contacts',
             host: 'localhost',
             port: 3000,
-            path: '/api/leave',
+            path:'/api/leave',
             method: 'GET'
         };
+        // http.request(options, function(res) {
+        //     res.setEncoding('utf8');
+        //     res.on('data', function (d) {
+        //         var receive = JSON.parse(d);
+        //         session.send('%s',JSON.stringify(d));
+        //         session.endConversation();
+        //     });
+        // }).end();
         http.request(options, function(res) {
             res.setEncoding('utf8');
             res.on('data', function (d) {
-                session.endConversation("Getting your leave status" + d);
+                var receive = JSON.parse(d);
+                session.endConversation("Your Employee ID: %s <br\>Your remaining annual leaves: %s day(s)<br\>Your current pending leaves: %s day(s)", receive[0].id, receive[0].annualLeave, receive[0].pending);
             });
         }).end();
     }
@@ -74,7 +86,7 @@ bot.dialog('applyLeave',[
         }else if(duration){
             session.beginDialog('AskForDate',duration);
         }else{
-            session.endConversation('I can\'t understand what you have entered.<br\>Please specify your leave type and starting, ending date like:<br\>\'I want to apply Annual leave from 2 Aug 2017 to 5 Aug 2017\'.');
+            session.endConversation('Please specify your leave type and starting, ending date<br\>For Example: I want to apply Annual leave from 2 Aug 2017 to 5 Aug 2017.');
         }
     },
     function(session,results){
