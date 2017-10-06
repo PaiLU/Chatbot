@@ -15,7 +15,7 @@ var connector = new builder.ChatConnector({
 });
 server.post('api/messages',connector.listen());
 var bot = new builder.UniversalBot(connector, function(session){
-    session.endConversation("Hi, I can&#39;t understand what you are entered. <br\>You can apply leave or ask for your leave balance <br\>Type &#39;help&#39;anytime if you need assistance");
+    session.endConversation("Hi, I can&#39;t understand what you are entered. <br\>You can apply leave or ask for your leave balance <br\>Type &#39;help&#39; anytime if you need assistance");
 });
 var recognizer = new builder.LuisRecognizer(process.env.LUIS_MODEL_URL_LeaveBot);
 bot.recognizer(recognizer);
@@ -26,7 +26,7 @@ var d1 = Object() , d2 = Object();
 
 bot.dialog('help',[
     function(session){
-        session.endDialog('You can apply leave by specifying your leave type and starting, ending date. <br\>Or ask for your leave balance by sentences like\"Get my leave balance\"');
+        session.endDialog('You can apply leave by specifying your leave type and starting, ending date. <br\>Or ask for your leave balance by sentences like&#34;Get my leave balance&#34;');
     }
 ]).triggerAction({
     matches: /^help$|^main help$/i
@@ -93,7 +93,7 @@ bot.dialog('applyLeave',[
         apply.endYear = results.endDate.getFullYear();
         apply.duration =   (results.endDate - results.startDate)/1000/60/60/24;
         if (results.startDate > results.endDate){
-            session.send('I can\'t send your request:;leave from %s-%s-%s to %s-%s-%s for a duration for %s days',apply.startDate,apply.startMon,apply.startYear,apply.endDate,apply.endMon,apply.endYear,apply.duration);
+            session.send('I can&#39;t send your request:;leave from %s-%s-%s to %s-%s-%s for a duration for %s days',apply.startDate,apply.startMon,apply.startYear,apply.endDate,apply.endMon,apply.endYear,apply.duration);
             session.endConversation('Please restart...');
         };
         session.send('You are applying %s from %s-%s-%s to %s-%s-%s',session.conversationData.leaveType, apply.startDate,apply.startMon,apply.startYear,apply.endDate,apply.endMon,apply.endYear);
