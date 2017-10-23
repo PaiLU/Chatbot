@@ -23,4 +23,4 @@ function GetName(){
     };
 };
 
-module.exports = new GetName();
+module.exports = new GetName();}
