@@ -24,6 +24,7 @@
     "adal-node": "^0.1.22",
     "botbuilder": "^3.8.4",
     "dotenv-extended": "^2.0.1",
+    "file-system": "^2.2.2",
     "http": "0.0.0",
     "https": "^1.0.0",
     "restify": "^5.0.0",
