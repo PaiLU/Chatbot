@@ -4,16 +4,26 @@ var restify = require('restify');
 var builder = require('botbuilder');
 var http = require('http');
 var server = restify.createServer();
+var getName = require('./name');
 server.listen(process.env.port || 3978, function(){
     console.log('%s listening to %s', server.name, server.url);
 })
 var connector = new builder.ChatConnector({
-    // appId: process.env.MICROSOFT_APP_ID,
-    // appPassword: process.env.MICROSOFT_APP_PASSWORD,
-    appId: process.env.MY_APP_ID,
-    appPassword: process.env.MY_APP_PASSWORD,
+    appId: process.env.MICROSOFT_APP_ID,
+    appPassword: process.env.MICROSOFT_APP_PASSWORD,
+    // appId: process.env.MY_APP_ID,
+    // appPassword: process.env.MY_APP_PASSWORD,
 });
 server.post('api/messages',connector.listen());
+
+server.use(function(req, res, next){
+    console.log(req.method + ' ' + req.url);
+    return next();
+});
+server.use(restify.plugins.bodyParser());
+server.get('api/name',getName.get);
+server.post('api/name',getName.post);
+
 var bot = new builder.UniversalBot(connector, function(session){
     session.endConversation("Hi, I can&#39;t understand what you are entered. <br\>You can apply leave or ask for your leave balance <br\>Type &#39;help&#39; anytime if you need assistance");
 });
@@ -44,8 +54,8 @@ bot.dialog('reqStatus', [
         };
         http.request(options, function(res) {
             res.setEncoding('utf8');
-            res.on('data', function (d) {
-                var receive = JSON.parse(d);
+            res.on('data', function (data) {
+                var receive = JSON.parse(data);
                 session.endConversation("Your Employee ID: %s <br\>Your remaining annual leaves: %s day(s)<br\>Your current pending leaves: %s day(s)", receive[0].id, receive[0].annualLeave, receive[0].pending||0);
             });
         }).end();
