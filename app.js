@@ -7,47 +7,18 @@ var http = require('http');
 var server = restify.createServer();
 
 var connector = new builder.ChatConnector({
-    // appId: process.env.MICROSOFT_APP_ID,
-    // appPassword: process.env.MICROSOFT_APP_PASSWORD,
-    appId: process.env.MY_APP_ID,
-    appPassword: process.env.MY_APP_PASSWORD,
+    appId: process.env.MICROSOFT_APP_ID,
+    appPassword: process.env.MICROSOFT_APP_PASSWORD,
+    // appId: process.env.MY_APP_ID,
+    // appPassword: process.env.MY_APP_PASSWORD,
 });
 server.post('api/messages',connector.listen());
-
-// var that = this;
-// that.store = [];
-// var name ='';
-// server.use(function(req, res, next){
-//     console.log(req.method + ' ' + req.url);
-//     return next();
-// });
-
-// server.use(restify.plugins.bodyParser());
-// server.post('/api/name',function(req, res, next){
-
-//     if(!req.body.hasOwnProperty('name')){
-//         res.send(500);
-//     }else{
-//         that.store.push({name : req.body.name});
-//         name = that.store[that.store.length-1].name
-//         console.log('%s', JSON.stringify(name));
-//         res.send(201);
-//     }
-//     return next();
-// // });
-// server.get('/api/name', function(req, res, next){
-//     if(that.store[0]!=null)
-//         res.send(200, that.store[that.store.length-1].name);
-//     else
-//         res.send(404);
-//     return next();
-// });
 
 server.listen(process.env.port || 3978, function(){
     console.log('%s listening to %s', server.name, server.url);
 })
 var bot = new builder.UniversalBot(connector, function(session){
-    session.endConversation("Hi %s <br\>You can apply leave or ask for your leave balance <br\>Type &#39;help&#39; anytime if you need assistance", name);
+    session.endConversation("Hi %s <br\>You can apply leave or ask for your leave balance <br\>Type &#39;help&#39; anytime if you need assistance", session.message.user.name);
 });
 var recognizer = new builder.LuisRecognizer(process.env.LUIS_MODEL_URL_LeaveBot);
 bot.recognizer(recognizer);

@@ -5,13 +5,25 @@
         <title>Leave Applicaion</title>
     </head>
     <body>
-        <div id="prompt">
+        <!-- <div id="prompt">
         <form action="http://heypi.azurewebsites.net/api/name" method="POST" target="submitFrame">
             <input type="text" id="name" name="name" placeholder="What's Your Name" maxlength="100" /><br />
             <input type="submit" value=" OK "/>
         </form>
         <iframe style="width:0; height:0; margin-top:-10px;" name="submitFrame" src="about:blank" hidden='hidden'></iframe>
-        </div>
-        <!-- <iframe class = 'iframe0' src='https://webchat.botframework.com/embed/HeyPi?s=M_agFHpVsb8.cwA.1qk.oNCTJ7D7GbN57UUJOKZYnBis4xOGVLHUypJ4hXKqUaE' style='height: 90%; min-height: 600px;'></iframe> -->
+        </div> -->
+        <div id="bot" />
+        <script src="https://cdn.botframework.com/botframework-webchat/latest/botchat.js"></script>
+        <script>
+            function changeName(){
+                
+            }
+          BotChat.App({
+            directLine: { secret:'EYwYAPAJkmk.cwA.ja0.h48UFMQkquaPBe59Qi3Qg-3kXrHary7q-mq1z_EklYc' },
+            user: { id: 'userid' },
+            bot: { id: 'botid' },
+            resize: 'detect'
+          }, document.getElementById("bot"));
+        </script>
     </body>
 </html>
