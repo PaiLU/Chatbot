@@ -49,7 +49,7 @@ bot.dialog('reqStatus', [
             res.setEncoding('utf8');
             res.on('data', function (data) {
                 var receive = JSON.parse(data);
-                session.endConversation("Your Employee ID: %s <br\>Name: %s<br\>Your remaining annual leaves: %s day(s)<br\>Your current pending leaves: %s day(s)", receive[0].id, name||'N.A.', receive[0].annualLeave, receive[0].pending||0);
+                session.endConversation("Your Employee ID: %s <br\>Name: %s<br\>Your remaining annual leaves: %s day(s)<br\>Your current pending leaves: %s day(s)", receive[0].id, session.message.user.name, receive[0].annualLeave, receive[0].pending||0);
             });
         }).end();
     }
