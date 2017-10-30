@@ -1,29 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
-        <title>Leave Applicaion</title>
-    </head>
-    <body>
-        <!-- <div id="prompt">
-        <form action="http://heypi.azurewebsites.net/api/name" method="POST" target="submitFrame">
-            <input type="text" id="name" name="name" placeholder="What's Your Name" maxlength="100" /><br />
-            <input type="submit" value=" OK "/>
-        </form>
-        <iframe style="width:0; height:0; margin-top:-10px;" name="submitFrame" src="about:blank" hidden='hidden'></iframe>
-        </div> -->
-        <div id="bot" />
-        <script src="https://cdn.botframework.com/botframework-webchat/latest/botchat.js"></script>
-        <script>
-            function changeName(){
-                
-            }
-          BotChat.App({
-            directLine: { secret:'EYwYAPAJkmk.cwA.ja0.h48UFMQkquaPBe59Qi3Qg-3kXrHary7q-mq1z_EklYc' },
-            user: { id: 'userid' },
-            bot: { id: 'botid' },
-            resize: 'detect'
-          }, document.getElementById("bot"));
-        </script>
-    </body>
+<!--
+  This is a sample HTML file which shows how to use Web Chat with React.
+  1. Build the project: "npm run build"
+  2. Start a web server: "npm run start"
+  3. Aim your browser at "http://localhost:8000/samples?[parameters as listed below]"
+
+  For ease of testing, several parameters can be set in the query string:
+    * s = Direct Line secret, or
+    * t = Direct Line token (obtained by calling Direct Line's Generate Token)
+    * domain = optionally, the URL of an alternate Direct Line endpoint
+    * webSocket = set to 'true' to use WebSocket to receive messages (currently defaults to false)
+    * userid, username = id (and optionally name) of bot user
+    * botid, botname = id (and optionally name) of bot
+-->
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Bot Chat</title>
+
+    <link href="./botchat.css" rel="stylesheet" />
+
+    <style>
+      .wc-chatview-panel {
+        height:700px;
+        position: relative;
+        width: 620px;
+        top:60px;
+      }
+    </style>
+
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://unpkg.com/react@15/dist/react.min.js"></script>
+    <script src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
+  </head>
+  <body>
+    <div id="Chatbot"></div>
+
+    <script src="./botchat.js"></script>
+
+    <script type="text/babel">
+      const params = BotChat.queryParams(location.search);
+
+      window.botchatDebug = params.debug && params.debug === 'true';
+
+      ReactDOM.render(
+        <BotChat.Chat
+          bot={{
+            id: params.botid || 'botid',
+            name: params.botname || 'botname'
+          }}
+          directLine={{
+            domain: params.domain,
+            secret: "EYwYAPAJkmk.cwA.ja0.h48UFMQkquaPBe59Qi3Qg-3kXrHary7q-mq1z_EklYc",
+            token: params.t,
+            webSocket: params.webSocket && params.webSocket === 'true' // defaults to true
+          }}
+          locale={ params.locale }
+          resize="detect"
+          sendTyping={ true }    // defaults to false. set to true to send 'typing' activities to bot (and other users) when user is typing
+          user={{
+            id: params.userid || '!',
+            name: undefined
+          }}
+        />,
+        document.getElementById('Chatbot')
+      );
+    </script>
+  </body>
 </html>
