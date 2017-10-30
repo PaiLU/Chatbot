@@ -21,7 +21,7 @@ var bot = new builder.UniversalBot(connector, function(session){
     if(session.message.user.name)
         session.endConversation("Hi %s <br\>You can apply leave or ask for your leave balance <br\>Type &#39;help&#39; anytime if you need assistance", session.message.user.name);
     else
-        session.endConversation("Please log on to utilize the LeaveBot");
+        session.endConversation("Please log onto SharePoint to utilize the LeaveBot");
 });
 var recognizer = new builder.LuisRecognizer(process.env.LUIS_MODEL_URL_LeaveBot);
 bot.recognizer(recognizer);
@@ -69,6 +69,7 @@ bot.dialog('reqStatus', [
 
 bot.dialog('applyLeave',[
     function(session,args,next){
+        if(session.message.user.name){
         //session.send("We are analyzing your request:\'%s\'",session.message.text);
         var daterange = builder.EntityRecognizer.findEntity(args.intent.entities|| {},'builtin.datetimeV2.daterange');
         var date = builder.EntityRecognizer.findEntity(args.intent.entities|| {},'builtin.datetimeV2.date');
@@ -85,7 +86,8 @@ bot.dialog('applyLeave',[
             session.beginDialog('AskForDate',duration);
         }else{
             session.endConversation('Please specify your leave type and starting, ending date<br\>For Example: I want to apply Annual leave from 2 Aug 2017 to 5 Aug 2017.');
-        }
+        }}
+        else session.endConversation("Please log onto SharePoint to utilize the LeaveBot");
     },
     function(session,results){
         var apply = new Object();
@@ -102,9 +104,8 @@ bot.dialog('applyLeave',[
             session.send('I can&#39;t send your request:;leave from %s-%s-%s to %s-%s-%s for a duration for %s days',apply.startDate,apply.startMon,apply.startYear,apply.endDate,apply.endMon,apply.endYear,apply.duration);
             session.endConversation('Please restart...');
         };
-        session.send('You are applying %s from %s-%s-%s to %s-%s-%s',session.conversationData.leaveType, apply.startDate,apply.startMon,apply.startYear,apply.endDate,apply.endMon,apply.endYear);
+        session.send('You are applying %s from %s-%s-%s to %s-%s-%s <br\>The information has gathered, and sent to server successfully.',session.conversationData.leaveType, apply.startDate,apply.startMon,apply.startYear,apply.endDate,apply.endMon,apply.endYear);
         //get api url+
-        session.send('The information has gathered, and sent to server successfully.');
         session.endConversation();
     }
 ])
