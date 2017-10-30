@@ -18,7 +18,10 @@ server.listen(process.env.port || 3978, function(){
     console.log('%s listening to %s', server.name, server.url);
 })
 var bot = new builder.UniversalBot(connector, function(session){
-    session.endConversation("Hi %s <br\>You can apply leave or ask for your leave balance <br\>Type &#39;help&#39; anytime if you need assistance", session.message.user.name);
+    if(session.message.user.name)
+        session.endConversation("Hi %s <br\>You can apply leave or ask for your leave balance <br\>Type &#39;help&#39; anytime if you need assistance", session.message.user.name);
+    else
+        session.endConversation("Please log on to utilize the LeaveBot");
 });
 var recognizer = new builder.LuisRecognizer(process.env.LUIS_MODEL_URL_LeaveBot);
 bot.recognizer(recognizer);

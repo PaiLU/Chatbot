@@ -38,14 +38,12 @@
     <div id="Chatbot"></div>
 
     <script src="./botchat.js"></script>
-
     <script type="text/babel">
       const params = BotChat.queryParams(location.search);
-
+      
       window.botchatDebug = params.debug && params.debug === 'true';
-
-      ReactDOM.render(
-        <BotChat.Chat
+      function Chatbot(params){
+          return <BotChat.Chat
           bot={{
             id: params.botid || 'botid',
             name: params.botname || 'botname'
@@ -63,7 +61,15 @@
             id: params.userid || '!',
             name: undefined
           }}
-        />,
+        />
+      }
+      function HeyPi(){
+          return(
+            <Chatbot />
+          )
+      }
+      ReactDOM.render(
+        <HeyPi />,
         document.getElementById('Chatbot')
       );
     </script>
