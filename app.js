@@ -19,7 +19,7 @@ server.listen(process.env.port || 3978, function(){
 })
 var bot = new builder.UniversalBot(connector, function(session){
     if(session.message.user.name)
-        session.endConversation("Hi %s <br\>You can apply leave or ask for your leave balance <br\>Type &#39;help&#39; anytime if you need assistance", JSON.stringify(session.message));
+        session.endConversation("Hi %s (User id: %s)<br\>You can apply leave or ask for your leave balance <br\>Type &#39;help&#39; anytime if you need assistance", session.message.user.name,session.message.user.id);
     else
         session.endConversation("Please log onto SharePoint to utilize the LeaveBot");
 });
@@ -45,7 +45,7 @@ bot.dialog('reqStatus', [
             // path: '/contacts',
             // host: 'localhost',
             // port: 3000,
-            path:'/api/leave',
+            path:'/api/leave/'+session.message.user.id,
             method: 'GET'
         };
         http.request(options, function(res) {
@@ -104,7 +104,7 @@ bot.dialog('applyLeave',[
             session.send('I can&#39;t send your request:;leave from %s-%s-%s to %s-%s-%s for a duration for %s days',apply.startDate,apply.startMon,apply.startYear,apply.endDate,apply.endMon,apply.endYear,apply.duration);
             session.endConversation('Please restart...');
         };
-        session.send('You are applying %s from %s-%s-%s to %s-%s-%s <br\>The information has gathered, and sent to server successfully.',session.conversationData.leaveType, apply.startDate,apply.startMon,apply.startYear,apply.endDate,apply.endMon,apply.endYear);
+        session.send('Hi %s (User id: %s)<br\>You are applying %s from %s-%s-%s to %s-%s-%s <br\>The information has gathered, and sent to server successfully.',session.message.user.name,session.message.user.id,session.conversationData.leaveType, apply.startDate,apply.startMon,apply.startYear,apply.endDate,apply.endMon,apply.endYear);
         //get api url+
         session.endConversation();
     }
