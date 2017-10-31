@@ -44,7 +44,8 @@
       const params = BotChat.queryParams(location.search);
       
       window.botchatDebug = params.debug && params.debug === 'true';
-      function Chatbot(params){
+      function Chatbot(params,props){
+          console.log("hihi");
           return <BotChat.Chat
           bot={{
             id: params.botid || 'botid',
@@ -60,32 +61,67 @@
           resize="detect"
           sendTyping={ true }    // defaults to false. set to true to send 'typing' activities to bot (and other users) when user is typing
           user={{
-            id: params.userid || '!',
-            name: undefined
+            id: params.userid || "defaultuserid",
+            name: params.username ||  props.loginName || "defaultusername"
           }}
         />
-      }
+      };
 
-      function NameForm(){
-        return (
-          <form >
-            <label>
-              Name:
-              <input type="text"  placeholder="Enter here..." />
-            </label>
-            <input type="submit" value="Submit" />
-          </form>
-        );
+      class NameForm extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {value: ''};
+      
+          this.handleChange = this.handleChange.bind(this);
+          this.handleSubmit = this.handleSubmit.bind(this);
+        }
+      
+        handleChange(event) {
+          this.setState({value: event.target.value});
+        }
+      
+        handleSubmit(event) {
+          this.state.value;
+          alert("You have loged in with "+ this.state.value);
+          event.preventDefault();
+          window.location += "?single";
+          console.log(window.location);
+        }
+
+        function getParameterByName(name, url) {
+          if (!url) url = window.location.href;
+          name = name.replace(/[\[\]]/g, "\\$&");
+          var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+              results = regex.exec(url);
+          if (!results) return null;
+          if (!results[2]) return '';
+          return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+        
+        render() {
+          console.log(window.location.href);
+          return (
+            <div>
+            <form onSubmit={this.handleSubmit}>
+              <label>
+                Name:
+                <input type="text" value={this.state.value} onChange={this.handleChange} />
+              </label>
+              <input type="submit" value="Submit" />
+            </form><Chatbot loginName={this.state.value} />
+            </div>
+          );
+        }
       }
 
       function HeyPi(){
+          console.log("hi");
           return(
             <div>
-            <NameForm class="nameform"/>
-            <Chatbot />
+            <NameForm />
             </div>
           )
-      }
+      };
       ReactDOM.render(
         <HeyPi />,
         document.getElementById('Chatbot')

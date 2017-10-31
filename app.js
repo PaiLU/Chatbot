@@ -19,7 +19,7 @@ server.listen(process.env.port || 3978, function(){
 })
 var bot = new builder.UniversalBot(connector, function(session){
     if(session.message.user.name)
-        session.endConversation("Hi %s <br\>You can apply leave or ask for your leave balance <br\>Type &#39;help&#39; anytime if you need assistance", session.message.user.name);
+        session.endConversation("Hi %s <br\>You can apply leave or ask for your leave balance <br\>Type &#39;help&#39; anytime if you need assistance", JSON.stringify(session.message));
     else
         session.endConversation("Please log onto SharePoint to utilize the LeaveBot");
 });
