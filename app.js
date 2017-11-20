@@ -32,7 +32,15 @@ var d1 = Object() , d2 = Object();
 
 bot.dialog('help',[
     function(session){
-        session.endDialog('You can apply leave by specifying your leave type and starting, ending date. <br\>Or ask for your leave balance by sentences like&#34;Get my leave balance&#34;');
+        builder.Prompts.choice(session,"You can use LeaveBot to <br\>1. Apply leave<br\>2. Check your leave status<br\>You may also enter your enquires by sending messages to LeaveBot","Apply leave|Check leave status",{listStyle:3});
+    },
+    function(session,results){
+        if (results.response.entity == "Apply leave")
+            session.beginDialog("helpApplyLeave");
+        else if(results.response.entity == "Check leave status")
+            session.beginDialog("reqStatus");
+        else
+            session.endConversation("ending Help");
     }
 ]).triggerAction({
     matches: /^help$|^main help$/i
@@ -70,24 +78,30 @@ bot.dialog('reqStatus', [
 bot.dialog('applyLeave',[
     function(session,args,next){
         if(session.message.user.name){
-        //session.send("We are analyzing your request:\'%s\'",session.message.text);
-        var daterange = builder.EntityRecognizer.findEntity(args.intent.entities|| {},'builtin.datetimeV2.daterange');
-        var date = builder.EntityRecognizer.findEntity(args.intent.entities|| {},'builtin.datetimeV2.date');
-        var duration =builder.EntityRecognizer.findEntity(args.intent.entities|| {},'builtin.datetimeV2.duration');
-        var leaveType = args.intent["intent"].match(/^apply(\w+)Leave$/);
-        session.conversationData.leaveType = leaveType[1]+' Leave';
-        if (daterange){
-            session.beginDialog('Range',daterange);
-        }else if(date && duration){
-            session.beginDialog('DateAndDuration',[date,duration]);
-        }else if(date){
-            session.beginDialog('Date',date);
-        }else if(duration){
-            session.beginDialog('AskForDate',duration);
+            session.conversationData.daterange = builder.EntityRecognizer.findEntity(args.intent.entities|| {},'builtin.datetimeV2.daterange');
+            session.conversationData.date = builder.EntityRecognizer.findEntity(args.intent.entities|| {},'builtin.datetimeV2.date');
+            session.conversationData.duration =builder.EntityRecognizer.findEntity(args.intent.entities|| {},'builtin.datetimeV2.duration');
+            var leaveType = args.intent["intent"].match(/^apply(\w*)Leave$/);
+            if(leaveType[1]) 
+                session.conversationData.leaveType = leaveType[1]||'whatever'+' Leave';
+            else
+                session.beginDialog('AskLeaveType');
+        }
+        else 
+            session.endConversation("Please login to utilize the LeaveBot");
+    },
+    function(session){
+        if (session.conversationData.daterange){
+            session.beginDialog('Range',session.conversationData.daterange);
+        }else if(session.conversationData.date && session.conversationData.duration){
+            session.beginDialog('DateAndDuration',[session.conversationData.date,session.conversationData.duration]);
+        }else if(session.conversationData.date){
+            session.beginDialog('Date',session.conversationData.date);
+        }else if(session.conversationData.duration){
+            session.beginDialog('AskForDate',session.conversationData.duration);
         }else{
             session.endConversation('Please specify your leave type and starting, ending date<br\>For Example: I want to apply Annual leave from 2 Aug 2017 to 5 Aug 2017.');
-        }}
-        else session.endConversation("Please log onto SharePoint to utilize the LeaveBot");
+        }
     },
     function(session,results){
         var apply = new Object();
@@ -110,14 +124,47 @@ bot.dialog('applyLeave',[
     }
 ])
 .triggerAction({
-    matches: ['applyAdoptionLeave','applyAnnualLeave','applyChildcareLeave','applyMaternityLeave','applySharedParentalLeave','applySickLeave','applyUnpaidinfantCareLeave']
+    matches: ['applyLeave','applyAdoptionLeave','applyAnnualLeave','applyChildcareLeave','applyMaternityLeave','applySharedParentalLeave','applySickLeave','applyUnpaidinfantCareLeave']
 })
 .beginDialogAction('helpApplyLeaveAction','helpApplyLeave',{
     matches: /^help$/i
 });
 bot.dialog('helpApplyLeave',function(session){
-    session.endDialog('You can apply leave by specifying your leave type and starting, ending date.')
+    session.endDialog("You can apply leave by specifying your leave type and starting, ending date.<br\>For Example: Apply annual leave from 2 Aug 2017 to 5 Aug 2017.")
 });
+
+bot.dialog('AskLeaveType',[ 
+    function(session){
+        builder.Prompts.choice(session,"Please specify your leave type first.",["Sick Leave","Annual Leave","Other Leave Types"],{listStyle:3});
+    },
+    function(session, results){
+        if(results.response){
+            session.send("You have selected: %s", JSON.stringify(results.response));
+            if (results.response.entity == "Other Leave Types")
+                builder.Prompts.choice(session,"Please specify your leave type first.",["Adoption Leave","Childcare Leave","Maternity Leave","SharedParental Leave","UnpaidInfantCareLeave","back"],{listStyle:3});
+            else{ 
+                session.conversationData.leaveType = results.response.entity;
+                session.endDialog();
+        }}
+        else{
+            session.send("Please enter a valid leave type or enter \"cancel\" or \"help\" to cancel the application");
+            session.beginDialog('AskLeaveType');
+            session.endDialog();};
+    },
+    function(session, results){
+        if(results.response){
+            if (results.response.entity == "back")
+                session.beginDialog('AskLeaveType')
+            else{ 
+                session.conversationData.leaveType = results.response.entity;
+                session.endDialog();
+        }}
+        else{
+            session.send("Please enter a valid leave type or enter \"cancel\" or \"help\" to cancel the application");
+            session.beginDialog('AskLeaveType');
+            session.endDialog();};  
+    },
+]);
 
 bot.dialog('Range',[
     function(session,args,next){
@@ -127,7 +174,7 @@ bot.dialog('Range',[
         }else{
             d1.obj = new Date(args.resolution.values[0]['start']);
             d2.obj = new Date(args.resolution.values[0]['end']);
-        }
+        };
         d1.d = Date.parse(d1.obj)+offset;
         d1.t = new Date(d.setTime(d1.d));
         d2.d = Date.parse(d2.obj)+offset;
@@ -199,10 +246,10 @@ bot.dialog('AskForDate',[
 ]).beginDialogAction('helpApplyLeaveAction','helpApplyLeave',{
     matches: /^help$/i
 });
-server.get('/', restify.plugins.serveStatic({
-    directory: __dirname,
-    default: './index.html'
-   }));
+// server.get('/', restify.plugins.serveStatic({
+//     directory: __dirname,
+//     default: './index.html'
+//    }));
 
 function dateAdd(interval, number, date) {
     switch (interval) {
