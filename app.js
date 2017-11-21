@@ -120,13 +120,11 @@ bot.dialog('applyLeave',[
             session.send('I can&#39;t send your request:;leave from %s-%s-%s to %s-%s-%s for a duration for %s days',session.conversationData.applydate.startDate,session.conversationData.applydate.startMon,session.conversationData.applydate.startYear,session.conversationData.applydate.endDate,session.conversationData.applydate.endMon,session.conversationData.applydate.endYear,session.conversationData.applydate.duration);
             session.endConversation('Please restart...');
         };
-        // session.beginDialog('CheckApplyDate');
-        next();
+        session.beginDialog('CheckApplyDate');
+        // next();
     },
     function(session){
-        session.send('Hi %s (User id: %s)<br\>You are applying %s from %s-%s-%s to %s-%s-%s <br\>The information has gathered, and sent to server successfully.',session.message.user.name,session.message.user.id,session.conversationData.leaveType, session.conversationData.applydate.startDate,session.conversationData.applydate.startMon,session.conversationData.applydate.startYear,session.conversationData.applydate.endDate,session.conversationData.applydate.endMon,session.conversationData.applydate.endYear);
-        //get api url+
-        session.endConversation();
+        session.beginDialog('ConfirmedApply')
     }
 ])
 .triggerAction({
@@ -264,28 +262,53 @@ bot.dialog('AskForDate',[
 //     directory: __dirname,
 //     default: './index.html'
 //    }));
-// bot.dialog('CheckApplyDate',[
-//     function(session,next){
-//         session.send("Hi %s (User id: %s)<br\>You are applying %s from %s-%s-%s to %s-%s-%s",session.message.user.name,session.message.user.id,session.conversationData.leaveType, session.conversationData.applydate.startDate,session.conversationData.applydate.startMon,session.conversationData.applydate.startYear,session.conversationData.applydate.endDate,session.conversationData.applydate.endMon,session.conversationData.applydate.endYear);
-//         builder.Prompts.confirm(session,"Please confirm if your request information is correct",{listStyle:3});
-//     },
-//     function(session,results){
-//         if(results.response)
-//             session.endDialog();
-//         else{
-//             builder.Prompts.choice(session,"Please specify the part your want to update",["Leave start date","Leave ending date","Cancle request"],{listStyle:3});
-//         }
-//     },
-//     function(session,results){
-//         switch (results.response.entity){
-//             case "Leave start date" :{
-                
-//             }
-
-//         }
-//     }
-// ]);
-
+bot.dialog('CheckApplyDate',[
+    function(session,next){
+        session.send("Hi %s (User id: %s)<br\>You are applying %s from %s-%s-%s to %s-%s-%s",session.message.user.name,session.message.user.id,session.conversationData.leaveType, session.conversationData.applydate.startDate,session.conversationData.applydate.startMon,session.conversationData.applydate.startYear,session.conversationData.applydate.endDate,session.conversationData.applydate.endMon,session.conversationData.applydate.endYear);
+        builder.Prompts.confirm(session,"Please confirm if your request information is correct",{listStyle:3});
+    },
+    function(session,results){
+        if(results.response)
+            session.endDialog();
+        else{
+            session.send("Please re-enter your request");
+            session.endConversation();
+            // builder.Prompts.choice(session,"Please specify the part your want to update",["Leave start date","Leave ending date","Cancle request"],{listStyle:3});
+        }
+    }
+    // function(session,results){
+    //     switch (results.response.entity){
+    //         case "Leave start date" :{
+    //             session.beginDialog('AskForDate',"startdate");
+    //             next();
+    //             break;
+    //         }
+    //         case "Leave ending date" :{
+    //             session.beginDialog('AskForDate',"enddate");
+    //             next();
+    //             break;
+    //         }
+    //         case "Cancle request" :{
+    //             session.endConversation();
+    //             next()
+    //             break;
+    //         }
+    //         default: {
+    //             session.replaceDialog('/');
+    //             next();
+    //             break;
+    //         }
+    //     };
+    //     session.
+    // }
+]);
+bot.dialog('ConfirmedApply',[
+    function(session){
+        session.send('Hi %s (User id: %s)<br\>You are applying %s from %s-%s-%s to %s-%s-%s <br\>The information has gathered, and sent to server successfully.',session.message.user.name,session.message.user.id,session.conversationData.leaveType, session.conversationData.applydate.startDate,session.conversationData.applydate.startMon,session.conversationData.applydate.startYear,session.conversationData.applydate.endDate,session.conversationData.applydate.endMon,session.conversationData.applydate.endYear);
+        //get api url+
+        session.endConversation();
+    }
+]);
 function dateAdd(interval, number, date) {
     switch (interval) {
     case "y ": {
