@@ -19,7 +19,7 @@ server.listen(process.env.port || 3978, function(){
 })
 var bot = new builder.UniversalBot(connector, function(session){
     if(session.message.user.name)
-        session.endConversation("Hi %s (User id: %s)<br\>You can apply leave or ask for your leave balance <br\>Type &#39;help&#39; anytime if you need assistance", session.message.user.name,session.message.user.id);
+        session.endConversation("Hi %s (User id: %s)<br\>You can apply leave or ask for your leave balance <br\>Type &#39;help&#39; anytime if you need assistance", session.message.user.name||"",session.message.user.id||"");
     else
         session.endConversation("Please log onto SharePoint to utilize the LeaveBot");
 });
@@ -40,11 +40,11 @@ bot.dialog('help',[
         else if(results.response.entity == "Check leave status")
             session.beginDialog("reqStatus");
         else
-            session.endConversation("ending Help");
+            session.endConversation("Invalid input, conversation has ended");
     }
 ]).triggerAction({
     matches: /^help$|^main help$/i
-})
+});
 bot.dialog('reqStatus', [
     function(session, args, next){
         var options = {
@@ -82,8 +82,9 @@ bot.dialog('applyLeave',[
             session.conversationData.date = builder.EntityRecognizer.findEntity(args.intent.entities|| {},'builtin.datetimeV2.date');
             session.conversationData.duration =builder.EntityRecognizer.findEntity(args.intent.entities|| {},'builtin.datetimeV2.duration');
             var leaveType = args.intent["intent"].match(/^apply(\w*)Leave$/);
-            if(leaveType[1]) 
+            if(leaveType[1]) {
                 session.conversationData.leaveType = leaveType[1]||'whatever'+' Leave';
+                next();}
             else
                 session.beginDialog('AskLeaveType');
         }
@@ -100,25 +101,30 @@ bot.dialog('applyLeave',[
         }else if(session.conversationData.duration){
             session.beginDialog('AskForDate',session.conversationData.duration);
         }else{
-            session.endConversation('Please specify your leave type and starting, ending date<br\>For Example: I want to apply Annual leave from 2 Aug 2017 to 5 Aug 2017.');
+            if(session.conversationData.leaveType)
+            session.endConversation('Please specify your leave type and starting, ending date and try again<br\>For Example: I want to apply Annual leave from 2 Aug 2017 to 5 Aug 2017.');
         }
     },
-    function(session,results){
-        var apply = new Object();
-        apply.start = results.startDate;
-        apply.end = results.endDate;
-        apply.startDate = results.startDate.getDate();
-        apply.startMon = results.startDate.getMonth()+1;
-        apply.startYear = results.startDate.getFullYear();
-        apply.endDate = results.endDate.getDate();
-        apply.endMon = results.endDate.getMonth()+1;
-        apply.endYear = results.endDate.getFullYear();
-        apply.duration =   (results.endDate - results.startDate)/1000/60/60/24;
+    function(session,results,next){
+        session.conversationData.applydate = new Object();
+        session.conversationData.applydate.start = results.startDate;
+        session.conversationData.applydate.end = results.endDate;
+        session.conversationData.applydate.startDate = results.startDate.getDate();
+        session.conversationData.applydate.startMon = results.startDate.getMonth()+1;
+        session.conversationData.applydate.startYear = results.startDate.getFullYear();
+        session.conversationData.applydate.endDate = results.endDate.getDate();
+        session.conversationData.applydate.endMon = results.endDate.getMonth()+1;
+        session.conversationData.applydate.endYear = results.endDate.getFullYear();
+        session.conversationData.applydate.duration =   (results.endDate - results.startDate)/1000/60/60/24;
         if (results.startDate > results.endDate){
-            session.send('I can&#39;t send your request:;leave from %s-%s-%s to %s-%s-%s for a duration for %s days',apply.startDate,apply.startMon,apply.startYear,apply.endDate,apply.endMon,apply.endYear,apply.duration);
+            session.send('I can&#39;t send your request:;leave from %s-%s-%s to %s-%s-%s for a duration for %s days',session.conversationData.applydate.startDate,session.conversationData.applydate.startMon,session.conversationData.applydate.startYear,session.conversationData.applydate.endDate,session.conversationData.applydate.endMon,session.conversationData.applydate.endYear,session.conversationData.applydate.duration);
             session.endConversation('Please restart...');
         };
-        session.send('Hi %s (User id: %s)<br\>You are applying %s from %s-%s-%s to %s-%s-%s <br\>The information has gathered, and sent to server successfully.',session.message.user.name,session.message.user.id,session.conversationData.leaveType, apply.startDate,apply.startMon,apply.startYear,apply.endDate,apply.endMon,apply.endYear);
+        // session.beginDialog('CheckApplyDate');
+        next();
+    },
+    function(session){
+        session.send('Hi %s (User id: %s)<br\>You are applying %s from %s-%s-%s to %s-%s-%s <br\>The information has gathered, and sent to server successfully.',session.message.user.name,session.message.user.id,session.conversationData.leaveType, session.conversationData.applydate.startDate,session.conversationData.applydate.startMon,session.conversationData.applydate.startYear,session.conversationData.applydate.endDate,session.conversationData.applydate.endMon,session.conversationData.applydate.endYear);
         //get api url+
         session.endConversation();
     }
@@ -139,7 +145,6 @@ bot.dialog('AskLeaveType',[
     },
     function(session, results){
         if(results.response){
-            session.send("You have selected: %s", JSON.stringify(results.response));
             if (results.response.entity == "Other Leave Types")
                 builder.Prompts.choice(session,"Please specify your leave type first.",["Adoption Leave","Childcare Leave","Maternity Leave","SharedParental Leave","UnpaidInfantCareLeave","back"],{listStyle:3});
             else{ 
@@ -147,24 +152,27 @@ bot.dialog('AskLeaveType',[
                 session.endDialog();
         }}
         else{
-            session.send("Please enter a valid leave type or enter \"cancel\" or \"help\" to cancel the application");
-            session.beginDialog('AskLeaveType');
+            session.send("Please enter a valid leave type");
+            session.replaceDialog('AskLeaveType');
             session.endDialog();};
     },
     function(session, results){
         if(results.response){
             if (results.response.entity == "back")
-                session.beginDialog('AskLeaveType')
+                session.replaceDialog('AskLeaveType')
             else{ 
                 session.conversationData.leaveType = results.response.entity;
                 session.endDialog();
         }}
         else{
-            session.send("Please enter a valid leave type or enter \"cancel\" or \"help\" to cancel the application");
-            session.beginDialog('AskLeaveType');
+            session.send("Please enter a valid leave type");
+            session.replaceDialog('AskLeaveType');
             session.endDialog();};  
     },
-]);
+]).cancelAction({
+    matches: /^cancel$|^abort$/i,
+    confirmPrompt: "This will cancel your current request. Are you sure?"
+});
 
 bot.dialog('Range',[
     function(session,args,next){
@@ -227,6 +235,9 @@ bot.dialog('Date',[
     }
 ]).beginDialogAction('helpApplyLeaveAction','helpApplyLeave',{
     matches: /^help$/i
+}).cancelAction({
+    matches: /^cancel$|^abort$/i,
+    confirmPrompt: "This will cancel your current request. Are you sure?"
 });
 bot.dialog('AskForDate',[
     function(session,args,next){
@@ -245,11 +256,35 @@ bot.dialog('AskForDate',[
     }
 ]).beginDialogAction('helpApplyLeaveAction','helpApplyLeave',{
     matches: /^help$/i
+}).cancelAction({
+    matches: /^cancel$|^abort$/i,
+    confirmPrompt: "This will cancel your current request. Are you sure?"
 });
 // server.get('/', restify.plugins.serveStatic({
 //     directory: __dirname,
 //     default: './index.html'
 //    }));
+// bot.dialog('CheckApplyDate',[
+//     function(session,next){
+//         session.send("Hi %s (User id: %s)<br\>You are applying %s from %s-%s-%s to %s-%s-%s",session.message.user.name,session.message.user.id,session.conversationData.leaveType, session.conversationData.applydate.startDate,session.conversationData.applydate.startMon,session.conversationData.applydate.startYear,session.conversationData.applydate.endDate,session.conversationData.applydate.endMon,session.conversationData.applydate.endYear);
+//         builder.Prompts.confirm(session,"Please confirm if your request information is correct",{listStyle:3});
+//     },
+//     function(session,results){
+//         if(results.response)
+//             session.endDialog();
+//         else{
+//             builder.Prompts.choice(session,"Please specify the part your want to update",["Leave start date","Leave ending date","Cancle request"],{listStyle:3});
+//         }
+//     },
+//     function(session,results){
+//         switch (results.response.entity){
+//             case "Leave start date" :{
+                
+//             }
+
+//         }
+//     }
+// ]);
 
 function dateAdd(interval, number, date) {
     switch (interval) {
