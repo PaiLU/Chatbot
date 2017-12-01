@@ -69,12 +69,13 @@ bot.dialog('ReqStatus', [
 bot.dialog('applyLeave',[
     function(session,args,next){
         if(session.message.user.name){
-            session.conversationData.d = new Date();
-            session.conversationData.now = Date.parse(session.conversationData.d);
-            session.conversationData.offset = session.conversationData.d.getTimezoneOffset()*60*1000;
-            console.log(session.conversationData.offset);
+
             session.conversationData.received = new Object;
             session.conversationData.processing = new Object;
+            session.conversationData.processing.d = new Date();
+            session.conversationData.processing.now = Date.parse(session.conversationData.processing.d);
+            session.conversationData.offset = session.conversationData.processing.d.getTimezoneOffset()*60*1000;
+            console.log(session.conversationData.offset);
             session.conversationData.apply = new Object;
             session.conversationData.received.daterange = builder.EntityRecognizer.findEntity(args.intent.entities|| {},'builtin.datetimeV2.daterange');
             session.conversationData.received.date = builder.EntityRecognizer.findEntity(args.intent.entities|| {},'builtin.datetimeV2.date');
@@ -169,10 +170,12 @@ bot.dialog('AskForDate',[
     },
     function(session,results){
         console.log("%s",JSON.stringify(results.response));
-        var temp = results.response.resolution.start;
-        if (temp < session.conversationData.now);
+        var temp = Date.parse(results.response.resolution.start)+session.conversationData.offset;
+        if (temp < session.conversationData.processing.now){
+            console.log("%s, %s",Date(temp), Date(session.conversationData.processing.now));
             temp = dateAdd("y ", 1, results.response.resolution.start);
-        session.dialogData.data.date = Date.parse(temp);
+        };
+        session.dialogData.data.date = temp;
         session.endDialogWithResult(session.dialogData.data);
     }
 ]);
@@ -197,7 +200,7 @@ bot.dialog('DateAndDuration',[
 bot.dialog('Date',[
     function(session){
         session.conversationData.processing.start = session.conversationData.processing.date + session.conversationData.offset;
-        session.send("You are applying leave from %s-%s-%s(dd-mm-yyyy)<br\>When will be your last day of leave?",session.conversationData.apply.start.getDate(),session.conversationData.apply.start.getMonth()+1,session.conversationData.apply.start.getFullYear());
+        // session.send("You are applying leave from %s-%s-%s(dd-mm-yyyy)<br\>When will be your last day of leave?",session.conversationData.apply.start.getDate(),session.conversationData.apply.start.getMonth()+1,session.conversationData.apply.start.getFullYear());
         console.log(JSON.stringify(session.conversationData.processing));
         session.beginDialog('AskForDate',"end");
     },
