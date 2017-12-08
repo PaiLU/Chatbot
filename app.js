@@ -107,7 +107,7 @@ bot.dialog('applyLeave',[
             session.beginDialog('Duration');
         }else{
             if(session.conversationData.apply.leaveType)
-            session.endConversation('Please specify your leave type and starting, ending date and try again<br\>For Example: I want to apply Annual leave from 2 Aug 2017 to 5 Aug 2017.');
+            session.endConversation('Please specify your leave starting and ending date and try again<br\>For Example: I want to apply Annual leave from 2 Aug 2017 to 5 Aug 2017.');
         }
     },
     function(session,results,next){
@@ -368,9 +368,8 @@ function recConv(received){
         // console.log("%s,%s",typeof(received[p]),JSON.stringify(received[p]));
         var i;
         if (received[p].resolution.values[1] != null)
-            i = 1
+            i=1;
         else i=0;
-        var times
         switch (p){
             case "daterange":{
                 o.start = Date.parse(received[p].resolution.values[i]['start']);
