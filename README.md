@@ -5,21 +5,21 @@ Understand input intent as Apply Leave with input containing key words/sentence 
 Trigger the leave application dialog as following:
 1. Recognize input key words as several following entities:
 Leave Type:
-    Recognize 8 types of leave defined by Ministry of Manpower(MOM):
-    Adoption Leave, Annual Leave, Childcare Leave, Maternity Leave, Paternity Leave, Shared Parental Leave, Sick Leave, Unpaid Infant Care Leave;
+- Recognize 8 types of leave defined by Ministry of Manpower(MOM):
+- Adoption Leave, Annual Leave, Childcare Leave, Maternity Leave, Paternity Leave, Shared Parental Leave, Sick Leave, Unpaid Infant Care Leave;
 Leave Date: 
-    Recognize 4 types of time input to get the leave start date and leave end date:
-    Start date and end date, start date and leave duration, start date only, duration only;
+- Recognize 4 types of time input to get the leave start date and leave end date:
+- Start date and end date, start date and leave duration, start date only, duration only;
 1. Prompt for incomplete information
 Leave Type
-    Prompt for leave type selection when leave type information is missing;
+- Prompt for leave type selection when leave type information is missing;
 Leave Date
-    Ask user to input a date when leave starting or ending date information is missing;
-    Give instructions when no date information recognized;
+- Ask user to input a date when leave starting or ending date information is missing;
+- Give instructions when no date information recognized;
 1. Prompt for checking information;
-    Ask user to confirm the application information before sending request;
-    Prompt for correcting information when information is wrong;
-    Re-prompt for checking information after correction;
+- Ask user to confirm the application information before sending request;
+- Prompt for correcting information when information is wrong;
+- Re-prompt for checking information after correction;
 1. Send the request if information is correct;
 
 ## 2. Request leave entitlement and status
