@@ -7,10 +7,11 @@ var http = require('http');
 var server = restify.createServer();
 
 var connector = new builder.ChatConnector({
-    // appId: process.env.MICROSOFT_APP_ID,
-    // appPassword: process.env.MICROSOFT_APP_PASSWORD,
-    appId: process.env.MY_APP_ID,
-    appPassword: process.env.MY_APP_PASSWORD,
+    // appId: process.env.MY_APP_ID,
+    // appPassword: process.env.MY_APP_PASSWORD,
+    appId: process.env.MicrosoftAppId,
+    appPassword: process.env.MicrosoftAppPassword,
+    openIdMetadata: process.env.BotOpenIdMetadata 
 });
 server.post('api/messages',connector.listen());
 
@@ -24,7 +25,15 @@ var bot = new builder.UniversalBot(connector, function(session){
     else
         session.endConversation("Please log onto SharePoint to utilize the LeaveBot");
 });
-var recognizer = new builder.LuisRecognizer(process.env.LUIS_MODEL_URL_LeaveBot);
+var luisAppId = process.env.LuisAppId;
+var luisAPIKey = process.env.LuisAPIKey;
+var luisAPIHostName = process.env.LuisAPIHostName || 'westus.api.cognitive.microsoft.com';
+
+const LuisModelUrl = 'https://' + luisAPIHostName + '/luis/v1/application?id=' + luisAppId + '&subscription-key=' + luisAPIKey;
+
+// Main dialog with LUIS
+var recognizer = new builder.LuisRecognizer(LuisModelUrl);
+// var recognizer = new builder.LuisRecognizer(process.env.LUIS_MODEL_URL_LeaveBot);
 bot.recognizer(recognizer);
     
 bot.dialog('Help',[
