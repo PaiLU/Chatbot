@@ -54,7 +54,7 @@ bot.dialog('Help',[
 bot.dialog('ReqStatus', [
     function(session, args, next){
         var options = {
-            host: 'heypiapi.azurewebsites.net',
+            host: 'leavebot-sit-api.azurewebsites.net',
             port: 80,
             // path: '/contacts',
             // host: 'localhost',
