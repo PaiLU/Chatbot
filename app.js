@@ -1,3 +1,5 @@
+import { ReceiptCard } from 'botbuilder';
+
 // "use strict";
 require('dotenv-extended').load();
 var restify = require('restify');
@@ -66,7 +68,7 @@ bot.dialog('ReqStatus', [
             res.setEncoding('utf8');
             res.on('data', function (data) {
                 var received = JSON.parse(data);
-                session.endConversation("Your Employee ID: %s <br\>Name: %s<br\>Your remaining annual leaves: %s day(s)<br\>Your current pending leaves: %s day(s)", received.id, session.message.user.name,received.annualLeave, received.pending||0);
+                session.endConversation("Name: %s<br\>Your Employee ID: %s <br\>Your remaining annual leaves: %s day(s)<br\>Your remaining sick leaves: %s day(s)<br\>Your current pending annual leave: %s day(s) <br\>Your current pending sick leave: %s day(s)",  session.message.user.name,received.id,received.annualLeave,received.sickLeave,received.pending.annualLeave||0, received.pending.sickLeave||0);
             });
         }).end();
     }
