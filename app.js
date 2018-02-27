@@ -1,5 +1,3 @@
-import { ReceiptCard } from 'botbuilder';
-
 // "use strict";
 require('dotenv-extended').load();
 var restify = require('restify');
