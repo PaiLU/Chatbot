@@ -7,11 +7,11 @@ var http = require('http');
 var server = restify.createServer();
 
 var connector = new builder.ChatConnector({
-    // appId: process.env.MICROSOFT_APP_ID,
-    // appPassword: process.env.MICROSOFT_APP_PASSWORD,
-    appId: process.env.MicrosoftAppId,
-    appPassword: process.env.MicrosoftAppPassword,
-    openIdMetadata: process.env.BotOpenIdMetadata 
+    appId: process.env.MICROSOFT_APP_ID,
+    appPassword: process.env.MICROSOFT_APP_PASSWORD,
+    // appId: process.env.MicrosoftAppId,
+    // appPassword: process.env.MicrosoftAppPassword,
+    // openIdMetadata: process.env.BotOpenIdMetadata 
 });
 server.post('api/messages',connector.listen());
 
@@ -96,14 +96,14 @@ bot.dialog('applyLeave',[
             console.log(JSON.stringify(session.conversationData.processing));
             var leaveType = args.intent["intent"].match(/^apply(\w*)Leave$/);
             if(leaveType[1]) {
-                session.conversationData.apply.leaveType = leaveType[1]+' Leave';
+                session.conversationData.apply.leaveType = 'Shared Parental'+' Leave';
                 next();
             }
             else
                 session.beginDialog('AskLeaveType');
         }
         else 
-            session.endConversation("Please login to utilize the LeaveBot");
+            session.endConversation("Please login to utilize the Leave Bot");
     },
     function(session,next){
         if (session.conversationData.received.daterange){
@@ -133,7 +133,7 @@ bot.dialog('applyLeave',[
     }
 ])
 .triggerAction({
-    matches: ['applyLeave','applyAdoptionLeave','applyAnnualLeave','applyChildcareLeave','applyMaternityLeave','applySharedParentalLeave','applySickLeave','applyUnpaidinfantCareLeave']
+    matches: ['applyLeave','applyAdoptionLeave','applyAnnualLeave','applyChildcareLeave','applyMaternityLeave','applySharedParentalLeave','applySickLeave','applyUnpaidInfantCareLeave']
 })
 .beginDialogAction('helpApplyLeaveAction','helpApplyLeave',{
     matches: /^help$/i
@@ -144,18 +144,18 @@ bot.dialog('HelpApplyLeave',function(session){
 
 bot.dialog('AskLeaveType',[ 
     function(session){
-        builder.Prompts.choice(session,"Please specify your leave type.",["Sick Leave","Annual Leave","Other Leave Types"],{listStyle:3});
+        builder.Prompts.choice(session,"Please specify your leave type.",["Sick Leave","Annual Leave","other leave types"],{listStyle:3});
     },
     function(session, results){
-        if (results.response.entity == "Other Leave Types")
-            builder.Prompts.choice(session,"Please specify your leave type.",["Adoption Leave","Childcare Leave","Maternity Leave","SharedParental Leave","UnpaidInfantCareLeave","Back"],{listStyle:3});
+        if (results.response.entity == "other leave types")
+            builder.Prompts.choice(session,"Please specify your leave type.",["Adoption Leave","Childcare Leave","Maternity Leave","Shared Parental Leave","Unpaid Infant Care Leave","back"],{listStyle:3});
         else{ 
             session.conversationData.apply.leaveType = results.response.entity;
             session.endDialog();
         }
     },
     function(session, results){
-        if (results.response.entity == "Back")
+        if (results.response.entity == "back")
             session.replaceDialog('AskLeaveType')
         else{ 
             session.conversationData.apply.leaveType = results.response.entity;
@@ -277,26 +277,26 @@ bot.dialog('CheckApplyDate',[
         else{
             // session.send("Please re-enter your request");
             console.log(JSON.stringify(session.conversationData.apply))
-            builder.Prompts.choice(session,"Please specify the part your want to update",["Leave start date","Leave ending date","Leave Type","Cancle request"],{listStyle:3});
+            builder.Prompts.choice(session,"Please specify the part your want to update",["leave start date","leave ending date","leave type","cancel request"],{listStyle:3});
         }
     },
     function(session,results,next){
         switch (results.response.entity){
-            case "Leave start date" :{
+            case "leave start date" :{
                 session.beginDialog('AskForDate',"start");
                 next();
                 break;
             }
-            case "Leave ending date" :{
+            case "leave ending date" :{
                 session.beginDialog('AskForDate',"end");
                 next();
                 break;
             }
-            case "Leave Type":{
+            case "leave type":{
                 session.beginDialog('AskLeaveType');
                 break;
             }
-            case "Cancle request" :{
+            case "cancel request" :{
                 session.endConversation();
                 break;
             }
