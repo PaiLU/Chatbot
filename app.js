@@ -38,7 +38,7 @@ bot.recognizer(recognizer);
     
 bot.dialog('Help',[
     function(session){
-        builder.Prompts.choice(session,"You can use LeaveBot to <br\>1. apply leave<br\>2. check your leave status<br\>You may also enter your enquires by sending messages to LeaveBot","Apply leave|Check leave status",{listStyle:3});
+        builder.Prompts.choice(session,"You can use LeaveBot to <br\>1. apply leave<br\>2. check your leave status<br\>You may also enter your enquires by sending messages to LeaveBot","apply leave|check leave status",{listStyle:3});
     },
     function(session,results){
         if (results.response.entity == "apply leave")
