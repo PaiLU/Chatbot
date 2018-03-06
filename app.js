@@ -38,12 +38,12 @@ bot.recognizer(recognizer);
     
 bot.dialog('Help',[
     function(session){
-        builder.Prompts.choice(session,"You can use LeaveBot to <br\>1. Apply leave<br\>2. Check your leave status<br\>You may also enter your enquires by sending messages to LeaveBot","Apply leave|Check leave status",{listStyle:3});
+        builder.Prompts.choice(session,"You can use LeaveBot to <br\>1. apply leave<br\>2. check your leave status<br\>You may also enter your enquires by sending messages to LeaveBot","Apply leave|Check leave status",{listStyle:3});
     },
     function(session,results){
-        if (results.response.entity == "Apply leave")
+        if (results.response.entity == "apply leave")
             session.beginDialog('HelpApplyLeave');
-        else if(results.response.entity == "Check leave status")
+        else if(results.response.entity == "check leave status")
             session.beginDialog('ReqStatus');
         else
             session.endConversation("Invalid input, conversation has ended");
@@ -96,7 +96,7 @@ bot.dialog('applyLeave',[
             console.log(JSON.stringify(session.conversationData.processing));
             var leaveType = args.intent["intent"].match(/^apply(\w*)Leave$/);
             if(leaveType[1]) {
-                session.conversationData.apply.leaveType = 'Shared Parental'+' Leave';
+                session.conversationData.apply.leaveType = leaveType[1]+' Leave';
                 next();
             }
             else
@@ -297,7 +297,7 @@ bot.dialog('CheckApplyDate',[
                 break;
             }
             case "cancel request" :{
-                session.endConversation();
+                session.endConversation("The leave application has been calcelled");
                 break;
             }
             default: {
