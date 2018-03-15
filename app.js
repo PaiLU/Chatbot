@@ -119,10 +119,9 @@ bot.dialog('applyLeave',[
 ]).triggerAction({
     matches: ['applyLeave']
 });
-
 bot.dialog('Help',[
     function(session){
-        builder.Prompts.choice(session,"This is Leave Bot, you can use it to <br\>1. apply leave<br\>2. check your leave status<br\>You may also enter your enquires by sending messages to LeaveBot","apply leave|check leave status",{listStyle:3});
+        builder.Prompts.choice(session,"This is a Leave Bot. You can use it to <br\>1. Apply leave<br\>2. Check your leave status<br\><br\>You may also enter your enquires by sending messages to LeaveBot","apply leave|check leave status",{listStyle:3});
     },
     function(session,results){
         console.log("chosen result: %s", JSON.stringify(results));
@@ -363,7 +362,7 @@ bot.dialog('CorrectingInfo',[
 ])
 bot.dialog('ApplyConfirmed',[
     function(session){
-        session.send('Hi %s<br\>You are applying %s from %s-%s-%s to %s-%s-%s <br\>The information has gathered, and sent to server successfully.',session.message.user.name,session.conversationData.apply.leaveType,monConvert(session.conversationData.apply.startMon), session.conversationData.apply.startDate,session.conversationData.apply.startYear,monConvert(session.conversationData.apply.endMon),session.conversationData.apply.endDate,session.conversationData.apply.endYear);
+        session.send('Hi %s<br\>You are applying %s from %s-%s-%s to %s-%s-%s <br\>The information has been sent to the server successfully.',session.message.user.name,session.conversationData.apply.leaveType,monConvert(session.conversationData.apply.startMon), session.conversationData.apply.startDate,session.conversationData.apply.startYear,monConvert(session.conversationData.apply.endMon),session.conversationData.apply.endDate,session.conversationData.apply.endYear);
         //get api url+
         session.endConversation();
     }
