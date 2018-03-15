@@ -185,7 +185,9 @@ bot.dialog('AskDate',[
     },
     function(session,results){
         console.log("Entered date: %s",JSON.stringify(results.response));
-        session.conversationData.processing[session.dialogData.type] = Date.parse(results.response.resolution.start);
+        session.dialogData.test = results.response.resolution.start;
+        session.dialogData.test.setHours(0,0,0,0);
+        session.conversationData.processing[session.dialogData.type] = Date.parse(session.dialogData.test);
         if (session.dialogData.type == "end")
             session.conversationData.processing[session.dialogData.type] += 1000*60*60*24-1000;
         session.endDialog();
