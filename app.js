@@ -35,12 +35,12 @@ console.log("leaveType " + leaveType +"\nallleavetype " + allLeaveType +"\nneedA
     })
 
     var bot = new builder.UniversalBot(connector, function(session){
-        if(session.message.user.name){
+        // if(session.message.user.name){
             console.log("Name: "+session.message.user.name+"\n")
             session.beginDialog('Help');
-        }
-        else
-            session.endConversation("Please log onto DWS to utilize the LeaveBot");
+        // }
+        // else
+        //     session.endConversation("Please log onto DWS to utilize the LeaveBot");
     });
     var luisAppId = process.env.LuisAppId;
     var luisAPIKey = process.env.LuisAPIKey;
