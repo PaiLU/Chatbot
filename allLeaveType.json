@@ -24,8 +24,8 @@
     ],
     "allLeaveType":[
         {"name": "annual leave", "attachment": "n"},
-        {"name": "medical leave (uncertified)", "attachment": "n"},
-        {"name": "medical leave (certified)", "attachment": "y"},
+        {"name": "medical leave (unconditional)", "attachment": "n"},
+        {"name": "medical leave (conditional)", "attachment": "y"},
         {"name": "family care leave", "attachment": "n"},
         {"name": "childcare leave", "attachment": "n"},
         {"name": "child medical leave", "attachment": "y"},

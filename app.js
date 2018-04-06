@@ -81,9 +81,28 @@ bot.dialog('Help',[
 });
 bot.dialog('ReqStatus', [
     function(session, args, next){
+        session.conversationData.apply = new Object;
+        if(args){
+            console.log(JSON.stringify(args));
+            for (var a in leaveType){
+                if (builder.EntityRecognizer.findEntity(args.intent.entities||{}, leaveType[a])){
+                    console.log("Leave type: "+leaveType[a]);
+                    session.conversationData.apply.leaveType = leaveType[a];
+                    next();
+                };  
+            }; 
+        }else{
+            builder.Prompts.choice(session,"Tell me what you want?",["show all balances"].concat(allLeaveType.slice(0,3)),{listStyle:3});
+        };
+    },
+    function(session,results,next){
+        next();
+    },
+    function(session){
         var options = {
             host: 'leavebot-sit-api.azurewebsites.net',
             port: 80,
+            // path:'/api/leave/'+"6",
             path:'/api/leave/'+session.message.user.id,
             method: 'GET'
         };
@@ -291,7 +310,7 @@ bot.dialog('AskSpecificType',[
     function(session){
         switch(session.conversationData.received.leaveType){
             case "medical leave" :{
-                builder.Prompts.choice(session,"Please specify your medical leave, whether it is 'medical leave (uncertified)' or 'medical leave (certified)'",["medical leave (uncertified)","medical leave (certified)"],{listStyle:3});
+                builder.Prompts.choice(session,"Please specify your medical leave, whether it is 'medical leave (unconditional)' or 'medical leave (conditional)'",["medical leave (unconditional)","medical leave (conditional)"],{listStyle:3});
                 break;
             }
             case "ext maternity leave":{
