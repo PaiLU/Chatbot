@@ -92,7 +92,7 @@ bot.dialog('ReqStatus', [
                 };  
             }; 
         }else{
-            builder.Prompts.choice(session,"Tell me what you want?",["show all balances"].concat(allLeaveType.slice(0,3)),{listStyle:3});
+            builder.Prompts.choice(session,"Which balance are you looking for?",["show all balances"].concat(allLeaveType.slice(0,3)),{listStyle:3});
         };
     },
     function(session,results,next){
@@ -102,8 +102,8 @@ bot.dialog('ReqStatus', [
         var options = {
             host: 'leavebot-sit-api.azurewebsites.net',
             port: 80,
-            // path:'/api/leave/'+"6",
-            path:'/api/leave/'+session.message.user.id,
+            path:'/api/leave/'+"6",
+            // path:'/api/leave/'+session.message.user.id,
             method: 'GET'
         };
         http.request(options, function(res) {
@@ -162,7 +162,7 @@ bot.dialog('applyLeave',[
         session.beginDialog('CheckAttachment');
     },
     function(session){
-        session.beginDialog('CheckApplyDate');
+        session.beginDialog('CheckApplyInfo');
     },
     function(session){
         session.beginDialog('ApplyConfirmed');
@@ -225,6 +225,10 @@ bot.dialog('AskDate',[
         session.conversationData.processing[session.dialogData.type] = Date.parse(session.dialogData.test);
         if (session.dialogData.type == "end")
             session.conversationData.processing[session.dialogData.type] += 1000*60*60*24-1000;
+        if(session.conversationData.processing.end<session.conversationData.processing.start){
+            session.send("Sorry, I can't proceed with leave end date ahead of leave start date. Please re-enter.");
+            session.replaceDialog('AskDate',session,dialogData.type);
+        }
         session.endDialog();
     }
 ]);
@@ -333,11 +337,12 @@ bot.dialog('CheckAttachment',[
     function(session,args, next){
         if (checkAttachment(session.conversationData.apply.leaveType)){
             session.beginDialog('AskAttachment');
-        } else{
-            var msg = "Attachment for applying "+ session.conversationData.apply.leaveType+ " is not required.";
-            session.send(msg);
-        };
-    next();
+        } 
+        // else{
+        //     var msg = "Attachment for applying "+ session.conversationData.apply.leaveType+ " is not really required.";
+        //     session.send(msg);
+        // };
+        next();
     },
     function(session){
         session.endDialog();
@@ -358,7 +363,7 @@ bot.dialog('AskAttachment',[
         session.endDialog();
     }
 ]);
-bot.dialog('CheckApplyDate',[
+bot.dialog('CheckApplyInfo',[
     function(session){
         session.conversationData.apply.start = new Date(session.conversationData.processing.start);
         session.conversationData.apply.end = new Date(session.conversationData.processing.end);
@@ -369,11 +374,7 @@ bot.dialog('CheckApplyDate',[
         session.conversationData.apply.endMon = session.conversationData.apply.end.getMonth()+1;
         session.conversationData.apply.endYear = session.conversationData.apply.end.getFullYear();
         session.send('Hi %s<br\>You are applying %s from %s-%s-%s to %s-%s-%s <br\>',session.message.user.name,session.conversationData.apply.leaveType,monConvert(session.conversationData.apply.startMon), session.conversationData.apply.startDate,session.conversationData.apply.startYear,monConvert(session.conversationData.apply.endMon),session.conversationData.apply.endDate,session.conversationData.apply.endYear);
-        if (session.conversationData.processing.end < session.conversationData.processing.start){
-            session.send("Sorry, I can't proceed with a leave start date is behind a leave end date");
-            session.replaceDialog('CorrectingInfo',"date");
-        }else
-            builder.Prompts.confirm(session,"Please confirm if your request information is correct",{listStyle:3});
+        builder.Prompts.confirm(session,"Please confirm if your request information is correct",{listStyle:3});
     },
     function(session,results){
         if(results.response)
@@ -389,12 +390,12 @@ bot.dialog('CorrectingInfo',[
             builder.Prompts.choice(session,"Please update your information",["leave start date","leave ending date","cancel request"],{listStyle:3});
         }
         else {
-            builder.Prompts.choice(session,"Please specify the part your want to update",["leave start date","leave ending date","leave type","attachment","cancel request"],{listStyle:3});
+            builder.Prompts.choice(session,"Please specify the part your want to update",["leave starting date","leave ending date","leave type","attachment","cancel request"],{listStyle:3});
         }
     },
     function(session,results){
         switch (results.response.entity){
-            case "leave start date" :{
+            case "leave starting date" :{
                 session.beginDialog('AskDate',"start");
                 break;
             }
@@ -422,7 +423,7 @@ bot.dialog('CorrectingInfo',[
         };
     },
     function(session){
-        session.replaceDialog("CheckApplyDate");
+        session.replaceDialog("CheckApplyInfo");
     },
     function(session){
         session.endDialog();
