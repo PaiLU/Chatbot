@@ -1,0 +1,16 @@
+{
+  "luis_schema_version": "",
+  "versionId": "",
+  "name": "",
+  "desc": "",
+  "culture": "",
+  "intents": [],
+  "entities": [],
+  "composites": [],
+  "closedLists": [],
+  "regex_entities": [],
+  "bing_entities": [],
+  "model_features": [],
+  "regex_features": [],
+  "utterances": []
+}

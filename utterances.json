@@ -1,0 +1,5 @@
+{
+    "reqStatus":[{"text":"can i know about my leave balance","intent":"reqStatus","entities":[]},{"text":"can you show me how many days my leave left ?","intent":"reqStatus","entities":[]},{"text":"get my leave balance","intent":"reqStatus","entities":[]},{"text":"get my outstanding leave status","intent":"reqStatus","entities":[]},{"text":"help me check leave status","intent":"reqStatus","entities":[]},{"text":"i want to check my leave status","intent":"reqStatus","entities":[]},{"text":"leave balance","intent":"reqStatus","entities":[]},{"text":"leave days","intent":"reqStatus","entities":[]},{"text":"take me to the status","intent":"reqStatus","entities":[]},{"text":"what ' s my out standing leave","intent":"reqStatus","entities":[]},{"text":"what ' s my outstanding leave","intent":"reqStatus","entities":[]},{"text":"what' s my outstanding leave","intent":"reqStatus","entities":[]}],
+    "help":[{"text":"can you give me some help?","intent":"help","entities":[]},{"text":"help me","intent":"help","entities":[]},{"text":"main help","intent":"help","entities":[]},{"text":"wha can you do?","intent":"help","entities":[]}],
+    "None":[]
+}

@@ -1,0 +1,16 @@
+{
+    "model_features": [
+        {
+          "name": "medical leave",
+          "mode": true,
+          "words": "mc,medical leave,sick leave",
+          "activated": true
+        },
+        {
+          "name": "exam / study leave",
+          "mode": true,
+          "words": "exam leave,study leave,exam/study leave,exam and study leave,exam/study leave,exam or study leave",
+          "activated": true
+        }
+    ]
+}

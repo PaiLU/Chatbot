@@ -4,10 +4,11 @@ var restify = require('restify');
 var builder = require('botbuilder');
 var http = require('http');
 var fs = require('fs');
-const sitLeaveType = JSON.parse(fs.readFileSync('./allLeaveType.json','utf8'));
+const sitLeaveType = JSON.parse(fs.readFileSync('./sitLeaveTypeData.json','utf8'));
 const defaultArgs = {"intent":{"intent":"applyLeave","entities":[]}};
 const dateType = ["daterange","date","duration","datetime","datetimerange"];
 var server = restify.createServer();
+//leave type saving
 var leaveType = [];
 var allLeaveType = [];
 var needAttachmentType = [];
@@ -20,35 +21,36 @@ for (var a in sitLeaveType.allLeaveType){
     }
 };
 console.log("leaveType " + leaveType +"\nallleavetype " + allLeaveType +"\nneedAttachmentType "+needAttachmentType);
-//Bot configration
-    var connector = new builder.ChatConnector({
-        // appId: process.env.MICROSOFT_APP_ID,
-        // appPassword: process.env.MICROSOFT_APP_PASSWORD
-        appId: process.env.MicrosoftAppId,
-        appPassword: process.env.MicrosoftAppPassword,
-        openIdMetadata: process.env.BotOpenIdMetadata 
-    });
-    server.post('api/messages',connector.listen());
 
-    server.listen(process.env.port || 3978, function(){
-        console.log('%s listening to %s', server.name, server.url);
-    })
+var connector = new builder.ChatConnector({
+    // appId: process.env.MICROSOFT_APP_ID,
+    // appPassword: process.env.MICROSOFT_APP_PASSWORD
+    appId: process.env.MicrosoftAppId,
+    appPassword: process.env.MicrosoftAppPassword,
+    openIdMetadata: process.env.BotOpenIdMetadata 
+});
+server.post('api/messages',connector.listen());
 
-    var bot = new builder.UniversalBot(connector, function(session){
-        // if(session.message.user.name){
-            console.log("Name: "+session.message.user.name+"\n")
-            session.beginDialog('Help');
-        // }
-        // else
-        //     session.endConversation("Please log onto DWS to utilize the LeaveBot");
-    });
-    var luisAppId = process.env.LuisAppId;
-    var luisAPIKey = process.env.LuisAPIKey;
-    var luisAPIHostName = process.env.LuisAPIHostName || 'westus.api.cognitive.microsoft.com';
+server.listen(process.env.port || 3978, function(){
+    console.log('%s listening to %s', server.name, server.url);
+})
 
-    const LuisModelUrl = 'https://' + luisAPIHostName + '/luis/v2.0/apps/' + luisAppId + '?subscription-key=' + luisAPIKey +'&verbose=true&timezoneOffset=480&q=';
-    var recognizer = new builder.LuisRecognizer(LuisModelUrl);
-    bot.recognizer(recognizer);
+var inMemoryStorage = new builder.MemoryBotStorage();
+var bot = new builder.UniversalBot(connector, function(session){
+    // if(session.message.user.name){
+        console.log("Name: "+session.message.user.name+"\n")
+        session.beginDialog('Help');
+    // }
+    // else
+    //     session.endConversation("Please log onto DWS to utilize the LeaveBot");
+}).set('storage', inMemoryStorage);
+var luisAppId = process.env.LuisAppId;
+var luisAPIKey = process.env.LuisAPIKey;
+var luisAPIHostName = process.env.LuisAPIHostName || 'westus.api.cognitive.microsoft.com';
+
+const LuisModelUrl = 'https://' + luisAPIHostName + '/luis/v2.0/apps/' + luisAppId + '?subscription-key=' + luisAPIKey +'&verbose=true&timezoneOffset=480&q=';
+var recognizer = new builder.LuisRecognizer(LuisModelUrl);
+bot.recognizer(recognizer);
 
 bot.on('conversationUpdate', function (message) {
     if (message.membersAdded) {
@@ -314,11 +316,11 @@ bot.dialog('AskSpecificType',[
     function(session){
         switch(session.conversationData.received.leaveType){
             case "medical leave" :{
-                builder.Prompts.choice(session,"Please specify your medical leave, whether it is 'medical leave (unconditional)' or 'medical leave (conditional)'",["medical leave (unconditional)","medical leave (conditional)"],{listStyle:3});
+                builder.Prompts.choice(session,"Please specify your medical leave, whether it is "+leaveTypeDisplayConvert("'Medical Leave (UC)'")+" or "+leaveTypeDisplayConvert("'Medical Leave (C)'"),["Medical Leave (UC)","Medical Leave (C)"],{listStyle:3});
                 break;
             }
             case "ext maternity leave":{
-                builder.Prompts.choice(session,"Please specify your ext maternity leave, whether it is 'fp-sc' or 'up-non sc'",["ext maternity(fp-sc)","ext maternity(up-non sc)"],{listStyle:3});
+                builder.Prompts.choice(session,"Please specify your Ext Maternity Leave, whether it is 'FP-SC' or 'UP-Non SC'",["Ext Maternity(FP-SC)","Ext Maternity(UP-Non SC)"],{listStyle:3});
                 break;
             }
             default:{
@@ -350,17 +352,24 @@ bot.dialog('CheckAttachment',[
 ]);
 bot.dialog('AskAttachment',[
     function(session){
-        var msg = "Please upload supporting attachment for applying "+session.conversationData.apply.leaveType;
+        var msg = "Please upload supporting image attachment for applying "+leaveTypeDisplayConvert(session.conversationData.apply.leaveType);
         builder.Prompts.attachment(session, msg);
     },
     function(session,results){
         var att = results.response[0];
-        session.conversationData.apply.attachments = {
-                    contentType: att.contentType,
-                    contentUrl: att.contentUrl,
-                    name: att.name
-                };
-        session.endDialog();
+        var contentType = /^image\//
+        if (!!att.contentType.match(contentType)){
+            session.conversationData.apply.attachments = 
+            {
+                contentType: att.contentType,
+                contentUrl: att.contentUrl,
+                name: att.name
+            };
+            session.endDialog();
+        } else {
+            session.send("Sorry, any non-image type attachment is not acceptable")
+            session.replaceDialog('AskAttachment')
+        }
     }
 ]);
 bot.dialog('CheckApplyInfo',[
@@ -373,7 +382,7 @@ bot.dialog('CheckApplyInfo',[
         session.conversationData.apply.endDate = session.conversationData.apply.end.getDate();
         session.conversationData.apply.endMon = session.conversationData.apply.end.getMonth()+1;
         session.conversationData.apply.endYear = session.conversationData.apply.end.getFullYear();
-        session.send('Hi %s<br\>You are applying %s from %s-%s-%s to %s-%s-%s <br\>',session.message.user.name,session.conversationData.apply.leaveType,monConvert(session.conversationData.apply.startMon), session.conversationData.apply.startDate,session.conversationData.apply.startYear,monConvert(session.conversationData.apply.endMon),session.conversationData.apply.endDate,session.conversationData.apply.endYear);
+        session.send('Hi %s<br\>You are applying %s from %s-%s-%s to %s-%s-%s <br\>',session.message.user.name,leaveTypeDisplayConvert(session.conversationData.apply.leaveType),monConvert(session.conversationData.apply.startMon), session.conversationData.apply.startDate,session.conversationData.apply.startYear,monConvert(session.conversationData.apply.endMon),session.conversationData.apply.endDate,session.conversationData.apply.endYear);
         builder.Prompts.confirm(session,"Please confirm if your request information is correct",{listStyle:3});
     },
     function(session,results){
@@ -431,7 +440,7 @@ bot.dialog('CorrectingInfo',[
 ])
 bot.dialog('ApplyConfirmed',[
     function(session){
-        session.send('Hi %s<br\>You are applying %s from %s-%s-%s to %s-%s-%s <br\>The information has been sent to the server successfully.',session.message.user.name,session.conversationData.apply.leaveType,monConvert(session.conversationData.apply.startMon), session.conversationData.apply.startDate,session.conversationData.apply.startYear,monConvert(session.conversationData.apply.endMon),session.conversationData.apply.endDate,session.conversationData.apply.endYear);
+        session.send('Hi %s<br\>You are applying %s from %s-%s-%s to %s-%s-%s <br\>The information has been sent to the server successfully.',session.message.user.name,leaveTypeDisplayConvert(session.conversationData.apply.leaveType),monConvert(session.conversationData.apply.startMon), session.conversationData.apply.startDate,session.conversationData.apply.startYear,monConvert(session.conversationData.apply.endMon),session.conversationData.apply.endDate,session.conversationData.apply.endYear);
         //get api url+
         session.endConversation();
     }
@@ -542,6 +551,13 @@ function monConvert(m){
             break
         }
     }
+};
+function leaveTypeDisplayConvert(t){
+    return t.split('').map(function (value, index, array) {
+		var temp = value.charCodeAt(0).toString(16).toUpperCase();
+        return '&#x' + temp+ ";";
+		return value;
+	}).join('');
 };
 function dateAdd(interval, number, date) {
     switch (interval) {

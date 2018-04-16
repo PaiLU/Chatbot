@@ -59,10 +59,7 @@ typings/
 .env
 
 # server site testing file
-app_notinuse.js
-app2.js
-script.js
-restify.js
+
 LeaveBot.json
 FunctionDescription.docx
 chatbotMemo
