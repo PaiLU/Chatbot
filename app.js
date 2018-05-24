@@ -81,13 +81,13 @@ bot.dialog('Help', [
     },
     function (session, results) {
         console.log("chosen result: %s", JSON.stringify(results));
-        if (results.response.entity == "apply leave") {
+        if (results.response.entity.toLowerCase() == "apply leave") {
             session.cancelDialog(0, 'ApplyLeave', defaultArgs);
             session.endConversation();
         }
-        else if (results.response.entity == "check leave status")
+        else if (results.response.entity.toLowerCase() == "check leave status")
             session.cancelDialog(0, 'ReqStatus');
-        else if (results.response.entity == "upload mc form")
+        else if (results.response.entity.toLowerCase() == "upload mc form")
             session.cancelDialog(0, 'OCR');
         else
             session.endConversation("Invalid input, conversation has ended");
@@ -101,8 +101,7 @@ bot.dialog('ReqStatus', [
         if (args) {
             console.log(JSON.stringify(args));
             session.beginDialog('ConvertingData', args);
-            session.conversationData.request.leaveType =
-                next();
+            next();
         } else {
             builder.Prompts.choice(session, "Which balance are you looking for?", ["show all balances"].concat(shortlistTypes), { listStyle: 3 });
         };
@@ -119,9 +118,9 @@ bot.dialog('ReqStatus', [
 
             }
         } else {
-            if (session.conversationData.received)  {
+            if (session.conversationData.received) {
             }
-                next();
+            next();
         }
     },
     function (session) {
@@ -133,7 +132,7 @@ bot.dialog('ReqStatus', [
             // path:'/api/leave/'+session.message.user.id,
             method: 'GET'
         };
-        http.request(options, function (res) {
+        https.request(options, function (res) {
             res.setEncoding('utf8');
             res.on('data', function (data) {
                 var received = JSON.parse(data);
@@ -217,10 +216,10 @@ bot.dialog('OCR', [
                                                             if (entity && entityExtract(entity) == "medical leave") {
                                                                 session.dialogData.ocrArgs = { "intent": { "intent": "apply leave", "entities": [...allEntities] } };
                                                                 session.cancelDialog(0, 'ApplyLeave', session.dialogData.ocrArgs);
-                                                            }else {
+                                                            } else {
                                                                 builder.Prompts.confirm(session, "I didn't recognize any key words, like medical certificate, in the attachment. Do you still want to proceed the applciation with this attachment?", { listStyle: 3 })
                                                             };
-                                                        }else {
+                                                        } else {
                                                             builder.Prompts.confirm(session, "I didn't recognize any key words, like medical certificate, in the attachment. Do you still want to proceed the applciation with this attachment?", { listStyle: 3 })
                                                         }
                                                     }
@@ -257,7 +256,7 @@ bot.dialog('OCR', [
         if (results.response) {
             session.cancelDialog(0, 'ApplyLeave', defaultArgs);
         } else {
-            session.cancelDialog(0,'Help')
+            session.cancelDialog(0, 'Help')
         };
     }
 ])
@@ -294,7 +293,7 @@ bot.dialog('ApplyLeave', [
         }
     },
     function (session) {
-        session.beginDialog('CheckLeaveType',session.conversationData.received.leaveType);
+        session.beginDialog('CheckLeaveType', session.conversationData.received.leaveType);
     },
     function (session) {
         session.beginDialog('CheckAttachment');
@@ -313,7 +312,7 @@ bot.dialog('ConvertingData', [
         session.conversationData.received = new Object();
         session.conversationData.processing = new Object();
         session.conversationData.received.dateInfo = new Object();
-        session.conversationData.received.leaveType =  entityExtract(builder.EntityRecognizer.findEntity(args.intent.entities || {}, "leaveType"));
+        session.conversationData.received.leaveType = entityExtract(builder.EntityRecognizer.findEntity(args.intent.entities || {}, "leaveType"));
         session.conversationData.received.startDayType = findCompositeEntities(args.intent.compositeEntities || {}, args.intent.entities, 'startDay', 'dayType');
         session.conversationData.received.endDayType = findCompositeEntities(args.intent.compositeEntities || {}, args.intent.entities, 'endDay', 'dayType');
 
