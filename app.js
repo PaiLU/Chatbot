@@ -38,11 +38,11 @@ for (var a in sitLeaveTypeData) {
 };
 
 var connector = new builder.ChatConnector({
-    appId: process.env.MICROSOFT_APP_ID,
-    appPassword: process.env.MICROSOFT_APP_PASSWORD
-    // appId: process.env.MicrosoftAppId,
-    // appPassword: process.env.MicrosoftAppPassword,
-    // openIdMetadata: process.env.BotOpenIdMetadata
+    // appId: process.env.MICROSOFT_APP_ID,
+    // appPassword: process.env.MICROSOFT_APP_PASSWORD
+    appId: process.env.MicrosoftAppId,
+    appPassword: process.env.MicrosoftAppPassword,
+    openIdMetadata: process.env.BotOpenIdMetadata
 });
 server.post('api/messages', connector.listen());
 
@@ -451,7 +451,7 @@ bot.dialog('CheckLeaveType', [
             console.log("Checked the applying leave type is %s", args.toLowerCase());
             session.endDialogWithResult(args.toLowerCase());
         } else {
-            session.send("Please check the leave type. You have entered %s <br\>which is not in SIT leave type", session.conversationData.apply.leaveType);
+            session.send("Please check the leave type. You have entered %s <br\>which is not in SIT leave type", session.conversationData.leaveType);
             session.replaceDialog('AskLeaveType', "all");
         };
     }
