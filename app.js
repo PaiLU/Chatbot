@@ -77,7 +77,7 @@ bot.on('conversationUpdate', function (message) {
 // main program
 bot.dialog('Help', [
     function (session) {
-        builder.Prompts.choice(session, "This is a Leave Bot. You can use it to <br\>1. Apply leave<br\>2. Check your leave status<br\>3. Apply medical leave(c) by uploading MC form directly", ["apply leave", "check leave status", "upload mc form"], { listStyle: 3 });
+        builder.Prompts.choice(session, "This is a Leave Bot. You can use it to <br\>1. Apply leave<br\>2. Check your leave status<br\>3. Apply "+ leaveTypeDisplayConvert("medical leave(c)") +" by uploading MC form directly", ["apply leave", "check leave status", "upload mc form"], { listStyle: 3 });
     },
     function (session, results) {
         console.log("chosen result: %s", JSON.stringify(results));
@@ -113,7 +113,7 @@ bot.dialog('ReqStatus', [
             if (results.response == "show all balances") {
                 session.conversationData.request.leaveType = "all"
             } else {
-                session.conversationData.request.leaveType = results.response.resolution;
+                session.conversationData.request.leaveType = results.response;
                 next();
 
             }
@@ -125,25 +125,26 @@ bot.dialog('ReqStatus', [
     },
     function (session) {
         //fake API
-        var options = {
-            host: 'leavebot-sit-api.azurewebsites.net',
-            port: 80,
-            path: '/api/leave/' + "6",
-            // path:'/api/leave/'+session.message.user.id,
-            method: 'GET'
-        };
-        https.request(options, function (res) {
-            res.setEncoding('utf8');
-            res.on('data', function (data) {
-                var received = JSON.parse(data);
-                console.log(typeof (received) + " " + received);
-                if (received == "entity not found") {
-                    session.send("The API is not responding");
-                } else {
-                    session.endConversation("Name: %s<br\>Your remaining annual leaves: %s day(s)<br\>Your remaining sick leaves: %s day(s)<br\>Your current pending annual leave: %s day(s) <br\>Your current pending sick leave: %s day(s)", session.message.user.name, received.annualLeave || 0, received.sickLeave || 0, received.pending.annualLeave || 0, received.pending.sickLeave || 0);
-                }
-            });
-        }).end();
+        // var options = {
+        //     host: 'leavebot-sit-api.azurewebsites.net',
+        //     port: 80,
+        //     path: '/api/leave/' + "6",
+        //     // path:'/api/leave/'+session.message.user.id,
+        //     method: 'GET'
+        // };
+        // https.request(options, function (res) {
+        //     res.setEncoding('utf8');
+        //     res.on('data', function (data) {
+        //         var received = JSON.parse(data);
+        //         console.log(typeof (received) + " " + received);
+        //         if (received == "entity not found") {
+        //             session.send("The API is not responding");
+        //         } else {
+        //             session.endConversation("Name: %s<br\>Your remaining annual leaves: %s day(s)<br\>Your remaining sick leaves: %s day(s)<br\>Your current pending annual leave: %s day(s) <br\>Your current pending sick leave: %s day(s)", session.message.user.name, received.annualLeave || 0, received.sickLeave || 0, received.pending.annualLeave || 0, received.pending.sickLeave || 0);
+        //         }
+        //     });
+        // }).end();
+        session.send("The SAP API is currently disabled")
     }
 ]).triggerAction({
     matches: ['reqStatus']
@@ -267,7 +268,6 @@ bot.dialog('ApplyLeave', [
         session.beginDialog('ConvertingData', args);
         session.conversationData.apply = new Object;
         var now = new Date();
-        session.conversationData.processing.dateInfo.now = Date.parse(now);
         session.conversationData.offset = now.getTimezoneOffset() * 60 * 1000;
         console.log("offset is " + session.conversationData.offset / 60 / 60 / 1000 + " hours");
     },
@@ -312,20 +312,22 @@ bot.dialog('ConvertingData', [
         session.conversationData.received = new Object();
         session.conversationData.processing = new Object();
         session.conversationData.received.dateInfo = new Object();
-        session.conversationData.received.leaveType = entityExtract(builder.EntityRecognizer.findEntity(args.intent.entities || {}, "leaveType"));
-        session.conversationData.received.startDayType = findCompositeEntities(args.intent.compositeEntities || {}, args.intent.entities, 'startDay', 'dayType');
-        session.conversationData.received.endDayType = findCompositeEntities(args.intent.compositeEntities || {}, args.intent.entities, 'endDay', 'dayType');
+        if (args.intent.entities && args.intent.entities > 0) {
+            session.conversationData.received.leaveType = entityExtract(builder.EntityRecognizer.findEntity(args.intent.entities || {}, "leaveType"));
+            session.conversationData.received.startDayType = findCompositeEntities(args.intent.compositeEntities || {}, args.intent.entities, 'startDay', 'dayType');
+            session.conversationData.received.endDayType = findCompositeEntities(args.intent.compositeEntities || {}, args.intent.entities, 'endDay', 'dayType');
 
-        // session.conversationData.received.dateInfo.startDate = findCompositeEntities(args.intent.compositeEntities || {}, args.intent.entities, 'startDay', 'builtin.datetimeV2.date');
-        // session.conversationData.received.dateInfo.endDate = findCompositeEntities(args.intent.compositeEntities || {}, args.intent.entities, 'endDay', 'builtin.datetimeV2.date');
-        // session.conversationData.processing.dateInfo.start = dateExtract(session.conversationData.received.dateInfo.startDate);
-        // session.conversationData.processing.dateInfo.end = dateExtract(session.conversationData.received.dateInfo.endDate)
-        var a = new Object();
-        for (var o in datetimeV2Types) {
-            a[datetimeV2Types[o]] = builder.EntityRecognizer.findEntity(args.intent.entities || {}, 'builtin.datetimeV2.' + datetimeV2Types[o]);
-        };
-        session.conversationData.processing.dateInfo = dateExtract(a);
-        console.log("start: " + new Date(session.conversationData.processing.dateInfo.start) + "end: " + new Date(session.conversationData.processing.dateInfo.end));
+            // session.conversationData.received.dateInfo.startDate = findCompositeEntities(args.intent.compositeEntities || {}, args.intent.entities, 'startDay', 'builtin.datetimeV2.date');
+            // session.conversationData.received.dateInfo.endDate = findCompositeEntities(args.intent.compositeEntities || {}, args.intent.entities, 'endDay', 'builtin.datetimeV2.date');
+            // session.conversationData.processing.dateInfo.start = dateExtract(session.conversationData.received.dateInfo.startDate);
+            // session.conversationData.processing.dateInfo.end = dateExtract(session.conversationData.received.dateInfo.endDate)
+            var a = new Object();
+            for (var o in datetimeV2Types) {
+                a[datetimeV2Types[o]] = builder.EntityRecognizer.findEntity(args.intent.entities || {}, 'builtin.datetimeV2.' + datetimeV2Types[o]);
+            };
+            session.conversationData.processing.dateInfo = dateExtract(a);
+        }
+
         session.endDialog();
     }
 ]);
