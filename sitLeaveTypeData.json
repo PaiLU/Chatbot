@@ -1,85 +1,118 @@
-{
-    "leaveType" : [
-        {"name": "annual leave"},
-        {"name": "medical leave"},
-        {"name": "family care leave"},
-        {"name": "childcare leave"},
-        {"name": "child medical leave"},
-        {"name": "extended childcare leave"},
-        {"name": "adoption leave"},
-        {"name": "advanced leave"},
-        {"name": "compassionate leave"},
-        {"name": "ext maternity"},
-        {"name": "exam / study leave"},
-        {"name": "hospitalisation leave"},
-        {"name": "in camp training"},
-        {"name": "marriage leave"},
-        {"name": "maternity leave"},
-        {"name": "off in lieu"},
-        {"name": "paternity leave"},
-        {"name": "shared parental leave"},
-        {"name": "unpaid infant care leave"},
-        {"name": "unpaid leave"},
-        {"name": "volunteer leave"}
-    ],
-    "allLeaveType":[
-        {"name": "Annual Leave", "attachment": "n"},
-        {"name": "Medical Leave (UC)", "attachment": "n"},
-        {"name": "Medical Leave (C)", "attachment": "y"},
-        {"name": "Family Care Leave", "attachment": "n"},
-        {"name": "Childcare Leave", "attachment": "n"},
-        {"name": "Child Medical Leave", "attachment": "y"},
-        {"name": "Extended Childcare Leave", "attachment": "n"},
-        {"name": "Adoption Leave", "attachment": "n"},
-        {"name": "Advanced Leave", "attachment": "n"},
-        {"name": "Compassionate Leave", "attachment": "n"},
-        {"name": "Ext Maternity(FP-SC)", "attachment": "n"},
-        {"name": "Ext maternity(UP-Non SC)", "attachment": "n"},
-        {"name": "Exam / Study Leave", "attachment": "y"},
-        {"name": "Hospitalisation Leave", "attachment": "y"},
-        {"name": "In Camp Training", "attachment": "y"},
-        {"name": "Marriage Leave", "attachment": "n"},
-        {"name": "Maternity Leave", "attachment": "n"},
-        {"name": "Off in Lieu", "attachment": "n"},
-        {"name": "Paternity Leave", "attachment": "n"},
-        {"name": "Shared Parental Leave", "attachment": "n"},
-        {"name": "Unpaid Infant Care Leave", "attachment": "n"},
-        {"name": "Unpaid Leave", "attachment": "n"},
-        {"name": "Volunteer Leave", "attachment": "n"}
-    ],
-    "allLeaveType1":[
-        {"name": "annual leave", "attachment": "n"},
-        {"name": "medical leave (unconditional)", "attachment": "n"},
-        {"name": "medical leave (conditional)", "attachment": "y"},
-        {"name": "family care leave", "attachment": "n"},
-        {"name": "childcare leave", "attachment": "n"},
-        {"name": "child medical leave", "attachment": "y"},
-        {"name": "extended childcare leave", "attachment": "n"},
-        {"name": "adoption leave", "attachment": "n"},
-        {"name": "advanced leave", "attachment": "n"},
-        {"name": "compassionate leave", "attachment": "n"},
-        {"name": "ext maternity(fp-sc)", "attachment": "n"},
-        {"name": "ext maternity(up-non sc)", "attachment": "n"},
-        {"name": "exam / study leave", "attachment": "y"},
-        {"name": "hospitalisation leave", "attachment": "y"},
-        {"name": "in camp training", "attachment": "y"},
-        {"name": "marriage leave", "attachment": "n"},
-        {"name": "maternity leave", "attachment": "n"},
-        {"name": "off in lieu", "attachment": "n"},
-        {"name": "paternity leave", "attachment": "n"},
-        {"name": "shared parental leave", "attachment": "n"},
-        {"name": "unpaid infant care leave", "attachment": "n"},
-        {"name": "unpaid leave", "attachment": "n"},
-        {"name": "volunteer leave", "attachment": "n"}
-    ],
-    "model_features": [
-        {
-          "name": "medical leave",
-          "words": "mc,medical leave,sick leave"
-        },
-        {
-          "name": "exam / study leave",
-          "words": "exam leave,study leave,exam/study leave,exam and study leave,exam/study leave,exam or study leave"
-        }
-    ]
-}
+[
+    {
+        "LUIS Leave Type":"Annual Leave",
+        "Leave Type":"Annual Leave",
+        "Require Attachment":"N",
+        "Shortlist":"Y"
+    },{
+        "LUIS Leave Type":"Medical Leave",
+        "Leave Type":"Medical Leave(UC)",
+        "Require Attachment":"N",
+        "Shortlist":"Y"
+    },{
+        "LUIS Leave Type":"Medical Leave",
+        "Leave Type":"Medical Leave(C)",
+        "Require Attachment":"Y",
+        "Shortlist":"Y"
+    },{
+        "LUIS Leave Type":"Family Care Leave",
+        "Leave Type":"Family Care Leave",
+        "Require Attachment":"N",
+        "Shortlist":"N"
+    },{
+        "LUIS Leave Type":"Childcare Leave",
+        "Leave Type":"Childcare Leave",
+        "Require Attachment":"N",
+        "Shortlist":"N"
+    },{
+        "LUIS Leave Type":"Child Medical Leave",
+        "Leave Type":"Child Medical Leave",
+        "Require Attachment":"Y",
+        "Shortlist":"N"
+    },{
+        "LUIS Leave Type":"Extended Childcare Leave",
+        "Leave Type":"Extended Childcare Leave",
+        "Require Attachment":"N",
+        "Shortlist":"N"
+    },{
+        "LUIS Leave Type":"Adoption Leave",
+        "Leave Type":"Adoption Leave",
+        "Require Attachment":"N",
+        "Shortlist":"N"
+    },{
+        "LUIS Leave Type":"Advance Leave",
+        "Leave Type":"Advance Leave",
+        "Require Attachment":"N",
+        "Shortlist":"N"
+    },{
+        "LUIS Leave Type":"Compassionate Leave",
+        "Leave Type":"Compassionate Leave",
+        "Require Attachment":"N",
+        "Shortlist":"N"
+    },{
+        "LUIS Leave Type":"Ext Maternity",
+        "Leave Type":"Ext Maternity (FP-SC)",
+        "Require Attachment":"N",
+        "Shortlist":"N"
+    },{
+        "LUIS Leave Type":"Ext Maternity",
+        "Leave Type":"Ext Maternity (UP-Non SC)",
+        "Require Attachment":"N",
+        "Shortlist":"N"
+    },{
+        "LUIS Leave Type":"Exam / Study Leave",
+        "Leave Type":"Exam / Study Leave",
+        "Require Attachment":"Y",
+        "Shortlist":"N"
+    },{
+        "LUIS Leave Type":"Hospitalisation Leave",
+        "Leave Type":"Hospitalisation Leave",
+        "Require Attachment":"Y",
+        "Shortlist":"N"
+    },{
+        "LUIS Leave Type":"In Camp Training",
+        "Leave Type":"In Camp Training",
+        "Require Attachment":"Y",
+        "Shortlist":"N"
+    },{
+        "LUIS Leave Type":"Marriage Leave",
+        "Leave Type":"Marriage Leave",
+        "Require Attachment":"N",
+        "Shortlist":"N"
+    },{
+        "LUIS Leave Type":"Maternity Leave",
+        "Leave Type":"Maternity Leave",
+        "Require Attachment":"N",
+        "Shortlist":"N"
+    },{
+        "LUIS Leave Type":"Off in Lieu",
+        "Leave Type":"Off in Lieu",
+        "Require Attachment":"N",
+        "Shortlist":"N"
+    },{
+        "LUIS Leave Type":"Paternity Leave",
+        "Leave Type":"Paternity Leave",
+        "Require Attachment":"N",
+        "Shortlist":"N"
+    },{
+        "LUIS Leave Type":"Shared Parental Leave",
+        "Leave Type":"Shared Parental Leave",
+        "Require Attachment":"N",
+        "Shortlist":"N"
+    },{
+        "LUIS Leave Type":"Unpaid infant Care Leave",
+        "Leave Type":"Unpaid infant Care Leave",
+        "Require Attachment":"N",
+        "Shortlist":"N"
+    },{
+        "LUIS Leave Type":"Unpaid Leave",
+        "Leave Type":"Unpaid Leave",
+        "Require Attachment":"N",
+        "Shortlist":"N"
+    },{
+        "LUIS Leave Type":"Volunteer Leave",
+        "Leave Type":"Volunteer Leave",
+        "Require Attachment":"N",
+        "Shortlist":"N"
+    }
+]

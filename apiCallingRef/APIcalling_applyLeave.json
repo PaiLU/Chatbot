@@ -1,0 +1,30 @@
+{
+    "UserId":"XXXXXXXX",
+    "UserName":"User Name",
+    "type":"applyLeave",
+    "data":[
+        {
+            "leaveType":"XXXX",//leave types code
+            "startDate":"XXXXXXXX",//in ddmmyyyy format
+            "startType":"XX",//"FD"||"AM"||"PM"
+            "endDate":"XXXXXXXX",//in ddmmyyyy format
+            "endType":"XX",//"FD"||"AM"||"PM"
+            "notes":[//if have, or otherwise it is an empty array
+                {
+                    "text":""
+                }
+            ],
+            "attachments":[//if have, or otherwise it is an empty array
+                {
+                    "attachmentName":"theName1",
+                    "attachmentContent":"xxxx"
+                },{
+                    "attachmentName":"theName2",
+                    "attachmentContent":"xxxx"
+                }
+            ],
+            "confirmation": true//false
+            //Can add additional data here in "name":"value" || "name":[{"name1":"value1"},{"name2":"value2"}] pair
+        }
+    ]
+}

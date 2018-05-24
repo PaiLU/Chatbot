@@ -1,0 +1,19 @@
+{
+    "UserId":"XXXXXXXX",
+    "UserName":"User Name",
+    "type":"reqStatus",
+    "data":[
+        {
+            "leaveType":"XX",//Leave Quota Code
+            "leaveEntitlement":"",
+            "leaveDeductions":"",
+            "leaveRemainder":""
+        },
+        {
+            "leaveType":"XX",//Leave Quota Code
+            "leaveEntitlement":"",
+            "leaveDeductions":"",
+            "leaveRemainder":""
+        }
+    ]
+}

@@ -1,0 +1,3937 @@
+{
+  "luis_schema_version": "3.0.0",
+  "versionId": "0.7",
+  "name": "sitLeaveBot",
+  "desc": "This is designed for sit leave bot",
+  "culture": "en-us",
+  "intents": [
+    {
+      "name": "applyLeave"
+    },
+    {
+      "name": "help"
+    },
+    {
+      "name": "None"
+    },
+    {
+      "name": "reqStatus"
+    }
+  ],
+  "entities": [
+    {
+      "name": "adoption leave",
+      "roles": []
+    },
+    {
+      "name": "advanced leave",
+      "roles": []
+    },
+    {
+      "name": "annual leave",
+      "roles": []
+    },
+    {
+      "name": "child medical leave",
+      "roles": []
+    },
+    {
+      "name": "childcare leave",
+      "roles": []
+    },
+    {
+      "name": "compassionate leave",
+      "roles": []
+    },
+    {
+      "name": "exam / study leave",
+      "roles": []
+    },
+    {
+      "name": "ext maternity",
+      "roles": []
+    },
+    {
+      "name": "extended childcare leave",
+      "roles": []
+    },
+    {
+      "name": "family care leave",
+      "roles": []
+    },
+    {
+      "name": "hospitalisation leave",
+      "roles": []
+    },
+    {
+      "name": "in camp training",
+      "roles": []
+    },
+    {
+      "name": "marriage leave",
+      "roles": []
+    },
+    {
+      "name": "maternity leave",
+      "roles": []
+    },
+    {
+      "name": "medical leave",
+      "roles": []
+    },
+    {
+      "name": "off in lieu",
+      "roles": []
+    },
+    {
+      "name": "paternity leave",
+      "roles": []
+    },
+    {
+      "name": "shared parental leave",
+      "roles": []
+    },
+    {
+      "name": "unpaid infant care leave",
+      "roles": []
+    },
+    {
+      "name": "unpaid leave",
+      "roles": []
+    },
+    {
+      "name": "volunteer leave",
+      "roles": []
+    }
+  ],
+  "composites": [],
+  "closedLists": [],
+  "patternAnyEntities": [],
+  "regex_entities": [],
+  "prebuiltEntities": [
+    {
+      "name": "datetimeV2",
+      "roles": []
+    }
+  ],
+  "model_features": [
+    {
+      "name": "exam / study leave",
+      "mode": true,
+      "words": "exam leave,study leave,exam/study leave,exam and study leave,exam or study leave",
+      "activated": true
+    },
+    {
+      "name": "medical leave",
+      "mode": true,
+      "words": "mc,medical leave,sick leave",
+      "activated": true
+    }
+  ],
+  "regex_features": [],
+  "patterns": [],
+  "utterances": [
+    {
+      "text": "adoption leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "adoption leave",
+          "startPos": 0,
+          "endPos": 13
+        }
+      ]
+    },
+    {
+      "text": "adoption leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "adoption leave",
+          "startPos": 0,
+          "endPos": 13
+        }
+      ]
+    },
+    {
+      "text": "adoption leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "adoption leave",
+          "startPos": 0,
+          "endPos": 13
+        }
+      ]
+    },
+    {
+      "text": "adoption leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "adoption leave",
+          "startPos": 0,
+          "endPos": 13
+        }
+      ]
+    },
+    {
+      "text": "advanced leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "advanced leave",
+          "startPos": 0,
+          "endPos": 13
+        }
+      ]
+    },
+    {
+      "text": "advanced leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "advanced leave",
+          "startPos": 0,
+          "endPos": 13
+        }
+      ]
+    },
+    {
+      "text": "advanced leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "advanced leave",
+          "startPos": 0,
+          "endPos": 13
+        }
+      ]
+    },
+    {
+      "text": "advanced leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "advanced leave",
+          "startPos": 0,
+          "endPos": 13
+        }
+      ]
+    },
+    {
+      "text": "annual leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "annual leave",
+          "startPos": 0,
+          "endPos": 11
+        }
+      ]
+    },
+    {
+      "text": "annual leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "annual leave",
+          "startPos": 0,
+          "endPos": 11
+        }
+      ]
+    },
+    {
+      "text": "annual leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "annual leave",
+          "startPos": 0,
+          "endPos": 11
+        }
+      ]
+    },
+    {
+      "text": "annual leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "annual leave",
+          "startPos": 0,
+          "endPos": 11
+        }
+      ]
+    },
+    {
+      "text": "apply adoption leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "adoption leave",
+          "startPos": 6,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "apply adoption leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "adoption leave",
+          "startPos": 6,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "apply adoption leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "adoption leave",
+          "startPos": 6,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "apply adoption leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "adoption leave",
+          "startPos": 6,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "apply advanced leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "advanced leave",
+          "startPos": 6,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "apply advanced leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "advanced leave",
+          "startPos": 6,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "apply advanced leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "advanced leave",
+          "startPos": 6,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "apply advanced leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "advanced leave",
+          "startPos": 6,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "apply annual leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "annual leave",
+          "startPos": 6,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "apply annual leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "annual leave",
+          "startPos": 6,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "apply annual leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "annual leave",
+          "startPos": 6,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "apply annual leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "annual leave",
+          "startPos": 6,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "apply child medical leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "child medical leave",
+          "startPos": 6,
+          "endPos": 24
+        }
+      ]
+    },
+    {
+      "text": "apply child medical leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "child medical leave",
+          "startPos": 6,
+          "endPos": 24
+        }
+      ]
+    },
+    {
+      "text": "apply child medical leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "child medical leave",
+          "startPos": 6,
+          "endPos": 24
+        }
+      ]
+    },
+    {
+      "text": "apply child medical leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "child medical leave",
+          "startPos": 6,
+          "endPos": 24
+        }
+      ]
+    },
+    {
+      "text": "apply childcare leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "childcare leave",
+          "startPos": 6,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "apply childcare leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "childcare leave",
+          "startPos": 6,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "apply childcare leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "childcare leave",
+          "startPos": 6,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "apply childcare leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "childcare leave",
+          "startPos": 6,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "apply compassionate leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "compassionate leave",
+          "startPos": 6,
+          "endPos": 24
+        }
+      ]
+    },
+    {
+      "text": "apply compassionate leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "compassionate leave",
+          "startPos": 6,
+          "endPos": 24
+        }
+      ]
+    },
+    {
+      "text": "apply compassionate leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "compassionate leave",
+          "startPos": 6,
+          "endPos": 24
+        }
+      ]
+    },
+    {
+      "text": "apply compassionate leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "compassionate leave",
+          "startPos": 6,
+          "endPos": 24
+        }
+      ]
+    },
+    {
+      "text": "apply exam / study leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 6,
+          "endPos": 23
+        }
+      ]
+    },
+    {
+      "text": "apply exam / study leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 6,
+          "endPos": 23
+        }
+      ]
+    },
+    {
+      "text": "apply exam / study leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 6,
+          "endPos": 23
+        }
+      ]
+    },
+    {
+      "text": "apply exam / study leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 6,
+          "endPos": 23
+        }
+      ]
+    },
+    {
+      "text": "apply exam and study leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 6,
+          "endPos": 25
+        }
+      ]
+    },
+    {
+      "text": "apply exam and study leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 6,
+          "endPos": 25
+        }
+      ]
+    },
+    {
+      "text": "apply exam and study leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 6,
+          "endPos": 25
+        }
+      ]
+    },
+    {
+      "text": "apply exam and study leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 6,
+          "endPos": 25
+        }
+      ]
+    },
+    {
+      "text": "apply exam leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 6,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "apply exam leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 6,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "apply exam leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 6,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "apply exam leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 6,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "apply exam or study leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 6,
+          "endPos": 24
+        }
+      ]
+    },
+    {
+      "text": "apply exam or study leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 6,
+          "endPos": 24
+        }
+      ]
+    },
+    {
+      "text": "apply exam or study leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 6,
+          "endPos": 24
+        }
+      ]
+    },
+    {
+      "text": "apply exam or study leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 6,
+          "endPos": 24
+        }
+      ]
+    },
+    {
+      "text": "apply exam/study leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 6,
+          "endPos": 21
+        }
+      ]
+    },
+    {
+      "text": "apply exam/study leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 6,
+          "endPos": 21
+        }
+      ]
+    },
+    {
+      "text": "apply exam/study leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 6,
+          "endPos": 21
+        }
+      ]
+    },
+    {
+      "text": "apply exam/study leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 6,
+          "endPos": 21
+        }
+      ]
+    },
+    {
+      "text": "apply ext maternity",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "ext maternity",
+          "startPos": 6,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "apply ext maternity for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "ext maternity",
+          "startPos": 6,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "apply ext maternity from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "ext maternity",
+          "startPos": 6,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "apply ext maternity from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "ext maternity",
+          "startPos": 6,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "apply extended childcare leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "extended childcare leave",
+          "startPos": 6,
+          "endPos": 29
+        }
+      ]
+    },
+    {
+      "text": "apply extended childcare leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "extended childcare leave",
+          "startPos": 6,
+          "endPos": 29
+        }
+      ]
+    },
+    {
+      "text": "apply extended childcare leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "extended childcare leave",
+          "startPos": 6,
+          "endPos": 29
+        }
+      ]
+    },
+    {
+      "text": "apply extended childcare leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "extended childcare leave",
+          "startPos": 6,
+          "endPos": 29
+        }
+      ]
+    },
+    {
+      "text": "apply family care leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "family care leave",
+          "startPos": 6,
+          "endPos": 22
+        }
+      ]
+    },
+    {
+      "text": "apply family care leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "family care leave",
+          "startPos": 6,
+          "endPos": 22
+        }
+      ]
+    },
+    {
+      "text": "apply family care leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "family care leave",
+          "startPos": 6,
+          "endPos": 22
+        }
+      ]
+    },
+    {
+      "text": "apply family care leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "family care leave",
+          "startPos": 6,
+          "endPos": 22
+        }
+      ]
+    },
+    {
+      "text": "apply hospitalisation leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "hospitalisation leave",
+          "startPos": 6,
+          "endPos": 26
+        }
+      ]
+    },
+    {
+      "text": "apply hospitalisation leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "hospitalisation leave",
+          "startPos": 6,
+          "endPos": 26
+        }
+      ]
+    },
+    {
+      "text": "apply hospitalisation leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "hospitalisation leave",
+          "startPos": 6,
+          "endPos": 26
+        }
+      ]
+    },
+    {
+      "text": "apply hospitalisation leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "hospitalisation leave",
+          "startPos": 6,
+          "endPos": 26
+        }
+      ]
+    },
+    {
+      "text": "apply in camp training",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "in camp training",
+          "startPos": 6,
+          "endPos": 21
+        }
+      ]
+    },
+    {
+      "text": "apply in camp training for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "in camp training",
+          "startPos": 6,
+          "endPos": 21
+        }
+      ]
+    },
+    {
+      "text": "apply in camp training from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "in camp training",
+          "startPos": 6,
+          "endPos": 21
+        }
+      ]
+    },
+    {
+      "text": "apply in camp training from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "in camp training",
+          "startPos": 6,
+          "endPos": 21
+        }
+      ]
+    },
+    {
+      "text": "apply marriage leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "marriage leave",
+          "startPos": 6,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "apply marriage leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "marriage leave",
+          "startPos": 6,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "apply marriage leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "marriage leave",
+          "startPos": 6,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "apply marriage leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "marriage leave",
+          "startPos": 6,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "apply maternity leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "maternity leave",
+          "startPos": 6,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "apply maternity leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "maternity leave",
+          "startPos": 6,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "apply maternity leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "maternity leave",
+          "startPos": 6,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "apply maternity leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "maternity leave",
+          "startPos": 6,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "apply mc",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 6,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "apply mc for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 6,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "apply mc from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 6,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "apply mc from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 6,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "apply medical leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 6,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "apply medical leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 6,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "apply medical leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 6,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "apply medical leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 6,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "apply off in lieu",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "off in lieu",
+          "startPos": 6,
+          "endPos": 16
+        }
+      ]
+    },
+    {
+      "text": "apply off in lieu for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "off in lieu",
+          "startPos": 6,
+          "endPos": 16
+        }
+      ]
+    },
+    {
+      "text": "apply off in lieu from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "off in lieu",
+          "startPos": 6,
+          "endPos": 16
+        }
+      ]
+    },
+    {
+      "text": "apply off in lieu from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "off in lieu",
+          "startPos": 6,
+          "endPos": 16
+        }
+      ]
+    },
+    {
+      "text": "apply paternity leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "paternity leave",
+          "startPos": 6,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "apply paternity leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "paternity leave",
+          "startPos": 6,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "apply paternity leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "paternity leave",
+          "startPos": 6,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "apply paternity leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "paternity leave",
+          "startPos": 6,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "apply shared parental leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "shared parental leave",
+          "startPos": 6,
+          "endPos": 26
+        }
+      ]
+    },
+    {
+      "text": "apply shared parental leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "shared parental leave",
+          "startPos": 6,
+          "endPos": 26
+        }
+      ]
+    },
+    {
+      "text": "apply shared parental leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "shared parental leave",
+          "startPos": 6,
+          "endPos": 26
+        }
+      ]
+    },
+    {
+      "text": "apply shared parental leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "shared parental leave",
+          "startPos": 6,
+          "endPos": 26
+        }
+      ]
+    },
+    {
+      "text": "apply sick leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 6,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "apply sick leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 6,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "apply sick leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 6,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "apply sick leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 6,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "apply study leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 6,
+          "endPos": 16
+        }
+      ]
+    },
+    {
+      "text": "apply study leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 6,
+          "endPos": 16
+        }
+      ]
+    },
+    {
+      "text": "apply study leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 6,
+          "endPos": 16
+        }
+      ]
+    },
+    {
+      "text": "apply study leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 6,
+          "endPos": 16
+        }
+      ]
+    },
+    {
+      "text": "apply unpaid infant care leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "unpaid infant care leave",
+          "startPos": 6,
+          "endPos": 29
+        }
+      ]
+    },
+    {
+      "text": "apply unpaid infant care leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "unpaid infant care leave",
+          "startPos": 6,
+          "endPos": 29
+        }
+      ]
+    },
+    {
+      "text": "apply unpaid infant care leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "unpaid infant care leave",
+          "startPos": 6,
+          "endPos": 29
+        }
+      ]
+    },
+    {
+      "text": "apply unpaid infant care leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "unpaid infant care leave",
+          "startPos": 6,
+          "endPos": 29
+        }
+      ]
+    },
+    {
+      "text": "apply unpaid leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "unpaid leave",
+          "startPos": 6,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "apply unpaid leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "unpaid leave",
+          "startPos": 6,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "apply unpaid leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "unpaid leave",
+          "startPos": 6,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "apply unpaid leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "unpaid leave",
+          "startPos": 6,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "apply volunteer leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "volunteer leave",
+          "startPos": 6,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "apply volunteer leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "volunteer leave",
+          "startPos": 6,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "apply volunteer leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "volunteer leave",
+          "startPos": 6,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "apply volunteer leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "volunteer leave",
+          "startPos": 6,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "can i know about my leave balance",
+      "intent": "reqStatus",
+      "entities": []
+    },
+    {
+      "text": "can you give me some help?",
+      "intent": "help",
+      "entities": []
+    },
+    {
+      "text": "can you show me how many days my leave left ?",
+      "intent": "reqStatus",
+      "entities": []
+    },
+    {
+      "text": "child medical leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "child medical leave",
+          "startPos": 0,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "child medical leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "child medical leave",
+          "startPos": 0,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "child medical leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "child medical leave",
+          "startPos": 0,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "child medical leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "child medical leave",
+          "startPos": 0,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "childcare leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "childcare leave",
+          "startPos": 0,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "childcare leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "childcare leave",
+          "startPos": 0,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "childcare leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "childcare leave",
+          "startPos": 0,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "childcare leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "childcare leave",
+          "startPos": 0,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "compassionate leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "compassionate leave",
+          "startPos": 0,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "compassionate leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "compassionate leave",
+          "startPos": 0,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "compassionate leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "compassionate leave",
+          "startPos": 0,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "compassionate leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "compassionate leave",
+          "startPos": 0,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "exam / study leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 0,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "exam / study leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 0,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "exam / study leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 0,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "exam / study leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 0,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "exam and study leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 0,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "exam and study leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 0,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "exam and study leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 0,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "exam and study leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 0,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "exam leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 0,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "exam leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 0,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "exam leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 0,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "exam leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 0,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "exam or study leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 0,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "exam or study leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 0,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "exam or study leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 0,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "exam or study leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 0,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "exam/study leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 0,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "exam/study leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 0,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "exam/study leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 0,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "exam/study leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 0,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "ext maternity",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "ext maternity",
+          "startPos": 0,
+          "endPos": 12
+        }
+      ]
+    },
+    {
+      "text": "ext maternity for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "ext maternity",
+          "startPos": 0,
+          "endPos": 12
+        }
+      ]
+    },
+    {
+      "text": "ext maternity from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "ext maternity",
+          "startPos": 0,
+          "endPos": 12
+        }
+      ]
+    },
+    {
+      "text": "ext maternity from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "ext maternity",
+          "startPos": 0,
+          "endPos": 12
+        }
+      ]
+    },
+    {
+      "text": "extended childcare leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "extended childcare leave",
+          "startPos": 0,
+          "endPos": 23
+        }
+      ]
+    },
+    {
+      "text": "extended childcare leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "extended childcare leave",
+          "startPos": 0,
+          "endPos": 23
+        }
+      ]
+    },
+    {
+      "text": "extended childcare leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "extended childcare leave",
+          "startPos": 0,
+          "endPos": 23
+        }
+      ]
+    },
+    {
+      "text": "extended childcare leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "extended childcare leave",
+          "startPos": 0,
+          "endPos": 23
+        }
+      ]
+    },
+    {
+      "text": "family care leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "family care leave",
+          "startPos": 0,
+          "endPos": 16
+        }
+      ]
+    },
+    {
+      "text": "family care leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "family care leave",
+          "startPos": 0,
+          "endPos": 16
+        }
+      ]
+    },
+    {
+      "text": "family care leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "family care leave",
+          "startPos": 0,
+          "endPos": 16
+        }
+      ]
+    },
+    {
+      "text": "family care leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "family care leave",
+          "startPos": 0,
+          "endPos": 16
+        }
+      ]
+    },
+    {
+      "text": "get my leave balance",
+      "intent": "reqStatus",
+      "entities": []
+    },
+    {
+      "text": "get my outstanding leave status",
+      "intent": "reqStatus",
+      "entities": []
+    },
+    {
+      "text": "hello",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "help me",
+      "intent": "help",
+      "entities": []
+    },
+    {
+      "text": "help me check leave status",
+      "intent": "reqStatus",
+      "entities": []
+    },
+    {
+      "text": "hi",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "hospitalisation leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "hospitalisation leave",
+          "startPos": 0,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "hospitalisation leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "hospitalisation leave",
+          "startPos": 0,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "hospitalisation leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "hospitalisation leave",
+          "startPos": 0,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "hospitalisation leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "hospitalisation leave",
+          "startPos": 0,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "i want to check my leave status",
+      "intent": "reqStatus",
+      "entities": []
+    },
+    {
+      "text": "in camp training",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "in camp training",
+          "startPos": 0,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "in camp training for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "in camp training",
+          "startPos": 0,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "in camp training from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "in camp training",
+          "startPos": 0,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "in camp training from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "in camp training",
+          "startPos": 0,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "leave balance",
+      "intent": "reqStatus",
+      "entities": []
+    },
+    {
+      "text": "leave days",
+      "intent": "reqStatus",
+      "entities": []
+    },
+    {
+      "text": "main help",
+      "intent": "help",
+      "entities": []
+    },
+    {
+      "text": "marriage leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "marriage leave",
+          "startPos": 0,
+          "endPos": 13
+        }
+      ]
+    },
+    {
+      "text": "marriage leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "marriage leave",
+          "startPos": 0,
+          "endPos": 13
+        }
+      ]
+    },
+    {
+      "text": "marriage leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "marriage leave",
+          "startPos": 0,
+          "endPos": 13
+        }
+      ]
+    },
+    {
+      "text": "marriage leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "marriage leave",
+          "startPos": 0,
+          "endPos": 13
+        }
+      ]
+    },
+    {
+      "text": "maternity leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "maternity leave",
+          "startPos": 0,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "maternity leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "maternity leave",
+          "startPos": 0,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "maternity leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "maternity leave",
+          "startPos": 0,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "maternity leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "maternity leave",
+          "startPos": 0,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "mc",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 0,
+          "endPos": 1
+        }
+      ]
+    },
+    {
+      "text": "mc for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 0,
+          "endPos": 1
+        }
+      ]
+    },
+    {
+      "text": "mc from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 0,
+          "endPos": 1
+        }
+      ]
+    },
+    {
+      "text": "mc from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 0,
+          "endPos": 1
+        }
+      ]
+    },
+    {
+      "text": "medical leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 0,
+          "endPos": 12
+        }
+      ]
+    },
+    {
+      "text": "medical leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 0,
+          "endPos": 12
+        }
+      ]
+    },
+    {
+      "text": "medical leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 0,
+          "endPos": 12
+        }
+      ]
+    },
+    {
+      "text": "medical leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 0,
+          "endPos": 12
+        }
+      ]
+    },
+    {
+      "text": "off in lieu",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "off in lieu",
+          "startPos": 0,
+          "endPos": 10
+        }
+      ]
+    },
+    {
+      "text": "off in lieu for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "off in lieu",
+          "startPos": 0,
+          "endPos": 10
+        }
+      ]
+    },
+    {
+      "text": "off in lieu from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "off in lieu",
+          "startPos": 0,
+          "endPos": 10
+        }
+      ]
+    },
+    {
+      "text": "off in lieu from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "off in lieu",
+          "startPos": 0,
+          "endPos": 10
+        }
+      ]
+    },
+    {
+      "text": "paternity leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "paternity leave",
+          "startPos": 0,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "paternity leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "paternity leave",
+          "startPos": 0,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "paternity leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "paternity leave",
+          "startPos": 0,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "paternity leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "paternity leave",
+          "startPos": 0,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "shared parental leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "shared parental leave",
+          "startPos": 0,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "shared parental leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "shared parental leave",
+          "startPos": 0,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "shared parental leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "shared parental leave",
+          "startPos": 0,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "shared parental leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "shared parental leave",
+          "startPos": 0,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "sick leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 0,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "sick leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 0,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "sick leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 0,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "sick leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 0,
+          "endPos": 9
+        }
+      ]
+    },
+    {
+      "text": "study leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 0,
+          "endPos": 10
+        }
+      ]
+    },
+    {
+      "text": "study leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 0,
+          "endPos": 10
+        }
+      ]
+    },
+    {
+      "text": "study leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 0,
+          "endPos": 10
+        }
+      ]
+    },
+    {
+      "text": "study leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 0,
+          "endPos": 10
+        }
+      ]
+    },
+    {
+      "text": "take adoption leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "adoption leave",
+          "startPos": 5,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "take adoption leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "adoption leave",
+          "startPos": 5,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "take adoption leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "adoption leave",
+          "startPos": 5,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "take adoption leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "adoption leave",
+          "startPos": 5,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "take advanced leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "advanced leave",
+          "startPos": 5,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "take advanced leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "advanced leave",
+          "startPos": 5,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "take advanced leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "advanced leave",
+          "startPos": 5,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "take advanced leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "advanced leave",
+          "startPos": 5,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "take annual leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "annual leave",
+          "startPos": 5,
+          "endPos": 16
+        }
+      ]
+    },
+    {
+      "text": "take annual leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "annual leave",
+          "startPos": 5,
+          "endPos": 16
+        }
+      ]
+    },
+    {
+      "text": "take annual leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "annual leave",
+          "startPos": 5,
+          "endPos": 16
+        }
+      ]
+    },
+    {
+      "text": "take annual leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "annual leave",
+          "startPos": 5,
+          "endPos": 16
+        }
+      ]
+    },
+    {
+      "text": "take child medical leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "child medical leave",
+          "startPos": 5,
+          "endPos": 23
+        }
+      ]
+    },
+    {
+      "text": "take child medical leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "child medical leave",
+          "startPos": 5,
+          "endPos": 23
+        }
+      ]
+    },
+    {
+      "text": "take child medical leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "child medical leave",
+          "startPos": 5,
+          "endPos": 23
+        }
+      ]
+    },
+    {
+      "text": "take child medical leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "child medical leave",
+          "startPos": 5,
+          "endPos": 23
+        }
+      ]
+    },
+    {
+      "text": "take childcare leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "childcare leave",
+          "startPos": 5,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "take childcare leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "childcare leave",
+          "startPos": 5,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "take childcare leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "childcare leave",
+          "startPos": 5,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "take childcare leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "childcare leave",
+          "startPos": 5,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "take compassionate leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "compassionate leave",
+          "startPos": 5,
+          "endPos": 23
+        }
+      ]
+    },
+    {
+      "text": "take compassionate leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "compassionate leave",
+          "startPos": 5,
+          "endPos": 23
+        }
+      ]
+    },
+    {
+      "text": "take compassionate leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "compassionate leave",
+          "startPos": 5,
+          "endPos": 23
+        }
+      ]
+    },
+    {
+      "text": "take compassionate leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "compassionate leave",
+          "startPos": 5,
+          "endPos": 23
+        }
+      ]
+    },
+    {
+      "text": "take exam / study leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 5,
+          "endPos": 22
+        }
+      ]
+    },
+    {
+      "text": "take exam / study leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 5,
+          "endPos": 22
+        }
+      ]
+    },
+    {
+      "text": "take exam / study leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 5,
+          "endPos": 22
+        }
+      ]
+    },
+    {
+      "text": "take exam / study leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 5,
+          "endPos": 22
+        }
+      ]
+    },
+    {
+      "text": "take exam and study leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 5,
+          "endPos": 24
+        }
+      ]
+    },
+    {
+      "text": "take exam and study leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 5,
+          "endPos": 24
+        }
+      ]
+    },
+    {
+      "text": "take exam and study leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 5,
+          "endPos": 24
+        }
+      ]
+    },
+    {
+      "text": "take exam and study leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 5,
+          "endPos": 24
+        }
+      ]
+    },
+    {
+      "text": "take exam leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 5,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "take exam leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 5,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "take exam leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 5,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "take exam leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 5,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "take exam or study leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 5,
+          "endPos": 23
+        }
+      ]
+    },
+    {
+      "text": "take exam or study leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 5,
+          "endPos": 23
+        }
+      ]
+    },
+    {
+      "text": "take exam or study leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 5,
+          "endPos": 23
+        }
+      ]
+    },
+    {
+      "text": "take exam or study leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 5,
+          "endPos": 23
+        }
+      ]
+    },
+    {
+      "text": "take exam/study leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 5,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "take exam/study leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 5,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "take exam/study leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 5,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "take exam/study leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 5,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "take ext maternity",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "ext maternity",
+          "startPos": 5,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "take ext maternity for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "ext maternity",
+          "startPos": 5,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "take ext maternity from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "ext maternity",
+          "startPos": 5,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "take ext maternity from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "ext maternity",
+          "startPos": 5,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "take extended childcare leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "extended childcare leave",
+          "startPos": 5,
+          "endPos": 28
+        }
+      ]
+    },
+    {
+      "text": "take extended childcare leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "extended childcare leave",
+          "startPos": 5,
+          "endPos": 28
+        }
+      ]
+    },
+    {
+      "text": "take extended childcare leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "extended childcare leave",
+          "startPos": 5,
+          "endPos": 28
+        }
+      ]
+    },
+    {
+      "text": "take extended childcare leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "extended childcare leave",
+          "startPos": 5,
+          "endPos": 28
+        }
+      ]
+    },
+    {
+      "text": "take family care leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "family care leave",
+          "startPos": 5,
+          "endPos": 21
+        }
+      ]
+    },
+    {
+      "text": "take family care leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "family care leave",
+          "startPos": 5,
+          "endPos": 21
+        }
+      ]
+    },
+    {
+      "text": "take family care leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "family care leave",
+          "startPos": 5,
+          "endPos": 21
+        }
+      ]
+    },
+    {
+      "text": "take family care leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "family care leave",
+          "startPos": 5,
+          "endPos": 21
+        }
+      ]
+    },
+    {
+      "text": "take hospitalisation leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "hospitalisation leave",
+          "startPos": 5,
+          "endPos": 25
+        }
+      ]
+    },
+    {
+      "text": "take hospitalisation leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "hospitalisation leave",
+          "startPos": 5,
+          "endPos": 25
+        }
+      ]
+    },
+    {
+      "text": "take hospitalisation leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "hospitalisation leave",
+          "startPos": 5,
+          "endPos": 25
+        }
+      ]
+    },
+    {
+      "text": "take hospitalisation leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "hospitalisation leave",
+          "startPos": 5,
+          "endPos": 25
+        }
+      ]
+    },
+    {
+      "text": "take in camp training",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "in camp training",
+          "startPos": 5,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "take in camp training for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "in camp training",
+          "startPos": 5,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "take in camp training from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "in camp training",
+          "startPos": 5,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "take in camp training from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "in camp training",
+          "startPos": 5,
+          "endPos": 20
+        }
+      ]
+    },
+    {
+      "text": "take marriage leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "marriage leave",
+          "startPos": 5,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "take marriage leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "marriage leave",
+          "startPos": 5,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "take marriage leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "marriage leave",
+          "startPos": 5,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "take marriage leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "marriage leave",
+          "startPos": 5,
+          "endPos": 18
+        }
+      ]
+    },
+    {
+      "text": "take maternity leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "maternity leave",
+          "startPos": 5,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "take maternity leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "maternity leave",
+          "startPos": 5,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "take maternity leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "maternity leave",
+          "startPos": 5,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "take maternity leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "maternity leave",
+          "startPos": 5,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "take mc",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 5,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "take mc for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 5,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "take mc from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 5,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "take mc from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 5,
+          "endPos": 6
+        }
+      ]
+    },
+    {
+      "text": "take me to the status",
+      "intent": "reqStatus",
+      "entities": []
+    },
+    {
+      "text": "take medical leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 5,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "take medical leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 5,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "take medical leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 5,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "take medical leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 5,
+          "endPos": 17
+        }
+      ]
+    },
+    {
+      "text": "take off in lieu",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "off in lieu",
+          "startPos": 5,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "take off in lieu for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "off in lieu",
+          "startPos": 5,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "take off in lieu from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "off in lieu",
+          "startPos": 5,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "take off in lieu from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "off in lieu",
+          "startPos": 5,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "take paternity leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "paternity leave",
+          "startPos": 5,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "take paternity leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "paternity leave",
+          "startPos": 5,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "take paternity leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "paternity leave",
+          "startPos": 5,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "take paternity leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "paternity leave",
+          "startPos": 5,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "take shared parental leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "shared parental leave",
+          "startPos": 5,
+          "endPos": 25
+        }
+      ]
+    },
+    {
+      "text": "take shared parental leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "shared parental leave",
+          "startPos": 5,
+          "endPos": 25
+        }
+      ]
+    },
+    {
+      "text": "take shared parental leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "shared parental leave",
+          "startPos": 5,
+          "endPos": 25
+        }
+      ]
+    },
+    {
+      "text": "take shared parental leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "shared parental leave",
+          "startPos": 5,
+          "endPos": 25
+        }
+      ]
+    },
+    {
+      "text": "take sick leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 5,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "take sick leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 5,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "take sick leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 5,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "take sick leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "medical leave",
+          "startPos": 5,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "take study leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 5,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "take study leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 5,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "take study leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 5,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "take study leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "exam / study leave",
+          "startPos": 5,
+          "endPos": 15
+        }
+      ]
+    },
+    {
+      "text": "take unpaid infant care leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "unpaid infant care leave",
+          "startPos": 5,
+          "endPos": 28
+        }
+      ]
+    },
+    {
+      "text": "take unpaid infant care leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "unpaid infant care leave",
+          "startPos": 5,
+          "endPos": 28
+        }
+      ]
+    },
+    {
+      "text": "take unpaid infant care leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "unpaid infant care leave",
+          "startPos": 5,
+          "endPos": 28
+        }
+      ]
+    },
+    {
+      "text": "take unpaid infant care leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "unpaid infant care leave",
+          "startPos": 5,
+          "endPos": 28
+        }
+      ]
+    },
+    {
+      "text": "take unpaid leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "unpaid leave",
+          "startPos": 5,
+          "endPos": 16
+        }
+      ]
+    },
+    {
+      "text": "take unpaid leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "unpaid leave",
+          "startPos": 5,
+          "endPos": 16
+        }
+      ]
+    },
+    {
+      "text": "take unpaid leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "unpaid leave",
+          "startPos": 5,
+          "endPos": 16
+        }
+      ]
+    },
+    {
+      "text": "take unpaid leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "unpaid leave",
+          "startPos": 5,
+          "endPos": 16
+        }
+      ]
+    },
+    {
+      "text": "take volunteer leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "volunteer leave",
+          "startPos": 5,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "take volunteer leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "volunteer leave",
+          "startPos": 5,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "take volunteer leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "volunteer leave",
+          "startPos": 5,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "take volunteer leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "volunteer leave",
+          "startPos": 5,
+          "endPos": 19
+        }
+      ]
+    },
+    {
+      "text": "test",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "unpaid infant care leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "unpaid infant care leave",
+          "startPos": 0,
+          "endPos": 23
+        }
+      ]
+    },
+    {
+      "text": "unpaid infant care leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "unpaid infant care leave",
+          "startPos": 0,
+          "endPos": 23
+        }
+      ]
+    },
+    {
+      "text": "unpaid infant care leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "unpaid infant care leave",
+          "startPos": 0,
+          "endPos": 23
+        }
+      ]
+    },
+    {
+      "text": "unpaid infant care leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "unpaid infant care leave",
+          "startPos": 0,
+          "endPos": 23
+        }
+      ]
+    },
+    {
+      "text": "unpaid leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "unpaid leave",
+          "startPos": 0,
+          "endPos": 11
+        }
+      ]
+    },
+    {
+      "text": "unpaid leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "unpaid leave",
+          "startPos": 0,
+          "endPos": 11
+        }
+      ]
+    },
+    {
+      "text": "unpaid leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "unpaid leave",
+          "startPos": 0,
+          "endPos": 11
+        }
+      ]
+    },
+    {
+      "text": "unpaid leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "unpaid leave",
+          "startPos": 0,
+          "endPos": 11
+        }
+      ]
+    },
+    {
+      "text": "volunteer leave",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "volunteer leave",
+          "startPos": 0,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "volunteer leave for 3 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "volunteer leave",
+          "startPos": 0,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "volunteer leave from 2 jan for 8 days",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "volunteer leave",
+          "startPos": 0,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "volunteer leave from 2 jan to 3 feb",
+      "intent": "applyLeave",
+      "entities": [
+        {
+          "entity": "volunteer leave",
+          "startPos": 0,
+          "endPos": 14
+        }
+      ]
+    },
+    {
+      "text": "wha can you do?",
+      "intent": "help",
+      "entities": []
+    },
+    {
+      "text": "what ' s my out standing leave",
+      "intent": "reqStatus",
+      "entities": []
+    },
+    {
+      "text": "what ' s my outstanding leave",
+      "intent": "reqStatus",
+      "entities": []
+    },
+    {
+      "text": "what is my annual leave balance",
+      "intent": "reqStatus",
+      "entities": [
+        {
+          "entity": "annual leave",
+          "startPos": 11,
+          "endPos": 22
+        }
+      ]
+    },
+    {
+      "text": "what' s my outstanding leave",
+      "intent": "reqStatus",
+      "entities": []
+    }
+  ]
+}

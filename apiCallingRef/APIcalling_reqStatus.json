@@ -1,0 +1,10 @@
+{
+    "UserId":"XXXXXXXX",
+    "UserName":"User Name",
+    "type":"reqStatus",
+    "data":[//if have, or otherwise it is an empty array
+        {
+            "leaveType":"XX"//Leave Quota Code
+        }
+    ]
+}

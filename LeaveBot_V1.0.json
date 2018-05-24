@@ -1,0 +1,180 @@
+{
+  "luis_schema_version": "2.2.0",
+  "versionId": "1.0",
+  "name": "LeaveBot",
+  "desc": "",
+  "culture": "en-us",
+  "intents": [
+    {
+      "name": "apply leave"
+    },
+    {
+      "name": "help"
+    },
+    {
+      "name": "None"
+    },
+    {
+      "name": "reqStatus"
+    }
+  ],
+  "entities": [
+    {
+      "name": "Leave Type",
+      "children": [
+        "Ext Maternity",
+        "Medical Leave"
+      ]
+    }
+  ],
+  "composites": [],
+  "closedLists": [
+    {
+      "name": "Leave Type Value",
+      "subLists": [
+        {
+          "canonicalForm": "annual leave",
+          "list": []
+        },
+        {
+          "canonicalForm": "medical leave",
+          "list": [
+            "mc",
+            "sick leave"
+          ]
+        },
+        {
+          "canonicalForm": "family care leave",
+          "list": []
+        },
+        {
+          "canonicalForm": "childcare leave",
+          "list": [
+            "child care leave"
+          ]
+        },
+        {
+          "canonicalForm": "child medical leave",
+          "list": []
+        },
+        {
+          "canonicalForm": "extended childcare leave",
+          "list": [
+            "ext childcare leave",
+            "ext child care leave",
+            "extended child care leave"
+          ]
+        },
+        {
+          "canonicalForm": "adoption leave",
+          "list": []
+        },
+        {
+          "canonicalForm": "advance leave",
+          "list": []
+        },
+        {
+          "canonicalForm": "compassionate leave",
+          "list": []
+        },
+        {
+          "canonicalForm": "ext maternity",
+          "list": [
+            "extended maternity leave",
+            "extended maternity",
+            "ext maternity leave"
+          ]
+        },
+        {
+          "canonicalForm": "exam / study leave",
+          "list": [
+            "exam leave",
+            "study leave",
+            "exam and study leave",
+            "exam or study leave",
+            "exam/study leave"
+          ]
+        },
+        {
+          "canonicalForm": "hospitalization leave",
+          "list": []
+        },
+        {
+          "canonicalForm": "in camp training",
+          "list": []
+        },
+        {
+          "canonicalForm": "marriage leave",
+          "list": []
+        },
+        {
+          "canonicalForm": "maternity leave",
+          "list": [
+            "maternity leave"
+          ]
+        },
+        {
+          "canonicalForm": "off in lieu",
+          "list": []
+        },
+        {
+          "canonicalForm": "paternity leave",
+          "list": []
+        },
+        {
+          "canonicalForm": "shared parental leave",
+          "list": []
+        },
+        {
+          "canonicalForm": "unpaid infant care leave",
+          "list": []
+        },
+        {
+          "canonicalForm": "unpaid leave",
+          "list": []
+        },
+        {
+          "canonicalForm": "volunteer leave",
+          "list": []
+        }
+      ]
+    }
+  ],
+  "regex_entities": [],
+  "bing_entities": [
+    "datetimeV2"
+  ],
+  "model_features": [
+    {
+      "name": "exam / study leave",
+      "mode": true,
+      "words": "exam leave,study leave,exam/study leave,exam and study leave,exam or study leave",
+      "activated": false
+    }
+  ],
+  "regex_features": [],
+  "utterances": [
+    {
+      "text": "annual leave on tomorrow",
+      "intent": "apply leave",
+      "entities": [
+        {
+          "entity": "Leave Type",
+          "startPos": 0,
+          "endPos": 11
+        }
+      ]
+    },
+    {
+      "text": "mc on tomorrow",
+      "intent": "apply leave",
+      "entities": [
+        {
+          "entity": "Leave Type::Medical Leave",
+          "startPos": 0,
+          "endPos": 1
+        }
+      ]
+    }
+  ]
+}

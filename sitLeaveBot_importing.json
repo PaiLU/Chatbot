@@ -1,0 +1,6468 @@
+{
+    "luis_schema_version": "2.2.0",
+    "versionId": "0.8",
+    "name": "sitLeaveBot",
+    "desc": "This is designed for sit leave bot",
+    "culture": "en-us",
+    "intents": [
+        {
+            "name": "applyLeave"
+        },
+        {
+            "name": "reqStatus"
+        },
+        {
+            "name": "help"
+        },
+        {
+            "name": "None"
+        }
+    ],
+    "entities": [
+        {
+            "name": "Leave Type",
+            "children": [
+                "Medical Leave",
+                "Ext Maternity"
+            ]
+        }
+    ],
+    "composites": [],
+    "closedLists": [],
+    "regex_entities": [],
+    "bing_entities": [
+        "datetimeV2"
+    ],
+    "model_features": [
+        {
+            "name": "exam / study leave",
+            "mode": true,
+            "words": "exam leave,study leave,exam/study leave,exam and study leave,exam or study leave",
+            "activated": true
+        },
+        {
+            "name": "medical leave",
+            "mode": true,
+            "words": "mc,medical leave,sick leave",
+            "activated": true
+        }
+    ],
+    "regex_features": [],
+    "utterances": [
+        {
+            "text": "Annual Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 11
+                }
+            ]
+        },
+        {
+            "text": "Annual Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 11
+                }
+            ]
+        },
+        {
+            "text": "Annual Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 11
+                }
+            ]
+        },
+        {
+            "text": "Annual Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 11
+                }
+            ]
+        },
+        {
+            "text": "Annual Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 11
+                }
+            ]
+        },
+        {
+            "text": "take Annual Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "take Annual Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "take Annual Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "take Annual Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "take Annual Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "apply Annual Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 17
+                }
+            ]
+        },
+        {
+            "text": "apply Annual Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 17
+                }
+            ]
+        },
+        {
+            "text": "apply Annual Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 17
+                }
+            ]
+        },
+        {
+            "text": "apply Annual Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 17
+                }
+            ]
+        },
+        {
+            "text": "apply Annual Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 17
+                }
+            ]
+        },
+        {
+            "text": "Medical Leave(UC)",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "Medical Leave(UC) from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "Medical Leave(UC) from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "Medical Leave(UC) for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "Medical Leave(UC) on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "take Medical Leave(UC)",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 21
+                }
+            ]
+        },
+        {
+            "text": "take Medical Leave(UC) from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 21
+                }
+            ]
+        },
+        {
+            "text": "take Medical Leave(UC) from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 21
+                }
+            ]
+        },
+        {
+            "text": "take Medical Leave(UC) for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 21
+                }
+            ]
+        },
+        {
+            "text": "take Medical Leave(UC) on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 21
+                }
+            ]
+        },
+        {
+            "text": "apply Medical Leave(UC)",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 22
+                }
+            ]
+        },
+        {
+            "text": "apply Medical Leave(UC) from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 22
+                }
+            ]
+        },
+        {
+            "text": "apply Medical Leave(UC) from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 22
+                }
+            ]
+        },
+        {
+            "text": "apply Medical Leave(UC) for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 22
+                }
+            ]
+        },
+        {
+            "text": "apply Medical Leave(UC) on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 22
+                }
+            ]
+        },
+        {
+            "text": "Medical Leave(UC)",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type::Medical Leave",
+                    "startPos": 0,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "Medical Leave(UC) from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type::Medical Leave",
+                    "startPos": 0,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "Medical Leave(UC) from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type::Medical Leave",
+                    "startPos": 0,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "Medical Leave(UC) for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type::Medical Leave",
+                    "startPos": 0,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "Medical Leave(UC) on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type::Medical Leave",
+                    "startPos": 0,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "take Medical Leave(UC)",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type::Medical Leave",
+                    "startPos": 5,
+                    "endPos": 21
+                }
+            ]
+        },
+        {
+            "text": "take Medical Leave(UC) from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type::Medical Leave",
+                    "startPos": 5,
+                    "endPos": 21
+                }
+            ]
+        },
+        {
+            "text": "take Medical Leave(UC) from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type::Medical Leave",
+                    "startPos": 5,
+                    "endPos": 21
+                }
+            ]
+        },
+        {
+            "text": "take Medical Leave(UC) for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type::Medical Leave",
+                    "startPos": 5,
+                    "endPos": 21
+                }
+            ]
+        },
+        {
+            "text": "take Medical Leave(UC) on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type::Medical Leave",
+                    "startPos": 5,
+                    "endPos": 21
+                }
+            ]
+        },
+        {
+            "text": "apply Medical Leave(UC)",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type::Medical Leave",
+                    "startPos": 6,
+                    "endPos": 22
+                }
+            ]
+        },
+        {
+            "text": "apply Medical Leave(UC) from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type::Medical Leave",
+                    "startPos": 6,
+                    "endPos": 22
+                }
+            ]
+        },
+        {
+            "text": "apply Medical Leave(UC) from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type::Medical Leave",
+                    "startPos": 6,
+                    "endPos": 22
+                }
+            ]
+        },
+        {
+            "text": "apply Medical Leave(UC) for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type::Medical Leave",
+                    "startPos": 6,
+                    "endPos": 22
+                }
+            ]
+        },
+        {
+            "text": "apply Medical Leave(UC) on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type::Medical Leave",
+                    "startPos": 6,
+                    "endPos": 22
+                }
+            ]
+        },
+        {
+            "text": "Medical Leave(C)",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 15
+                }
+            ]
+        },
+        {
+            "text": "Medical Leave(C) from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 15
+                }
+            ]
+        },
+        {
+            "text": "Medical Leave(C) from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 15
+                }
+            ]
+        },
+        {
+            "text": "Medical Leave(C) for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 15
+                }
+            ]
+        },
+        {
+            "text": "Medical Leave(C) on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 15
+                }
+            ]
+        },
+        {
+            "text": "take Medical Leave(C)",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "take Medical Leave(C) from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "take Medical Leave(C) from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "take Medical Leave(C) for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "take Medical Leave(C) on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "apply Medical Leave(C)",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 21
+                }
+            ]
+        },
+        {
+            "text": "apply Medical Leave(C) from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 21
+                }
+            ]
+        },
+        {
+            "text": "apply Medical Leave(C) from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 21
+                }
+            ]
+        },
+        {
+            "text": "apply Medical Leave(C) for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 21
+                }
+            ]
+        },
+        {
+            "text": "apply Medical Leave(C) on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 21
+                }
+            ]
+        },
+        {
+            "text": "Family Care Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "Family Care Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "Family Care Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "Family Care Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "Family Care Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "take Family Care Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 21
+                }
+            ]
+        },
+        {
+            "text": "take Family Care Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 21
+                }
+            ]
+        },
+        {
+            "text": "take Family Care Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 21
+                }
+            ]
+        },
+        {
+            "text": "take Family Care Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 21
+                }
+            ]
+        },
+        {
+            "text": "take Family Care Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 21
+                }
+            ]
+        },
+        {
+            "text": "apply Family Care Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 22
+                }
+            ]
+        },
+        {
+            "text": "apply Family Care Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 22
+                }
+            ]
+        },
+        {
+            "text": "apply Family Care Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 22
+                }
+            ]
+        },
+        {
+            "text": "apply Family Care Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 22
+                }
+            ]
+        },
+        {
+            "text": "apply Family Care Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 22
+                }
+            ]
+        },
+        {
+            "text": "Childcare Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 14
+                }
+            ]
+        },
+        {
+            "text": "Childcare Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 14
+                }
+            ]
+        },
+        {
+            "text": "Childcare Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 14
+                }
+            ]
+        },
+        {
+            "text": "Childcare Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 14
+                }
+            ]
+        },
+        {
+            "text": "Childcare Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 14
+                }
+            ]
+        },
+        {
+            "text": "take Childcare Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "take Childcare Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "take Childcare Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "take Childcare Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "take Childcare Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "apply Childcare Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "apply Childcare Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "apply Childcare Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "apply Childcare Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "apply Childcare Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "Child Medical Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "Child Medical Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "Child Medical Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "Child Medical Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "Child Medical Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "take Child Medical Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "take Child Medical Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "take Child Medical Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "take Child Medical Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "take Child Medical Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "apply Child Medical Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 24
+                }
+            ]
+        },
+        {
+            "text": "apply Child Medical Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 24
+                }
+            ]
+        },
+        {
+            "text": "apply Child Medical Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 24
+                }
+            ]
+        },
+        {
+            "text": "apply Child Medical Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 24
+                }
+            ]
+        },
+        {
+            "text": "apply Child Medical Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 24
+                }
+            ]
+        },
+        {
+            "text": "Extended Childcare Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "Extended Childcare Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "Extended Childcare Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "Extended Childcare Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "Extended Childcare Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "take Extended Childcare Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 28
+                }
+            ]
+        },
+        {
+            "text": "take Extended Childcare Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 28
+                }
+            ]
+        },
+        {
+            "text": "take Extended Childcare Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 28
+                }
+            ]
+        },
+        {
+            "text": "take Extended Childcare Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 28
+                }
+            ]
+        },
+        {
+            "text": "take Extended Childcare Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 28
+                }
+            ]
+        },
+        {
+            "text": "apply Extended Childcare Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 29
+                }
+            ]
+        },
+        {
+            "text": "apply Extended Childcare Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 29
+                }
+            ]
+        },
+        {
+            "text": "apply Extended Childcare Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 29
+                }
+            ]
+        },
+        {
+            "text": "apply Extended Childcare Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 29
+                }
+            ]
+        },
+        {
+            "text": "apply Extended Childcare Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 29
+                }
+            ]
+        },
+        {
+            "text": "Adoption Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 13
+                }
+            ]
+        },
+        {
+            "text": "Adoption Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 13
+                }
+            ]
+        },
+        {
+            "text": "Adoption Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 13
+                }
+            ]
+        },
+        {
+            "text": "Adoption Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 13
+                }
+            ]
+        },
+        {
+            "text": "Adoption Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 13
+                }
+            ]
+        },
+        {
+            "text": "take Adoption Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "take Adoption Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "take Adoption Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "take Adoption Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "take Adoption Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "apply Adoption Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "apply Adoption Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "apply Adoption Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "apply Adoption Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "apply Adoption Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "Advance Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 12
+                }
+            ]
+        },
+        {
+            "text": "Advance Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 12
+                }
+            ]
+        },
+        {
+            "text": "Advance Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 12
+                }
+            ]
+        },
+        {
+            "text": "Advance Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 12
+                }
+            ]
+        },
+        {
+            "text": "Advance Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 12
+                }
+            ]
+        },
+        {
+            "text": "take Advance Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 17
+                }
+            ]
+        },
+        {
+            "text": "take Advance Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 17
+                }
+            ]
+        },
+        {
+            "text": "take Advance Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 17
+                }
+            ]
+        },
+        {
+            "text": "take Advance Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 17
+                }
+            ]
+        },
+        {
+            "text": "take Advance Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 17
+                }
+            ]
+        },
+        {
+            "text": "apply Advance Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "apply Advance Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "apply Advance Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "apply Advance Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "apply Advance Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "Compassionate Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "Compassionate Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "Compassionate Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "Compassionate Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "Compassionate Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "take Compassionate Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "take Compassionate Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "take Compassionate Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "take Compassionate Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "take Compassionate Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "apply Compassionate Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 24
+                }
+            ]
+        },
+        {
+            "text": "apply Compassionate Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 24
+                }
+            ]
+        },
+        {
+            "text": "apply Compassionate Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 24
+                }
+            ]
+        },
+        {
+            "text": "apply Compassionate Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 24
+                }
+            ]
+        },
+        {
+            "text": "apply Compassionate Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 24
+                }
+            ]
+        },
+        {
+            "text": "Ext Maternity (FP-SC)",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "Ext Maternity (FP-SC) from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "Ext Maternity (FP-SC) from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "Ext Maternity (FP-SC) for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "Ext Maternity (FP-SC) on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "take Ext Maternity (FP-SC)",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 25
+                }
+            ]
+        },
+        {
+            "text": "take Ext Maternity (FP-SC) from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 25
+                }
+            ]
+        },
+        {
+            "text": "take Ext Maternity (FP-SC) from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 25
+                }
+            ]
+        },
+        {
+            "text": "take Ext Maternity (FP-SC) for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 25
+                }
+            ]
+        },
+        {
+            "text": "take Ext Maternity (FP-SC) on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 25
+                }
+            ]
+        },
+        {
+            "text": "apply Ext Maternity (FP-SC)",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 26
+                }
+            ]
+        },
+        {
+            "text": "apply Ext Maternity (FP-SC) from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 26
+                }
+            ]
+        },
+        {
+            "text": "apply Ext Maternity (FP-SC) from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 26
+                }
+            ]
+        },
+        {
+            "text": "apply Ext Maternity (FP-SC) for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 26
+                }
+            ]
+        },
+        {
+            "text": "apply Ext Maternity (FP-SC) on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 26
+                }
+            ]
+        },
+        {
+            "text": "Ext Maternity (FP-SC)",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type::Ext Maternity",
+                    "startPos": 0,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "Ext Maternity (FP-SC) from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type::Ext Maternity",
+                    "startPos": 0,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "Ext Maternity (FP-SC) from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type::Ext Maternity",
+                    "startPos": 0,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "Ext Maternity (FP-SC) for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type::Ext Maternity",
+                    "startPos": 0,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "Ext Maternity (FP-SC) on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type::Ext Maternity",
+                    "startPos": 0,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "take Ext Maternity (FP-SC)",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type::Ext Maternity",
+                    "startPos": 5,
+                    "endPos": 25
+                }
+            ]
+        },
+        {
+            "text": "take Ext Maternity (FP-SC) from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type::Ext Maternity",
+                    "startPos": 5,
+                    "endPos": 25
+                }
+            ]
+        },
+        {
+            "text": "take Ext Maternity (FP-SC) from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type::Ext Maternity",
+                    "startPos": 5,
+                    "endPos": 25
+                }
+            ]
+        },
+        {
+            "text": "take Ext Maternity (FP-SC) for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type::Ext Maternity",
+                    "startPos": 5,
+                    "endPos": 25
+                }
+            ]
+        },
+        {
+            "text": "take Ext Maternity (FP-SC) on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type::Ext Maternity",
+                    "startPos": 5,
+                    "endPos": 25
+                }
+            ]
+        },
+        {
+            "text": "apply Ext Maternity (FP-SC)",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type::Ext Maternity",
+                    "startPos": 6,
+                    "endPos": 26
+                }
+            ]
+        },
+        {
+            "text": "apply Ext Maternity (FP-SC) from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type::Ext Maternity",
+                    "startPos": 6,
+                    "endPos": 26
+                }
+            ]
+        },
+        {
+            "text": "apply Ext Maternity (FP-SC) from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type::Ext Maternity",
+                    "startPos": 6,
+                    "endPos": 26
+                }
+            ]
+        },
+        {
+            "text": "apply Ext Maternity (FP-SC) for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type::Ext Maternity",
+                    "startPos": 6,
+                    "endPos": 26
+                }
+            ]
+        },
+        {
+            "text": "apply Ext Maternity (FP-SC) on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type::Ext Maternity",
+                    "startPos": 6,
+                    "endPos": 26
+                }
+            ]
+        },
+        {
+            "text": "Ext Maternity (UP-Non SC)",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 24
+                }
+            ]
+        },
+        {
+            "text": "Ext Maternity (UP-Non SC) from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 24
+                }
+            ]
+        },
+        {
+            "text": "Ext Maternity (UP-Non SC) from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 24
+                }
+            ]
+        },
+        {
+            "text": "Ext Maternity (UP-Non SC) for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 24
+                }
+            ]
+        },
+        {
+            "text": "Ext Maternity (UP-Non SC) on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 24
+                }
+            ]
+        },
+        {
+            "text": "take Ext Maternity (UP-Non SC)",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 29
+                }
+            ]
+        },
+        {
+            "text": "take Ext Maternity (UP-Non SC) from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 29
+                }
+            ]
+        },
+        {
+            "text": "take Ext Maternity (UP-Non SC) from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 29
+                }
+            ]
+        },
+        {
+            "text": "take Ext Maternity (UP-Non SC) for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 29
+                }
+            ]
+        },
+        {
+            "text": "take Ext Maternity (UP-Non SC) on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 29
+                }
+            ]
+        },
+        {
+            "text": "apply Ext Maternity (UP-Non SC)",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 30
+                }
+            ]
+        },
+        {
+            "text": "apply Ext Maternity (UP-Non SC) from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 30
+                }
+            ]
+        },
+        {
+            "text": "apply Ext Maternity (UP-Non SC) from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 30
+                }
+            ]
+        },
+        {
+            "text": "apply Ext Maternity (UP-Non SC) for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 30
+                }
+            ]
+        },
+        {
+            "text": "apply Ext Maternity (UP-Non SC) on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 30
+                }
+            ]
+        },
+        {
+            "text": "Exam / Study Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 17
+                }
+            ]
+        },
+        {
+            "text": "Exam / Study Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 17
+                }
+            ]
+        },
+        {
+            "text": "Exam / Study Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 17
+                }
+            ]
+        },
+        {
+            "text": "Exam / Study Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 17
+                }
+            ]
+        },
+        {
+            "text": "Exam / Study Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 17
+                }
+            ]
+        },
+        {
+            "text": "take Exam / Study Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 22
+                }
+            ]
+        },
+        {
+            "text": "take Exam / Study Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 22
+                }
+            ]
+        },
+        {
+            "text": "take Exam / Study Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 22
+                }
+            ]
+        },
+        {
+            "text": "take Exam / Study Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 22
+                }
+            ]
+        },
+        {
+            "text": "take Exam / Study Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 22
+                }
+            ]
+        },
+        {
+            "text": "apply Exam / Study Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "apply Exam / Study Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "apply Exam / Study Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "apply Exam / Study Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "apply Exam / Study Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "Hospitalisation Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "Hospitalisation Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "Hospitalisation Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "Hospitalisation Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "Hospitalisation Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "take Hospitalisation Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 25
+                }
+            ]
+        },
+        {
+            "text": "take Hospitalisation Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 25
+                }
+            ]
+        },
+        {
+            "text": "take Hospitalisation Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 25
+                }
+            ]
+        },
+        {
+            "text": "take Hospitalisation Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 25
+                }
+            ]
+        },
+        {
+            "text": "take Hospitalisation Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 25
+                }
+            ]
+        },
+        {
+            "text": "apply Hospitalisation Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 26
+                }
+            ]
+        },
+        {
+            "text": "apply Hospitalisation Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 26
+                }
+            ]
+        },
+        {
+            "text": "apply Hospitalisation Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 26
+                }
+            ]
+        },
+        {
+            "text": "apply Hospitalisation Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 26
+                }
+            ]
+        },
+        {
+            "text": "apply Hospitalisation Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 26
+                }
+            ]
+        },
+        {
+            "text": "In Camp Training",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 15
+                }
+            ]
+        },
+        {
+            "text": "In Camp Training from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 15
+                }
+            ]
+        },
+        {
+            "text": "In Camp Training from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 15
+                }
+            ]
+        },
+        {
+            "text": "In Camp Training for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 15
+                }
+            ]
+        },
+        {
+            "text": "In Camp Training on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 15
+                }
+            ]
+        },
+        {
+            "text": "take In Camp Training",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "take In Camp Training from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "take In Camp Training from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "take In Camp Training for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "take In Camp Training on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "apply In Camp Training",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 21
+                }
+            ]
+        },
+        {
+            "text": "apply In Camp Training from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 21
+                }
+            ]
+        },
+        {
+            "text": "apply In Camp Training from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 21
+                }
+            ]
+        },
+        {
+            "text": "apply In Camp Training for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 21
+                }
+            ]
+        },
+        {
+            "text": "apply In Camp Training on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 21
+                }
+            ]
+        },
+        {
+            "text": "Marriage Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 13
+                }
+            ]
+        },
+        {
+            "text": "Marriage Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 13
+                }
+            ]
+        },
+        {
+            "text": "Marriage Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 13
+                }
+            ]
+        },
+        {
+            "text": "Marriage Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 13
+                }
+            ]
+        },
+        {
+            "text": "Marriage Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 13
+                }
+            ]
+        },
+        {
+            "text": "take Marriage Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "take Marriage Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "take Marriage Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "take Marriage Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "take Marriage Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "apply Marriage Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "apply Marriage Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "apply Marriage Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "apply Marriage Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "apply Marriage Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "Maternity Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 14
+                }
+            ]
+        },
+        {
+            "text": "Maternity Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 14
+                }
+            ]
+        },
+        {
+            "text": "Maternity Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 14
+                }
+            ]
+        },
+        {
+            "text": "Maternity Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 14
+                }
+            ]
+        },
+        {
+            "text": "Maternity Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 14
+                }
+            ]
+        },
+        {
+            "text": "take Maternity Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "take Maternity Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "take Maternity Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "take Maternity Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "take Maternity Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "apply Maternity Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "apply Maternity Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "apply Maternity Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "apply Maternity Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "apply Maternity Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "Off in Lieu",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 10
+                }
+            ]
+        },
+        {
+            "text": "Off in Lieu from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 10
+                }
+            ]
+        },
+        {
+            "text": "Off in Lieu from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 10
+                }
+            ]
+        },
+        {
+            "text": "Off in Lieu for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 10
+                }
+            ]
+        },
+        {
+            "text": "Off in Lieu on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 10
+                }
+            ]
+        },
+        {
+            "text": "take Off in Lieu",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 15
+                }
+            ]
+        },
+        {
+            "text": "take Off in Lieu from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 15
+                }
+            ]
+        },
+        {
+            "text": "take Off in Lieu from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 15
+                }
+            ]
+        },
+        {
+            "text": "take Off in Lieu for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 15
+                }
+            ]
+        },
+        {
+            "text": "take Off in Lieu on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 15
+                }
+            ]
+        },
+        {
+            "text": "apply Off in Lieu",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "apply Off in Lieu from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "apply Off in Lieu from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "apply Off in Lieu for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "apply Off in Lieu on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "Paternity Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 14
+                }
+            ]
+        },
+        {
+            "text": "Paternity Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 14
+                }
+            ]
+        },
+        {
+            "text": "Paternity Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 14
+                }
+            ]
+        },
+        {
+            "text": "Paternity Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 14
+                }
+            ]
+        },
+        {
+            "text": "Paternity Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 14
+                }
+            ]
+        },
+        {
+            "text": "take Paternity Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "take Paternity Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "take Paternity Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "take Paternity Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "take Paternity Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "apply Paternity Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "apply Paternity Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "apply Paternity Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "apply Paternity Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "apply Paternity Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "Shared Parental Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "Shared Parental Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "Shared Parental Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "Shared Parental Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "Shared Parental Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "take Shared Parental Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 25
+                }
+            ]
+        },
+        {
+            "text": "take Shared Parental Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 25
+                }
+            ]
+        },
+        {
+            "text": "take Shared Parental Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 25
+                }
+            ]
+        },
+        {
+            "text": "take Shared Parental Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 25
+                }
+            ]
+        },
+        {
+            "text": "take Shared Parental Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 25
+                }
+            ]
+        },
+        {
+            "text": "apply Shared Parental Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 26
+                }
+            ]
+        },
+        {
+            "text": "apply Shared Parental Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 26
+                }
+            ]
+        },
+        {
+            "text": "apply Shared Parental Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 26
+                }
+            ]
+        },
+        {
+            "text": "apply Shared Parental Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 26
+                }
+            ]
+        },
+        {
+            "text": "apply Shared Parental Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 26
+                }
+            ]
+        },
+        {
+            "text": "Unpaid infant Care Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "Unpaid infant Care Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "Unpaid infant Care Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "Unpaid infant Care Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "Unpaid infant Care Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "take Unpaid infant Care Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 28
+                }
+            ]
+        },
+        {
+            "text": "take Unpaid infant Care Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 28
+                }
+            ]
+        },
+        {
+            "text": "take Unpaid infant Care Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 28
+                }
+            ]
+        },
+        {
+            "text": "take Unpaid infant Care Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 28
+                }
+            ]
+        },
+        {
+            "text": "take Unpaid infant Care Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 28
+                }
+            ]
+        },
+        {
+            "text": "apply Unpaid infant Care Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 29
+                }
+            ]
+        },
+        {
+            "text": "apply Unpaid infant Care Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 29
+                }
+            ]
+        },
+        {
+            "text": "apply Unpaid infant Care Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 29
+                }
+            ]
+        },
+        {
+            "text": "apply Unpaid infant Care Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 29
+                }
+            ]
+        },
+        {
+            "text": "apply Unpaid infant Care Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 29
+                }
+            ]
+        },
+        {
+            "text": "Unpaid Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 11
+                }
+            ]
+        },
+        {
+            "text": "Unpaid Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 11
+                }
+            ]
+        },
+        {
+            "text": "Unpaid Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 11
+                }
+            ]
+        },
+        {
+            "text": "Unpaid Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 11
+                }
+            ]
+        },
+        {
+            "text": "Unpaid Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 11
+                }
+            ]
+        },
+        {
+            "text": "take Unpaid Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "take Unpaid Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "take Unpaid Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "take Unpaid Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "take Unpaid Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "apply Unpaid Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 17
+                }
+            ]
+        },
+        {
+            "text": "apply Unpaid Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 17
+                }
+            ]
+        },
+        {
+            "text": "apply Unpaid Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 17
+                }
+            ]
+        },
+        {
+            "text": "apply Unpaid Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 17
+                }
+            ]
+        },
+        {
+            "text": "apply Unpaid Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 17
+                }
+            ]
+        },
+        {
+            "text": "Volunteer Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 14
+                }
+            ]
+        },
+        {
+            "text": "Volunteer Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 14
+                }
+            ]
+        },
+        {
+            "text": "Volunteer Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 14
+                }
+            ]
+        },
+        {
+            "text": "Volunteer Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 14
+                }
+            ]
+        },
+        {
+            "text": "Volunteer Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 14
+                }
+            ]
+        },
+        {
+            "text": "take Volunteer Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "take Volunteer Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "take Volunteer Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "take Volunteer Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "take Volunteer Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 5,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "apply Volunteer Leave",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "apply Volunteer Leave from 2 jan to 3 feb",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "apply Volunteer Leave from 2 jan for 8 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "apply Volunteer Leave for 3 days",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "apply Volunteer Leave on tomorrow",
+            "intent": "applyLeave",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "Annual Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 11
+                }
+            ]
+        },
+        {
+            "text": "Annual Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 11
+                }
+            ]
+        },
+        {
+            "text": "Medical Leave(UC) balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "Medical Leave(UC) status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "Medical Leave(C) balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 15
+                }
+            ]
+        },
+        {
+            "text": "Medical Leave(C) status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 15
+                }
+            ]
+        },
+        {
+            "text": "Family Care Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "Family Care Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "Childcare Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 14
+                }
+            ]
+        },
+        {
+            "text": "Childcare Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 14
+                }
+            ]
+        },
+        {
+            "text": "Child Medical Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "Child Medical Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "Extended Childcare Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "Extended Childcare Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "Adoption Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 13
+                }
+            ]
+        },
+        {
+            "text": "Adoption Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 13
+                }
+            ]
+        },
+        {
+            "text": "Advance Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 12
+                }
+            ]
+        },
+        {
+            "text": "Advance Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 12
+                }
+            ]
+        },
+        {
+            "text": "Compassionate Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "Compassionate Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "Ext Maternity (FP-SC) balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "Ext Maternity (FP-SC) status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "Ext Maternity (UP-Non SC) balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 24
+                }
+            ]
+        },
+        {
+            "text": "Ext Maternity (UP-Non SC) status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 24
+                }
+            ]
+        },
+        {
+            "text": "Exam / Study Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 17
+                }
+            ]
+        },
+        {
+            "text": "Exam / Study Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 17
+                }
+            ]
+        },
+        {
+            "text": "Hospitalisation Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "Hospitalisation Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "In Camp Training balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 15
+                }
+            ]
+        },
+        {
+            "text": "In Camp Training status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 15
+                }
+            ]
+        },
+        {
+            "text": "Marriage Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 13
+                }
+            ]
+        },
+        {
+            "text": "Marriage Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 13
+                }
+            ]
+        },
+        {
+            "text": "Maternity Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 14
+                }
+            ]
+        },
+        {
+            "text": "Maternity Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 14
+                }
+            ]
+        },
+        {
+            "text": "Off in Lieu balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 10
+                }
+            ]
+        },
+        {
+            "text": "Off in Lieu status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 10
+                }
+            ]
+        },
+        {
+            "text": "Paternity Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 14
+                }
+            ]
+        },
+        {
+            "text": "Paternity Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 14
+                }
+            ]
+        },
+        {
+            "text": "Shared Parental Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "Shared Parental Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "Unpaid infant Care Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "Unpaid infant Care Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "Unpaid Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 11
+                }
+            ]
+        },
+        {
+            "text": "Unpaid Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 11
+                }
+            ]
+        },
+        {
+            "text": "Volunteer Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 14
+                }
+            ]
+        },
+        {
+            "text": "Volunteer Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 0,
+                    "endPos": 14
+                }
+            ]
+        },
+        {
+            "text": "get Annual Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 15
+                }
+            ]
+        },
+        {
+            "text": "get Annual Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 15
+                }
+            ]
+        },
+        {
+            "text": "get Medical Leave(UC) balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "get Medical Leave(UC) status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "get Medical Leave(C) balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "get Medical Leave(C) status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "get Family Care Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "get Family Care Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "get Childcare Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "get Childcare Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "get Child Medical Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 22
+                }
+            ]
+        },
+        {
+            "text": "get Child Medical Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 22
+                }
+            ]
+        },
+        {
+            "text": "get Extended Childcare Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 27
+                }
+            ]
+        },
+        {
+            "text": "get Extended Childcare Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 27
+                }
+            ]
+        },
+        {
+            "text": "get Adoption Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 17
+                }
+            ]
+        },
+        {
+            "text": "get Adoption Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 17
+                }
+            ]
+        },
+        {
+            "text": "get Advance Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "get Advance Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "get Compassionate Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 22
+                }
+            ]
+        },
+        {
+            "text": "get Compassionate Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 22
+                }
+            ]
+        },
+        {
+            "text": "get Ext Maternity (FP-SC) balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 24
+                }
+            ]
+        },
+        {
+            "text": "get Ext Maternity (FP-SC) status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 24
+                }
+            ]
+        },
+        {
+            "text": "get Ext Maternity (UP-Non SC) balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 28
+                }
+            ]
+        },
+        {
+            "text": "get Ext Maternity (UP-Non SC) status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 28
+                }
+            ]
+        },
+        {
+            "text": "get Exam / Study Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 21
+                }
+            ]
+        },
+        {
+            "text": "get Exam / Study Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 21
+                }
+            ]
+        },
+        {
+            "text": "get Hospitalisation Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 24
+                }
+            ]
+        },
+        {
+            "text": "get Hospitalisation Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 24
+                }
+            ]
+        },
+        {
+            "text": "get In Camp Training balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "get In Camp Training status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "get Marriage Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 17
+                }
+            ]
+        },
+        {
+            "text": "get Marriage Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 17
+                }
+            ]
+        },
+        {
+            "text": "get Maternity Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "get Maternity Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "get Off in Lieu balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 14
+                }
+            ]
+        },
+        {
+            "text": "get Off in Lieu status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 14
+                }
+            ]
+        },
+        {
+            "text": "get Paternity Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "get Paternity Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "get Shared Parental Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 24
+                }
+            ]
+        },
+        {
+            "text": "get Shared Parental Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 24
+                }
+            ]
+        },
+        {
+            "text": "get Unpaid infant Care Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 27
+                }
+            ]
+        },
+        {
+            "text": "get Unpaid infant Care Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 27
+                }
+            ]
+        },
+        {
+            "text": "get Unpaid Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 15
+                }
+            ]
+        },
+        {
+            "text": "get Unpaid Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 15
+                }
+            ]
+        },
+        {
+            "text": "get Volunteer Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "get Volunteer Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 4,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "what is my Annual Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 22
+                }
+            ]
+        },
+        {
+            "text": "what is my Annual Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 22
+                }
+            ]
+        },
+        {
+            "text": "what is my Medical Leave(UC) balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 27
+                }
+            ]
+        },
+        {
+            "text": "what is my Medical Leave(UC) status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 27
+                }
+            ]
+        },
+        {
+            "text": "what is my Medical Leave(C) balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 26
+                }
+            ]
+        },
+        {
+            "text": "what is my Medical Leave(C) status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 26
+                }
+            ]
+        },
+        {
+            "text": "what is my Family Care Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 27
+                }
+            ]
+        },
+        {
+            "text": "what is my Family Care Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 27
+                }
+            ]
+        },
+        {
+            "text": "what is my Childcare Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 25
+                }
+            ]
+        },
+        {
+            "text": "what is my Childcare Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 25
+                }
+            ]
+        },
+        {
+            "text": "what is my Child Medical Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 29
+                }
+            ]
+        },
+        {
+            "text": "what is my Child Medical Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 29
+                }
+            ]
+        },
+        {
+            "text": "what is my Extended Childcare Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 34
+                }
+            ]
+        },
+        {
+            "text": "what is my Extended Childcare Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 34
+                }
+            ]
+        },
+        {
+            "text": "what is my Adoption Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 24
+                }
+            ]
+        },
+        {
+            "text": "what is my Adoption Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 24
+                }
+            ]
+        },
+        {
+            "text": "what is my Advance Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "what is my Advance Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "what is my Compassionate Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 29
+                }
+            ]
+        },
+        {
+            "text": "what is my Compassionate Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 29
+                }
+            ]
+        },
+        {
+            "text": "what is my Ext Maternity (FP-SC) balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 31
+                }
+            ]
+        },
+        {
+            "text": "what is my Ext Maternity (FP-SC) status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 31
+                }
+            ]
+        },
+        {
+            "text": "what is my Ext Maternity (UP-Non SC) balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 35
+                }
+            ]
+        },
+        {
+            "text": "what is my Ext Maternity (UP-Non SC) status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 35
+                }
+            ]
+        },
+        {
+            "text": "what is my Exam / Study Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 28
+                }
+            ]
+        },
+        {
+            "text": "what is my Exam / Study Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 28
+                }
+            ]
+        },
+        {
+            "text": "what is my Hospitalisation Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 31
+                }
+            ]
+        },
+        {
+            "text": "what is my Hospitalisation Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 31
+                }
+            ]
+        },
+        {
+            "text": "what is my In Camp Training balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 26
+                }
+            ]
+        },
+        {
+            "text": "what is my In Camp Training status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 26
+                }
+            ]
+        },
+        {
+            "text": "what is my Marriage Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 24
+                }
+            ]
+        },
+        {
+            "text": "what is my Marriage Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 24
+                }
+            ]
+        },
+        {
+            "text": "what is my Maternity Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 25
+                }
+            ]
+        },
+        {
+            "text": "what is my Maternity Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 25
+                }
+            ]
+        },
+        {
+            "text": "what is my Off in Lieu balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 21
+                }
+            ]
+        },
+        {
+            "text": "what is my Off in Lieu status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 21
+                }
+            ]
+        },
+        {
+            "text": "what is my Paternity Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 25
+                }
+            ]
+        },
+        {
+            "text": "what is my Paternity Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 25
+                }
+            ]
+        },
+        {
+            "text": "what is my Shared Parental Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 31
+                }
+            ]
+        },
+        {
+            "text": "what is my Shared Parental Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 31
+                }
+            ]
+        },
+        {
+            "text": "what is my Unpaid infant Care Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 34
+                }
+            ]
+        },
+        {
+            "text": "what is my Unpaid infant Care Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 34
+                }
+            ]
+        },
+        {
+            "text": "what is my Unpaid Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 22
+                }
+            ]
+        },
+        {
+            "text": "what is my Unpaid Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 22
+                }
+            ]
+        },
+        {
+            "text": "what is my Volunteer Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 25
+                }
+            ]
+        },
+        {
+            "text": "what is my Volunteer Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 11,
+                    "endPos": 25
+                }
+            ]
+        },
+        {
+            "text": "check Annual Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 17
+                }
+            ]
+        },
+        {
+            "text": "check Annual Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 17
+                }
+            ]
+        },
+        {
+            "text": "check Medical Leave(UC) balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 22
+                }
+            ]
+        },
+        {
+            "text": "check Medical Leave(UC) status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 22
+                }
+            ]
+        },
+        {
+            "text": "check Medical Leave(C) balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 21
+                }
+            ]
+        },
+        {
+            "text": "check Medical Leave(C) status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 21
+                }
+            ]
+        },
+        {
+            "text": "check Family Care Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 22
+                }
+            ]
+        },
+        {
+            "text": "check Family Care Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 22
+                }
+            ]
+        },
+        {
+            "text": "check Childcare Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "check Childcare Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "check Child Medical Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 24
+                }
+            ]
+        },
+        {
+            "text": "check Child Medical Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 24
+                }
+            ]
+        },
+        {
+            "text": "check Extended Childcare Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 29
+                }
+            ]
+        },
+        {
+            "text": "check Extended Childcare Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 29
+                }
+            ]
+        },
+        {
+            "text": "check Adoption Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "check Adoption Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "check Advance Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "check Advance Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "check Compassionate Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 24
+                }
+            ]
+        },
+        {
+            "text": "check Compassionate Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 24
+                }
+            ]
+        },
+        {
+            "text": "check Ext Maternity (FP-SC) balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 26
+                }
+            ]
+        },
+        {
+            "text": "check Ext Maternity (FP-SC) status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 26
+                }
+            ]
+        },
+        {
+            "text": "check Ext Maternity (UP-Non SC) balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 30
+                }
+            ]
+        },
+        {
+            "text": "check Ext Maternity (UP-Non SC) status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 30
+                }
+            ]
+        },
+        {
+            "text": "check Exam / Study Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "check Exam / Study Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "check Hospitalisation Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 26
+                }
+            ]
+        },
+        {
+            "text": "check Hospitalisation Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 26
+                }
+            ]
+        },
+        {
+            "text": "check In Camp Training balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 21
+                }
+            ]
+        },
+        {
+            "text": "check In Camp Training status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 21
+                }
+            ]
+        },
+        {
+            "text": "check Marriage Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "check Marriage Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 19
+                }
+            ]
+        },
+        {
+            "text": "check Maternity Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "check Maternity Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "check Off in Lieu balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "check Off in Lieu status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "check Paternity Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "check Paternity Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "check Shared Parental Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 26
+                }
+            ]
+        },
+        {
+            "text": "check Shared Parental Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 26
+                }
+            ]
+        },
+        {
+            "text": "check Unpaid infant Care Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 29
+                }
+            ]
+        },
+        {
+            "text": "check Unpaid infant Care Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 29
+                }
+            ]
+        },
+        {
+            "text": "check Unpaid Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 17
+                }
+            ]
+        },
+        {
+            "text": "check Unpaid Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 17
+                }
+            ]
+        },
+        {
+            "text": "check Volunteer Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "check Volunteer Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type",
+                    "startPos": 6,
+                    "endPos": 20
+                }
+            ]
+        },
+        {
+            "text": "Medical Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type::Medical Leave",
+                    "startPos": 0,
+                    "endPos": 12
+                }
+            ]
+        },
+        {
+            "text": "Medical Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type::Medical Leave",
+                    "startPos": 0,
+                    "endPos": 12
+                }
+            ]
+        },
+        {
+            "text": "Ext Maternity balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type::Ext Maternity",
+                    "startPos": 0,
+                    "endPos": 12
+                }
+            ]
+        },
+        {
+            "text": "Ext Maternity status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type::Ext Maternity",
+                    "startPos": 0,
+                    "endPos": 12
+                }
+            ]
+        },
+        {
+            "text": "get Medical Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type::Medical Leave",
+                    "startPos": 4,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "get Medical Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type::Medical Leave",
+                    "startPos": 4,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "get Ext Maternity balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type::Ext Maternity",
+                    "startPos": 4,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "get Ext Maternity status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type::Ext Maternity",
+                    "startPos": 4,
+                    "endPos": 16
+                }
+            ]
+        },
+        {
+            "text": "what is my Medical Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type::Medical Leave",
+                    "startPos": 11,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "what is my Medical Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type::Medical Leave",
+                    "startPos": 11,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "what is my Ext Maternity balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type::Ext Maternity",
+                    "startPos": 11,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "what is my Ext Maternity status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type::Ext Maternity",
+                    "startPos": 11,
+                    "endPos": 23
+                }
+            ]
+        },
+        {
+            "text": "check Medical Leave balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type::Medical Leave",
+                    "startPos": 6,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "check Medical Leave status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type::Medical Leave",
+                    "startPos": 6,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "check Ext Maternity balance",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type::Ext Maternity",
+                    "startPos": 6,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "check Ext Maternity status",
+            "intent": "reqStatus",
+            "entities": [
+                {
+                    "entity": "Leave Type::Ext Maternity",
+                    "startPos": 6,
+                    "endPos": 18
+                }
+            ]
+        },
+        {
+            "text": "can i know about my leave balance",
+            "intent": "reqStatus",
+            "entities": []
+        },
+        {
+            "text": "can you show me how many days my leave left ?",
+            "intent": "reqStatus",
+            "entities": []
+        },
+        {
+            "text": "get my leave balance",
+            "intent": "reqStatus",
+            "entities": []
+        },
+        {
+            "text": "get my outstanding leave status",
+            "intent": "reqStatus",
+            "entities": []
+        },
+        {
+            "text": "help me check leave status",
+            "intent": "reqStatus",
+            "entities": []
+        },
+        {
+            "text": "i want to check my leave status",
+            "intent": "reqStatus",
+            "entities": []
+        },
+        {
+            "text": "leave balance",
+            "intent": "reqStatus",
+            "entities": []
+        },
+        {
+            "text": "leave days",
+            "intent": "reqStatus",
+            "entities": []
+        },
+        {
+            "text": "take me to the status",
+            "intent": "reqStatus",
+            "entities": []
+        },
+        {
+            "text": "what ' s my out standing leave",
+            "intent": "reqStatus",
+            "entities": []
+        },
+        {
+            "text": "what' s my outstanding leave",
+            "intent": "reqStatus",
+            "entities": []
+        },
+        {
+            "text": "can you give me some help?",
+            "intent": "help",
+            "entities": []
+        },
+        {
+            "text": "help me",
+            "intent": "help",
+            "entities": []
+        },
+        {
+            "text": "main help",
+            "intent": "help",
+            "entities": []
+        },
+        {
+            "text": "what can you do?",
+            "intent": "help",
+            "entities": []
+        },
+        {
+            "text": "hello",
+            "intent": "None",
+            "entities": []
+        },
+        {
+            "text": "hi",
+            "intent": "None",
+            "entities": []
+        },
+        {
+            "text": "test",
+            "intent": "None",
+            "entities": []
+        }
+    ]
+}

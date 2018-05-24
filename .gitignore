@@ -61,5 +61,5 @@ typings/
 # server site testing file
 
 LeaveBot.json
-FunctionDescription.docx
 chatbotMemo
+test.js

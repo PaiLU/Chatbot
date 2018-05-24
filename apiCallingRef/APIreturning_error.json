@@ -1,0 +1,12 @@
+{
+    "UserId":"XXXXXXXX",
+    "UserName":"User Name",
+    "type":"error",
+    "data":[
+        {
+            "messageType":"",
+            "messageNumber":"",
+            "message":""
+        }
+    ]
+}
