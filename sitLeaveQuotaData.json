@@ -1,0 +1,137 @@
+[
+    {
+        "Leave Quota": "Annual Leave",
+        "Leave Quota Code": "01",
+        "Shortlist": "Y"
+    },
+    {
+        "Leave Quota": "Carry Forward Leave",
+        "Leave Quota Code": "02",
+        "Shortlist": "Y"
+    },
+    {
+        "Leave Quota": "Advance Leave",
+        "Leave Quota Code": "04",
+        "Shortlist": "N"
+    },
+    {
+        "Leave Quota": "Exam / Study Leave",
+        "Leave Quota Code": "17",
+        "Shortlist": "N"
+    },
+    {
+        "Leave Quota": "Adoption Leave",
+        "Leave Quota Code": "21",
+        "Shortlist": "N"
+    },
+    {
+        "Leave Quota": "Child Medical Leave",
+        "Leave Quota Code": "22",
+        "Shortlist": "N"
+    },
+    {
+        "Leave Quota": "Child Care Leave",
+        "Leave Quota Code": "23",
+        "Shortlist": "N"
+    },
+    {
+        "Leave Quota": "Marriage Leave",
+        "Leave Quota Code": "24",
+        "Shortlist": "N"
+    },
+    {
+        "Leave Quota": "Paternity Leave",
+        "Leave Quota Code": "25",
+        "Shortlist": "N"
+    },
+    {
+        "Leave Quota": "Ext Maternity (FP-SC)",
+        "Leave Quota Code": "26",
+        "Shortlist": "N"
+    },
+    {
+        "Leave Quota": "Maternity Leave",
+        "Leave Quota Code": "27",
+        "Shortlist": "N"
+    },
+    {
+        "Leave Quota": "Ext Maternity (UP-Non- SC)",
+        "Leave Quota Code": "28",
+        "Shortlist": "N"
+    },
+    {
+        "Leave Quota": "Compassionate Leave",
+        "Leave Quota Code": "29",
+        "Shortlist": "N"
+    },
+    {
+        "Leave Quota": "Family Care Leave",
+        "Leave Quota Code": "30",
+        "Shortlist": "N"
+    },
+    {
+        "Leave Quota": "Unpaid Infant Care Leave",
+        "Leave Quota Code": "33",
+        "Shortlist": "N"
+    },
+    {
+        "Leave Quota": "Ext Child Care Leave",
+        "Leave Quota Code": "36",
+        "Shortlist": "N"
+    },
+    {
+        "Leave Quota": "Hospitalisation Leave",
+        "Leave Quota Code": "40",
+        "Shortlist": "N"
+    },
+    {
+        "Leave Quota": "Medical Leave",
+        "Leave Quota Code": "41",
+        "Shortlist": "Y"
+    },
+    {
+        "Leave Quota": "Prolonged Med Leave (FP)",
+        "Leave Quota Code": "42",
+        "Shortlist": "N"
+    },
+    {
+        "Leave Quota": "Prolonged Med Leave (HP)",
+        "Leave Quota Code": "43",
+        "Shortlist": "N"
+    },
+    {
+        "Leave Quota": "Prolonged Med Leave (UP)",
+        "Leave Quota Code": "44",
+        "Shortlist": "N"
+    },
+    {
+        "Leave Quota": "Off in Lieu",
+        "Leave Quota Code": "50",
+        "Shortlist": "N"
+    },
+    {
+        "Leave Quota": "Volunteer Leave",
+        "Leave Quota Code": "52",
+        "Shortlist": "N"
+    },
+    {
+        "Leave Quota": "Shared Parental Leave",
+        "Leave Quota Code": "79",
+        "Shortlist": "N"
+    },
+    {
+        "Leave Quota": "Work Injury Hosp Leave",
+        "Leave Quota Code": "80",
+        "Shortlist": "N"
+    },
+    {
+        "Leave Quota": "Work Injury Medical Leave",
+        "Leave Quota Code": "81",
+        "Shortlist": "N"
+    },
+    {
+        "Leave Quota": "Consultancy Leave",
+        "Leave Quota Code": "82",
+        "Shortlist": "N"
+    }
+]

@@ -1,0 +1,140 @@
+[
+    {
+        "Leave Type": "Annual Leave",
+        "Require Attachment": "N",
+        "Shortlist": "Y",
+        "Type Code": "PVCL"
+    },
+    {
+        "Leave Type": "Medical Leave(UC)",
+        "Require Attachment": "N",
+        "Shortlist": "Y",
+        "Type Code": "PSKN"
+    },
+    {
+        "Leave Type": "Medical Leave(C)",
+        "Require Attachment": "Y",
+        "Shortlist": "Y",
+        "Type Code": "PSKL"
+    },
+    {
+        "Leave Type": "Family Care Leave",
+        "Require Attachment": "N",
+        "Shortlist": "N",
+        "Type Code": "PPCL"
+    },
+    {
+        "Leave Type": "Childcare Leave",
+        "Require Attachment": "N",
+        "Shortlist": "N",
+        "Type Code": "PCCL"
+    },
+    {
+        "Leave Type": "Child Medical Leave",
+        "Require Attachment": "Y",
+        "Shortlist": "N",
+        "Type Code": "PCSL"
+    },
+    {
+        "Leave Type": "Extended Childcare Leave",
+        "Require Attachment": "N",
+        "Shortlist": "N",
+        "Type Code": "PECL"
+    },
+    {
+        "Leave Type": "Adoption Leave",
+        "Require Attachment": "N",
+        "Shortlist": "N",
+        "Type Code": "PADL"
+    },
+    {
+        "Leave Type": "Advance Leave",
+        "Require Attachment": "N",
+        "Shortlist": "N",
+        "Type Code": "PADV"
+    },
+    {
+        "Leave Type": "Compassionate Leave",
+        "Require Attachment": "N",
+        "Shortlist": "N",
+        "Type Code": "PCPL"
+    },
+    {
+        "Leave Type": "Ext Maternity (FP-SC)",
+        "Require Attachment": "N",
+        "Shortlist": "N",
+        "Type Code": "PEML"
+    },
+    {
+        "Leave Type": "Ext Maternity (UP-Non SC)",
+        "Require Attachment": "N",
+        "Shortlist": "N",
+        "Type Code": "PEMU"
+    },
+    {
+        "Leave Type": "Hospitalisation Leave",
+        "Require Attachment": "Y",
+        "Shortlist": "N",
+        "Type Code": "PHOL"
+    },
+    {
+        "Leave Type": "In Camp Training",
+        "Require Attachment": "Y",
+        "Shortlist": "N",
+        "Type Code": "PICT"
+    },
+    {
+        "Leave Type": "Marriage Leave",
+        "Require Attachment": "N",
+        "Shortlist": "N",
+        "Type Code": "PMRW"
+    },
+    {
+        "Leave Type": "Maternity Leave",
+        "Require Attachment": "N",
+        "Shortlist": "N",
+        "Type Code": "PMTL"
+    },
+    {
+        "Leave Type": "Off in Lieu",
+        "Require Attachment": "N",
+        "Shortlist": "N",
+        "Type Code": "POIL"
+    },
+    {
+        "Leave Type": "Paternity Leave",
+        "Require Attachment": "N",
+        "Shortlist": "N",
+        "Type Code": "PPAL"
+    },
+    {
+        "Leave Type": "Shared Parental Leave",
+        "Require Attachment": "N",
+        "Shortlist": "N",
+        "Type Code": "PSPL"
+    },
+    {
+        "Leave Type": "Unpaid infant Care Leave",
+        "Require Attachment": "N",
+        "Shortlist": "N",
+        "Type Code": "UIFC"
+    },
+    {
+        "Leave Type": "Unpaid Leave",
+        "Require Attachment": "N",
+        "Shortlist": "N",
+        "Type Code": "UNPL"
+    },
+    {
+        "Leave Type": "Consultancy Leave",
+        "Require Attachment": "N",
+        "Shortlist": "N",
+        "Type Code": "PCON"
+    },
+    {
+        "Leave Type": "Non-Consultancy Leave",
+        "Require Attachment": "N",
+        "Shortlist": "N",
+        "Type Code": "PNCO"
+    }
+]

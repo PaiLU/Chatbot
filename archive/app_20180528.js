@@ -20,29 +20,29 @@ var needSpecifyTypes = [];
 for (var a in sitLeaveTypeData) {
     sitLeaveTypes.push(sitLeaveTypeData[a]["Leave Type"]);
     if (sitLeaveTypeData[a]["Shortlist"].toLowerCase() == "y") {
-        shortlistTypes.push(sitLeaveTypeData[a]["Leave Type"].toLowerCase());
+        shortlistTypes.push(sitLeaveTypeData[a]["Shortlist"]);
     };
     if (sitLeaveTypeData[a]["Require Attachment"].toLowerCase() == "y") {
-        reqAttTypes.push(sitLeaveTypeData[a]["Leave Type"].toLowerCase());
+        reqAttTypes.push(sitLeaveTypeData[a]["Leave Type"]);
     };
     if (sitLeaveTypeData[a]["LUIS Leave Type"].toLowerCase() != sitLeaveTypeData[a]["Leave Type"].toLowerCase()) {
         var add = true;
         for (var b in needSpecifyTypes) {
-            if (sitLeaveTypeData[a]["LUIS Leave Type"] == needSpecifyTypes[b].toLowerCase())
+            if (sitLeaveTypeData[a]["LUIS Leave Type"] == needSpecifyTypes[b])
                 add = false;
         };
         if (add) {
-            needSpecifyTypes.push(sitLeaveTypeData[a]["LUIS Leave Type"].toLowerCase());
+            needSpecifyTypes.push(sitLeaveTypeData[a]["LUIS Leave Type"]);
         }
     };
 };
 
 var connector = new builder.ChatConnector({
-    appId: process.env.MICROSOFT_APP_ID,
-    appPassword: process.env.MICROSOFT_APP_PASSWORD
-    // appId: process.env.MicrosoftAppId,
-    // appPassword: process.env.MicrosoftAppPassword,
-    // openIdMetadata: process.env.BotOpenIdMetadata
+    // appId: process.env.MICROSOFT_APP_ID,
+    // appPassword: process.env.MICROSOFT_APP_PASSWORD
+    appId: process.env.MicrosoftAppId,
+    appPassword: process.env.MicrosoftAppPassword,
+    openIdMetadata: process.env.BotOpenIdMetadata
 });
 server.post('api/messages', connector.listen());
 
@@ -65,7 +65,6 @@ const LuisModelUrl = 'https://' + luisAPIHostName + '/luis/v2.0/apps/' + luisApp
 var recognizer = new builder.LuisRecognizer(LuisModelUrl);
 bot.recognizer(recognizer);
 
-// initiate the conversation by the bot
 bot.on('conversationUpdate', function (message) {
     if (message.membersAdded) {
         message.membersAdded.forEach(function (identity) {
@@ -75,21 +74,10 @@ bot.on('conversationUpdate', function (message) {
         });
     }
 });
-
 // main program
 bot.dialog('Help', [
     function (session) {
-        var msg = new builder.Message(session)
-        .attachmentLayout(builder.AttachmentLayout.carousel)
-        .attachments([
-            new builder.HeroCard(session)
-            .text("This is a Leave Bot. You can use it to <br\>1. Apply leave<br\>2. Check your leave status<br\>3. Apply " + leaveTypeDisplayConvert("medical leave(c)") + " by uploading MC form directly")
-            .buttons([
-                builder.CardAction.imBack(session, "apply leave", "apply leave"),
-                builder.CardAction.imBack(session, "check leave status", "check leave status"),
-                builder.CardAction.imBack(session, "upload MC form", "upload MC form")
-            ])
-        ]);
+        builder.Prompts.choice(session, "This is a Leave Bot. You can use it to <br\>1. Apply leave<br\>2. Check your leave status<br\>3. Apply "+ leaveTypeDisplayConvert("medical leave(c)") +" by uploading MC form directly", ["apply leave", "check leave status", "upload mc form"], { listStyle: 3 });
     },
     function (session, results) {
         console.log("chosen result: %s", JSON.stringify(results));
@@ -99,7 +87,7 @@ bot.dialog('Help', [
         }
         else if (results.response.entity.toLowerCase() == "check leave status")
             session.cancelDialog(0, 'ReqStatus');
-        else if (results.response.entity.toLowerCase() == "upload MC form")
+        else if (results.response.entity.toLowerCase() == "upload mc form")
             session.cancelDialog(0, 'OCR');
         else
             session.endConversation("Invalid input, conversation has ended");
@@ -237,7 +225,7 @@ bot.dialog('OCR', [
                                                         }
                                                     }
                                                 });
-                                            }, 200 * (a + 1));
+                                            }, 80 * (a + 1));
                                         })(a);
                                     }
                                     session.send("Please wait for few seconds for the Bot to work on your attachment");

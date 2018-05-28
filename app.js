@@ -4,39 +4,36 @@ var restify = require('restify');
 var builder = require('botbuilder');
 var https = require('https');
 var fs = require('fs');
+var apiServices = require('./apiServices');
 var request = require('request-promise').defaults({ encoding: null });
 
-const sitLeaveTypeData = JSON.parse(fs.readFileSync('./sitLeaveTypeData.json', 'utf8'));
+const sitLeaveApplicationData = JSON.parse(fs.readFileSync('./sitLeaveApplicationData.json', 'utf8'));
+const sitLeaveQuotaData = JSON.parse(fs.readFileSync('./sitLeaveQuotaData.json', 'utf8'));
 const sitLeaveBot = JSON.parse(fs.readFileSync('./sitLeaveBot.json', 'utf8'));
 const defaultArgs = { "intent": { "intent": "apply leave", "entities": [] } };
 const datetimeV2Types = ["daterange", "date", "duration", "datetime", "datetimerange"];
 var server = restify.createServer();
 //leave type saving
-var sitLeaveTypes = [];
+var sitLeaveApplicationTypes = [];
 var shortlistTypes = [];
 var reqAttTypes = [];
-var needSpecifyTypes = [];
-//saving types to lists
-for (var a in sitLeaveTypeData) {
-    sitLeaveTypes.push(sitLeaveTypeData[a]["Leave Type"]);
-    if (sitLeaveTypeData[a]["Shortlist"].toLowerCase() == "y") {
-        shortlistTypes.push(sitLeaveTypeData[a]["Shortlist"]);
+for (var a in sitLeaveApplicationData) {
+    sitLeaveApplicationTypes.push(sitLeaveApplicationData[a]["Leave Type"]);
+    if (sitLeaveApplicationData[a]["Shortlist"].toLowerCase() == "y") {
+        shortlistTypes.push(sitLeaveApplicationData[a]["Leave Type"].toLowerCase());
     };
-    if (sitLeaveTypeData[a]["Require Attachment"].toLowerCase() == "y") {
-        reqAttTypes.push(sitLeaveTypeData[a]["Leave Type"]);
-    };
-    if (sitLeaveTypeData[a]["LUIS Leave Type"].toLowerCase() != sitLeaveTypeData[a]["Leave Type"].toLowerCase()) {
-        var add = true;
-        for (var b in needSpecifyTypes) {
-            if (sitLeaveTypeData[a]["LUIS Leave Type"] == needSpecifyTypes[b])
-                add = false;
-        };
-        if (add) {
-            needSpecifyTypes.push(sitLeaveTypeData[a]["LUIS Leave Type"]);
-        }
+    if (sitLeaveApplicationData[a]["Require Attachment"].toLowerCase() == "y") {
+        reqAttTypes.push(sitLeaveApplicationData[a]["Leave Type"].toLowerCase());
     };
 };
-
+var sitLeaveQuotaTypes = [];
+var sitLeaveQuotaShortlistTypes = [];
+for (var a in sitLeaveQuotaData) {
+    sitLeaveQuotaTypes.push(sitLeaveQuotaData[a]["Leave Quota"]);
+    if (sitLeaveQuotaData[a]["Shortlist"].toLowerCase() == "y") {
+        sitLeaveQuotaShortlistTypes.push(sitLeaveQuotaData[a]["Leave Quota"].toLowerCase());
+    };
+};
 var connector = new builder.ChatConnector({
     // appId: process.env.MICROSOFT_APP_ID,
     // appPassword: process.env.MICROSOFT_APP_PASSWORD
@@ -65,19 +62,17 @@ const LuisModelUrl = 'https://' + luisAPIHostName + '/luis/v2.0/apps/' + luisApp
 var recognizer = new builder.LuisRecognizer(LuisModelUrl);
 bot.recognizer(recognizer);
 
-bot.on('conversationUpdate', function (message) {
-    if (message.membersAdded) {
-        message.membersAdded.forEach(function (identity) {
-            if (identity.id === message.address.bot.id) {
-                bot.beginDialog(message.address, '/');
-            }
-        });
+bot.on("event", function (event) {
+    if (event.name === "apiToken") {
+        bot.beginDialog(event.address, 'dialogApiToken', event.text);
+        bot.beginDialog(event.address, '/');
     }
-});
+})
 // main program
+bot.dialog('dialogApiToken', require('./dialogApiToken'));
 bot.dialog('Help', [
     function (session) {
-        builder.Prompts.choice(session, "This is a Leave Bot. You can use it to <br\>1. Apply leave<br\>2. Check your leave status<br\>3. Apply "+ leaveTypeDisplayConvert("medical leave(c)") +" by uploading MC form directly", ["apply leave", "check leave status", "upload mc form"], { listStyle: 3 });
+        builder.Prompts.choice(session, "This is a Leave Bot. You can use it to <br\>1. Apply leave<br\>2. Check your leave status<br\>3. Apply " + leaveTypeDisplayConvert("medical leave(c)") + " by uploading MC form directly", ["apply leave", "check leave status", "upload mc form"], { listStyle: 3 });
     },
     function (session, results) {
         console.log("chosen result: %s", JSON.stringify(results));
@@ -101,50 +96,40 @@ bot.dialog('ReqStatus', [
         if (args) {
             console.log(JSON.stringify(args));
             session.beginDialog('ConvertingData', args);
+        }
+        next();
+    },
+    function (session, args, next) {
+        if (session.conversationData.received && session.conversationData.received.leaveType) {
+            session.conversationData.request.leaveType = session.conversationData.received.leaveType;
             next();
         } else {
-            builder.Prompts.choice(session, "Which balance are you looking for?", ["show all balances"].concat(shortlistTypes), { listStyle: 3 });
-        };
+
+            builder.Prompts.choice(session, "Which balance are you looking for?", ["show all balances"].concat(sitLeaveQuotaShortlistTypes), { listStyle: 3 });
+        }
     },
     function (session, results, next) {
         if (results.response) {
             console.log(results);
             // add patrameter
-            if (results.response == "show all balances") {
-                session.conversationData.request.leaveType = "all"
-            } else {
-                session.conversationData.request.leaveType = results.response;
+            if (results.response.entity == "show all balances") {
+                session.conversationData.request.leaveType = "";
                 next();
-
+            } else {
+                session.conversationData.request.leaveType = results.response.entity.toLowerCase();
+                next();
             }
         } else {
-            if (session.conversationData.received) {
-            }
             next();
         }
     },
     function (session) {
-        //fake API
-        // var options = {
-        //     host: 'leavebot-sit-api.azurewebsites.net',
-        //     port: 80,
-        //     path: '/api/leave/' + "6",
-        //     // path:'/api/leave/'+session.message.user.id,
-        //     method: 'GET'
-        // };
-        // https.request(options, function (res) {
-        //     res.setEncoding('utf8');
-        //     res.on('data', function (data) {
-        //         var received = JSON.parse(data);
-        //         console.log(typeof (received) + " " + received);
-        //         if (received == "entity not found") {
-        //             session.send("The API is not responding");
-        //         } else {
-        //             session.endConversation("Name: %s<br\>Your remaining annual leaves: %s day(s)<br\>Your remaining sick leaves: %s day(s)<br\>Your current pending annual leave: %s day(s) <br\>Your current pending sick leave: %s day(s)", session.message.user.name, received.annualLeave || 0, received.sickLeave || 0, received.pending.annualLeave || 0, received.pending.sickLeave || 0);
-        //         }
-        //     });
-        // }).end();
-        session.send("The SAP API is currently disabled")
+        console.log(`${matchLeaveQuotaCode(session.conversationData.request.leaveType)} type: ${typeof(matchLeaveQuotaCode(session.conversationData.request.leaveType))}`);
+        apiServices.checkLeaveBalance(matchLeaveQuotaCode(session.conversationData.request.leaveType), session.conversationData.apiToken)
+            .then((value) => {
+                session.send(JSON.stringify(value));
+                session.endConversation();
+            });
     }
 ]).triggerAction({
     matches: ['reqStatus']
@@ -156,7 +141,6 @@ bot.dialog('OCR', [
     function (session, results, next) {
         var msg = session.message;
         if (msg.attachments.length) {
-
             // Message with attachment, proceed to download it.
             // Skype & MS Teams attachment URLs are secured by a JwtToken, so we need to pass the token from our bot.
             var attachment = msg.attachments[0];
@@ -225,7 +209,7 @@ bot.dialog('OCR', [
                                                         }
                                                     }
                                                 });
-                                            }, 80 * (a + 1));
+                                            }, 200 * (a + 1));
                                         })(a);
                                     }
                                     session.send("Please wait for few seconds for the Bot to work on your attachment");
@@ -335,9 +319,9 @@ bot.dialog('AskLeaveType', [
     function (session, args, next) {
         console.log(args);
         if (args != "all") {
-            builder.Prompts.choice(session, "Please specify your leave type.", sitLeaveTypes.slice(0, 3).concat("show all leave types"), { listStyle: 3 });
+            builder.Prompts.choice(session, "Please specify your leave type.", sitLeaveApplicationTypes.slice(0, 3).concat("show all leave types"), { listStyle: 3 });
         } else {
-            builder.Prompts.choice(session, "Please specify your leave type.", sitLeaveTypes, { listStyle: 3 });
+            builder.Prompts.choice(session, "Please specify your leave type.", sitLeaveApplicationTypes, { listStyle: 3 });
         }
     },
     function (session, results) {
@@ -441,8 +425,8 @@ bot.dialog('NoDateInfo', [
 bot.dialog('CheckLeaveType', [
     function (session, args) {
         session.dialogData.check = false;
-        for (var a in sitLeaveTypes) {
-            if (args.toLowerCase() == sitLeaveTypes[a].toLowerCase()) {
+        for (var a in sitLeaveApplicationTypes) {
+            if (args.toLowerCase() == sitLeaveApplicationTypes[a].toLowerCase()) {
                 session.dialogData.check = true;
                 session.conversationData.apply.leaveType = args.toLowerCase();;
                 break;
@@ -908,21 +892,15 @@ function deleteAttachment(attachmentArray, n) {
 function addAttachment(attachmentArray, attachmentItem) {
     return attachmentArray.push(attachmentItem);
 }
-function validateAttachmentType(attachment) {
-    var fileTyptLimit = ["image/jpg", "image/jpeg", "image/png", "image/bmp", "image/gif", "image/tiff", "application/pdf"]
+function validateAttachment(attachment) {
+    var fileTyptLimit = ["image/jpg", "image/jpeg", "image/png", "image/bmp", "image/gif", "image/tiff", "application/pdf"];
+    var fileSizeLimit = 3 * 1024 * 1024; // 3 Mega Bites
     for (var a in fileTypeLimit) {
         var check = false;
-        if (attachment.contentType == fileTyptLimit)
+        if (attachment.contentType == fileTyptLimit && sizeOf(attachment.contentType) <= fileSizeLimit) {
             check = true;
-        return check
-    }
-}
-function validateAttachmentSize(attachment) {
-    for (var a in fileTypeLimit) {
-        var fileSizeLimit = 3 * 1024 * 1024
-        var check = false;
-        if (sizeOf(attachment.contentType) <= fileSizeLimit)
-            check = true;
+            break;
+        }
         return check
     }
 }
@@ -938,4 +916,24 @@ function parseOcrObject(ocrObj) {
         }
     }
     return lines;
+}
+function matchLeaveQuotaCode(leaveType) {
+    var code = "";
+    for (var a in sitLeaveQuotaData) {
+        if (sitLeaveQuotaData[a]["Leave Quota"].toLowerCase() == leaveType.toLowerCase()) {
+            code = sitLeaveQuotaData[a]["Leave Quota Code"];
+            break;
+        }
+    }
+    return code;
+}
+function matchLeaveApplicationCode(leaveType) {
+    var code ="";
+    for (var a in sitLeaveApplicationData) {
+        if (sitLeaveApplicationData[a]["Leave Type"].toLowerCase() == leaveType.toLowerCase()) {
+            code = sitLeaveApplicationData[a]["Type Code"];
+            break;
+        }
+    }
+    return code;
 }

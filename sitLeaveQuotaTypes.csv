@@ -1,0 +1,28 @@
+Leave Quota	Leave Quota Code	Shortlist
+Annual Leave	01	Y
+Carry Forward Leave	02	Y
+Advance Leave	04	N
+Exam / Study Leave	17	N
+Adoption Leave	21	N
+Child Medical Leave	22	N
+Child Care Leave	23	N
+Marriage Leave	24	N
+Paternity Leave	25	N
+Ext Maternity (FP-SC)	26	N
+Maternity Leave	27	N
+Ext Maternity (UP-Non- SC)	28	N
+Compassionate Leave	29	N
+Family Care Leave	30	N
+Unpaid Infant Care Leave	33	N
+Ext Child Care Leave	36	N
+Hospitalisation Leave	40	N
+Medical Leave	41	Y
+Prolonged Med Leave (FP)	42	N
+Prolonged Med Leave (HP)	43	N
+Prolonged Med Leave (UP)	44	N
+Off in Lieu	50	N
+Volunteer Leave	52	N
+Shared Parental Leave	79	N
+Work Injury Hosp Leave	80	N
+Work Injury Medical Leave	81	N
+Consultancy Leave	82	N

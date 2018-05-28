@@ -1,0 +1,24 @@
+Leave Type,Require Attachment,Shortlist,Type Code
+Annual Leave,N,Y,PVCL
+Medical Leave(UC),N,Y,PSKN
+Medical Leave(C),Y,Y,PSKL
+Family Care Leave,N,N,PPCL
+Childcare Leave,N,N,PCCL
+Child Medical Leave,Y,N,PCSL
+Extended Childcare Leave,N,N,PECL
+Adoption Leave,N,N,PADL
+Advance Leave,N,N,PADV
+Compassionate Leave,N,N,PCPL
+Ext Maternity (FP-SC),N,N,PEML
+Ext Maternity (UP-Non SC),N,N,PEMU
+Hospitalisation Leave,Y,N,PHOL
+In Camp Training,Y,N,PICT
+Marriage Leave,N,N,PMRW
+Maternity Leave,N,N,PMTL
+Off in Lieu,N,N,POIL
+Paternity Leave,N,N,PPAL
+Shared Parental Leave,N,N,PSPL
+Unpaid infant Care Leave,N,N,UIFC
+Unpaid Leave,N,N,UNPL
+Consultancy Leave,N,N,PCON
+Non-Consultancy Leave,N,N,PNCO
