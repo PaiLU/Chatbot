@@ -124,9 +124,10 @@ bot.dialog('ReqStatus', [
         }
     },
     function (session) {
-        console.log(`${matchLeaveQuotaCode(session.conversationData.request.leaveType)} type: ${typeof(matchLeaveQuotaCode(session.conversationData.request.leaveType))}`);
+        console.log(`${matchLeaveQuotaCode(session.conversationData.request.leaveType)} type: ${typeof (matchLeaveQuotaCode(session.conversationData.request.leaveType))}`);
         apiServices.checkLeaveBalance(matchLeaveQuotaCode(session.conversationData.request.leaveType), session.conversationData.apiToken)
             .then((value) => {
+                //do something with response
                 session.send(JSON.stringify(value));
                 session.endConversation();
             });
@@ -141,95 +142,89 @@ bot.dialog('OCR', [
     function (session, results, next) {
         var msg = session.message;
         if (msg.attachments.length) {
-            // Message with attachment, proceed to download it.
-            // Skype & MS Teams attachment URLs are secured by a JwtToken, so we need to pass the token from our bot.
             var attachment = msg.attachments[0];
             var fileDownload = request(attachment.contentUrl);
-            console.log(JSON.stringify(attachment))
-
             fileDownload.then(
                 function (fileResponse) {
-                    // Send reply with attachment type & size
-                    // var reply = new builder.Message(session)
-                    //     .text('Attachment of %s type and size of %s bytes received.', attachment.contentType, fileResponse.length);
-                    // session.send(reply);
-
-                    // https calls
-                    var ocrResponseStr = '';
-                    var LUISResString = '';
-                    var req = https.request(
-                        {
-                            host: 'southeastasia.api.cognitive.microsoft.com',
-                            path: '/vision/v1.0/ocr?language=en&detectOrientation=true',
-                            method: 'POST',
-                            headers: {
-                                'host': 'southeastasia.api.cognitive.microsoft.com',
-                                'Ocp-Apim-Subscription-Key': process.env.OCRKey,
-                                "Content-Type": 'application/octet-stream'
-                            }
-                        }, function (res) {
-                            res.setEncoding('utf8');
-                            if (res.statusCode === 200) {
-                                res.on('data', function (data) {
-                                    ocrResponseStr += data;
-                                });
-                                res.on('end', (err) => {
-                                    var ocrResponseObj = JSON.parse(ocrResponseStr);
-                                    var ocrStr = parseOcrObject(ocrResponseObj);
-                                    console.log(ocrStr.length);
-                                    // send Text to LUIS (TBC)
-                                    // var luisLengthLimit = 500;
-                                    // if (ocrStr.length >=luisLengthLimit)
-                                    //     ocrStr = ocrStr.slice(0,luisLengthLimit);
-                                    var allIntents = [];
-                                    var allEntities = [];
-                                    var count = 0;
-                                    for (var a in ocrStr) {
-                                        (function (num) {
-                                            setTimeout(function () {
-                                                console.log(num);
-                                                builder.LuisRecognizer.recognize(ocrStr[num].toString(), LuisModelUrl, function (err, intents, entities) {
-                                                    if (err) {
-                                                        console.log(err);
-                                                    }
-                                                    allIntents.push(...(intents.filter(i => i.score > 0.6 && i.intent !== "None")));
-                                                    allEntities.push(...entities);
-                                                    count++;
-                                                    if (count === ocrStr.length) {
-                                                        if (allEntities) {
-                                                            var entity = builder.EntityRecognizer.findEntity(allEntities, "leaveType");
-                                                            if (entity && entityExtract(entity) == "medical leave") {
-                                                                session.dialogData.ocrArgs = { "intent": { "intent": "apply leave", "entities": [...allEntities] } };
-                                                                session.cancelDialog(0, 'ApplyLeave', session.dialogData.ocrArgs);
+                    // validate the attachment
+                    if (validateAttachment(attachment.contentType, fileResponse.length)) {
+                        // convert to base64 string and save
+                        var imageBase64Sting = new Buffer(fileResponse, 'binary').toString('base64');
+                        session.conversationData.attachments.push({
+                            contentType: attachment.contentType,
+                            contentUrl: 'data:' + attachment.contentType + ';base64,' + imageBase64Sting,
+                            name: attachment.name
+                        });
+                        console.log(`The attachment has been saved`);
+                        // https calls to OCR
+                        var ocrResponseStr = '';
+                        var LUISResString = '';
+                        var req = https.request(
+                            {
+                                host: 'southeastasia.api.cognitive.microsoft.com',
+                                path: '/vision/v1.0/ocr?language=en&detectOrientation=true',
+                                method: 'POST',
+                                headers: {
+                                    'host': 'southeastasia.api.cognitive.microsoft.com',
+                                    'Ocp-Apim-Subscription-Key': process.env.OCRKey,
+                                    "Content-Type": 'application/octet-stream'
+                                }
+                            }, function (res) {
+                                res.setEncoding('utf8');
+                                if (res.statusCode === 200) {
+                                    res.on('data', function (data) {
+                                        ocrResponseStr += data;
+                                    });
+                                    res.on('end', (err) => {
+                                        var ocrResponseObj = JSON.parse(ocrResponseStr);
+                                        var ocrStr = parseOcrObject(ocrResponseObj);
+                                        console.log(ocrStr.length);
+                                        var allIntents = [];
+                                        var allEntities = [];
+                                        var count = 0;
+                                        for (var a in ocrStr) {
+                                            (function (num) {
+                                                setTimeout(function () {
+                                                    console.log(num);
+                                                    builder.LuisRecognizer.recognize(ocrStr[num].toString(), LuisModelUrl, function (err, intents, entities) {
+                                                        if (err) {
+                                                            console.log(err);
+                                                        }
+                                                        allIntents.push(...(intents.filter(i => i.score > 0.6 && i.intent !== "None")));
+                                                        allEntities.push(...entities);
+                                                        count++;
+                                                        if (count === ocrStr.length) {
+                                                            if (allEntities) {
+                                                                var entity = builder.EntityRecognizer.findEntity(allEntities, "leaveType");
+                                                                if (entity && entityExtract(entity) == "medical leave") {
+                                                                    // call 'ApplyLeave' Dialog with all recognized entities
+                                                                    session.dialogData.ocrArgs = { "intent": { "intent": "apply leave", "entities": [...allEntities] } };
+                                                                    session.cancelDialog(0, 'ApplyLeave', session.dialogData.ocrArgs);
+                                                                } else {
+                                                                    builder.Prompts.confirm(session, "I didn't recognize any key words, like medical certificate, in the attachment. Do you still want to proceed the applciation with this attachment?", { listStyle: 3 })
+                                                                };
                                                             } else {
                                                                 builder.Prompts.confirm(session, "I didn't recognize any key words, like medical certificate, in the attachment. Do you still want to proceed the applciation with this attachment?", { listStyle: 3 })
-                                                            };
-                                                        } else {
-                                                            builder.Prompts.confirm(session, "I didn't recognize any key words, like medical certificate, in the attachment. Do you still want to proceed the applciation with this attachment?", { listStyle: 3 })
+                                                            }
                                                         }
-                                                    }
-                                                });
-                                            }, 200 * (a + 1));
-                                        })(a);
-                                    }
-                                    session.send("Please wait for few seconds for the Bot to work on your attachment");
-                                })
+                                                    });
+                                                }, 200 * (a + 1));
+                                            })(a);
+                                        }
+                                        session.send("Please wait for few seconds for the Bot to work on your attachment");
+                                    })
+                                }
                             }
-                        }
-                    );
-                    req.write(fileResponse);
-                    req.end();
-
-                    // // echo back uploaded image as base64 string
-                    // var imageBase64Sting = new Buffer(fileResponse, 'binary').toString('base64');
-                    // var echoImage = new builder.Message(session).text('You sent: ').addAttachment({
-                    //     contentType: attachment.contentType,
-                    //     contentUrl: 'data:' + attachment.contentType + ';base64,' + imageBase64Sting,
-                    //     name: 'Uploaded image'
-                    // });
-                    // session.send(echoImage);
+                        );
+                        req.write(fileResponse);
+                        req.end();
+                    } else {
+                        session.send("The attachment should be image type or a PDF file within 3MB. Please try again.");
+                        session.replaceDialog('AddAttachment');
+                    }
                 }).catch(function (err) {
                     console.log('Error downloading attachment:', { statusCode: err.statusCode, message: err.response.statusMessage });
+                    session.endConversation("Sorry an error occured during downloading attachment");
                 });
         } else {
             // No attachments were sent
@@ -244,16 +239,15 @@ bot.dialog('OCR', [
             session.cancelDialog(0, 'Help')
         };
     }
-])
-
+]);
 bot.dialog('ApplyLeave', [
     function (session, args) {
         console.log(JSON.stringify(args));
-        session.beginDialog('ConvertingData', args);
         session.conversationData.apply = new Object;
         var now = new Date();
         session.conversationData.offset = now.getTimezoneOffset() * 60 * 1000;
         console.log("offset is " + session.conversationData.offset / 60 / 60 / 1000 + " hours");
+        session.beginDialog('ConvertingData', args);
     },
     function (session, results, next) {
         if (session.conversationData.received.leaveType) {
@@ -277,6 +271,7 @@ bot.dialog('ApplyLeave', [
         }
     },
     function (session) {
+        // currerently using list Entity in LUIS, this step is a dupilicate checking
         session.beginDialog('CheckLeaveType', session.conversationData.received.leaveType);
     },
     function (session) {
@@ -305,11 +300,10 @@ bot.dialog('ConvertingData', [
             // session.conversationData.received.dateInfo.endDate = findCompositeEntities(args.intent.compositeEntities || {}, args.intent.entities, 'endDay', 'builtin.datetimeV2.date');
             // session.conversationData.processing.dateInfo.start = dateExtract(session.conversationData.received.dateInfo.startDate);
             // session.conversationData.processing.dateInfo.end = dateExtract(session.conversationData.received.dateInfo.endDate)
-            var a = new Object();
             for (var o in datetimeV2Types) {
-                a[datetimeV2Types[o]] = builder.EntityRecognizer.findEntity(args.intent.entities || {}, 'builtin.datetimeV2.' + datetimeV2Types[o]);
+                session.conversationData.received.dateInfo[datetimeV2Types[o]] = builder.EntityRecognizer.findEntity(args.intent.entities || {}, 'builtin.datetimeV2.' + datetimeV2Types[o]);
             };
-            session.conversationData.processing.dateInfo = dateExtract(a);
+            session.conversationData.processing.dateInfo = dateExtract(session.conversationData.received.dateInfo);
         }
 
         session.endDialog();
@@ -326,15 +320,15 @@ bot.dialog('AskLeaveType', [
     },
     function (session, results) {
         console.log("chosen result: %s", JSON.stringify(results));
-        if (results.response.entity == "show all leave types")
+        if (results.response.entity.toLowerCase() == "show all leave types")
             session.replaceDialog('AskLeaveType', "all")
         else {
-            session.conversationData.apply.leaveType = results.response.entity;
+            session.conversationData.received.leaveType = results.response.entity.toLowerCase();
             session.endDialog();
         }
     },
     function (session, results) {
-        session.conversationData.apply.leaveType = results.response.entity;
+        session.conversationData.rececived.leaveType = results.response.entity;
         session.endDialog();
     },
 ]).cancelAction({
@@ -424,15 +418,15 @@ bot.dialog('NoDateInfo', [
 });
 bot.dialog('CheckLeaveType', [
     function (session, args) {
-        session.dialogData.check = false;
+        var check = false;
         for (var a in sitLeaveApplicationTypes) {
             if (args.toLowerCase() == sitLeaveApplicationTypes[a].toLowerCase()) {
-                session.dialogData.check = true;
-                session.conversationData.apply.leaveType = args.toLowerCase();;
+                check = true;
+                // session.conversationData.apply.leaveType = args.toLowerCase();
                 break;
             }
         };
-        if (session.dialogData.check) {
+        if (check) {
             console.log("Checked the applying leave type is %s", args.toLowerCase());
             session.endDialogWithResult(args.toLowerCase());
         } else {
@@ -453,14 +447,13 @@ bot.dialog('AskSpecificType', [
                 break;
             }
             default: {
-                session.conversationData.processing.leaveType = session.conversationData.received.leaveType;
                 session.endDialog();
                 break;
             }
         }
     },
     function (session, results) {
-        session.conversationData.processing.leaveType = results.response.entity;
+        session.conversationData.received.leaveType = results.response.entity.toLowerCase();
         session.endDialog();
     }
 ]);
@@ -471,23 +464,20 @@ bot.dialog('Attachments', [
 ]);
 bot.dialog('CheckAttachment', [
     function (session, args, next) {
-        if (checkEntity(session.conversationData.apply.leaveType, reqAttTypes)) {
-
+        if (checkEntity(session.conversationData.received.leaveType, reqAttTypes) && session.conversationData.attachments && session.conversationData.attachments.length > 0) {
+            session.send(`An attachment for applying ${session.conversationData.rececived.leaveType} is required`);
+            session.beginDialog('AddAttachment');
         }
-        // else{
-        //     var msg = "Attachment for applying "+ session.conversationData.apply.leaveType+ " is not really required.";
-        //     session.send(msg);
-        // };
         next();
     },
     function (session) {
         session.endDialog();
     }
 ]);
-bot.dialog('AskAttachment', [
+bot.dialog('AddAttachment', [
     function (session) {
         var askAttachment1 = new builder.Message(session)
-            .text("Please upload a supporting attachment.");
+            .text("Please upload an attachment.");
         builder.Prompts.attachment(session, askAttachment1);
     },
     function (session, results) {
@@ -498,88 +488,29 @@ bot.dialog('AskAttachment', [
             fileDownload.then(
                 function (fileResponse) {
                     // Send reply with attachment type & size
-                    var reply = new builder.Message(session)
-                        .text('Attachment of %s type and size of %s bytes received.', attachment.contentType, fileResponse.length);
-                    session.send(reply);
-                    // https calls
-                    var ocrResponseStr = '';
-                    var req = https.request(
-                        {
-                            host: 'westcentralus.api.cognitive.microsoft.com',
-                            path: '/vision/v1.0/ocr?language=en&detectOrientation=true',
-                            method: 'POST',
-                            headers: {
-                                'host': 'westcentralus.api.cognitive.microsoft.com',
-                                'Ocp-Apim-Subscription-Key': OCRKey,
-                                "Content-Type": 'application/octet-stream'
-                            }
-                        }, function (res) {
-                            res.setEncoding('utf8');
-                            if (res.statusCode === 200) {
-                                res.on('data', function (data) {
-                                    ocrResponseStr += data;
-                                });
-                                res.on('end', (err) => {
-                                    var ocrResponseObj = JSON.parse(ocrResponseStr);
-                                    var ocrStr = parseOcrObject(ocrResponseObj);
-                                    session.send("Recognized from your attachment:<br \>" + ocrStr);
-                                    // send Text to LUIS (TBC)
-                                    // var reqLUIS = https.request(
-                                    //     {
-                                    //         host:luisAPIHostName,
-                                    //         path:'/luis/v2.0/apps/' + luisAppId + '?subscription-key=' + luisAPIKey + '&spellCheck=true&bing-spell-check-subscription-key=' + bingSpellCheckKey + '&verbose=true&timezoneOffset=0&q='+ocrStr,
-                                    //         method:'GET'
-                                    //     }, (res)=>{
-                                    //         res.setEncoding('utf8');
-                                    //         var LUISResString = '';
-                                    //         if(res.statusCode ===200){
-                                    //             res.on('data',function(data){
-                                    //                 LUISResString += data;
-                                    //             });
-                                    //             res.on('end',(err)=>{
-                                    //                 var LUISResObj = JSON.parse(LUISResString);
-                                    //                 console.log(LUISResObj);
-                                    //             })
-                                    //         }
-                                    //     }
-                                    // )
-                                })
-                            }
-                        }
-                    );
-                    req.write(fileResponse);
-                    req.end();
-                    // convert to base64 string
-                    var imageBase64Sting = new Buffer(fileResponse, 'binary').toString('base64');
-                    session.conversationData.attachments.push({
-                        contentType: attachment.contentType,
-                        contentUrl: 'data:' + attachment.contentType + ';base64,' + imageBase64Sting,
-                        name: 'Uploaded image'
-                    });
-                    session.send("The aattachment has been saved");
-                    next();
+                    if (validateAttachment(attachment.contentType, fileResponse.length)) {
+                        // convert to base64 string and save
+                        var imageBase64Sting = new Buffer(fileResponse, 'binary').toString('base64');
+                        session.conversationData.attachments.push({
+                            contentType: attachment.contentType,
+                            contentUrl: 'data:' + attachment.contentType + ';base64,' + imageBase64Sting,
+                            name: attachment.name
+                        });
+                        console.log(`The attachment has been saved`);
+                        next();
+                    } else {
+                        session.send("The attachment should be image type or a PDF file within 3MB. Please try again.");
+                        session.replaceDialog('AddAttachment');
+                    }
                 }).catch(function (err) {
                     console.log('Error downloading attachment:', { statusCode: err.statusCode, message: err.response.statusMessage });
+                    session.endConversation("Sorry an error occured during downloading attachment");
                 });
         } else {
             // No attachments were sent
             var reply = new builder.Message(session)
                 .text('Please try again sending an attachment.');
-            session.replaceDialog('Help');
-        }
-        var att = results.response[0];
-        var contentType = /^image\//
-        if (!!att.contentType.match(contentType)) {
-            session.conversationData.apply.attachments =
-                {
-                    contentType: att.contentType,
-                    contentUrl: att.contentUrl,
-                    name: att.name
-                };
-            session.endDialog();
-        } else {
-            session.send("Sorry, any non-image type attachment is not acceptable")
-            session.replaceDialog('AskAttachment')
+            session.replaceDialog('AddAttachment');
         }
     }
 ]);
@@ -593,7 +524,7 @@ bot.dialog('CheckApplyInfo', [
         session.conversationData.apply.endDate = session.conversationData.apply.end.getDate();
         session.conversationData.apply.endMon = session.conversationData.apply.end.getMonth() + 1;
         session.conversationData.apply.endYear = session.conversationData.apply.end.getFullYear();
-        session.send('Hi %s<br\>You are applying %s from %s-%s-%s to %s-%s-%s <br\>', session.message.user.name, leaveTypeDisplayConvert(session.conversationData.apply.leaveType), monConvert(session.conversationData.apply.startMon), session.conversationData.apply.startDate, session.conversationData.apply.startYear, monConvert(session.conversationData.apply.endMon), session.conversationData.apply.endDate, session.conversationData.apply.endYear);
+        session.send('Hi %s<br\>You are applying %s from %s-%s-%s to %s-%s-%s <br\>', session.message.user.name, leaveTypeDisplayConvert(session.conversationData.received.leaveType), monConvert(session.conversationData.apply.startMon), session.conversationData.apply.startDate, session.conversationData.apply.startYear, monConvert(session.conversationData.apply.endMon), session.conversationData.apply.endDate, session.conversationData.apply.endYear);
         builder.Prompts.confirm(session, "Please confirm if your request information is correct", { listStyle: 3 });
     },
     function (session, results) {
@@ -628,7 +559,7 @@ bot.dialog('CorrectingInfo', [
                 break;
             }
             case "attachment": {
-                session.beginDialog('AskAttachment');
+                session.beginDialog('AddAttachment');
                 break;
             }
             case "cancel request": {
@@ -651,7 +582,7 @@ bot.dialog('CorrectingInfo', [
 ])
 bot.dialog('ApplyConfirmed', [
     function (session) {
-        session.send('Hi %s<br\>You are applying %s from %s-%s-%s to %s-%s-%s <br\>The information has been sent to the server successfully.', session.message.user.name, leaveTypeDisplayConvert(session.conversationData.apply.leaveType), monConvert(session.conversationData.apply.startMon), session.conversationData.apply.startDate, session.conversationData.apply.startYear, monConvert(session.conversationData.apply.endMon), session.conversationData.apply.endDate, session.conversationData.apply.endYear);
+        session.send('Hi %s<br\>You are applying %s from %s-%s-%s to %s-%s-%s <br\>The information has been sent to the server successfully.', session.message.user.name, leaveTypeDisplayConvert(session.conversationData.received.leaveType), monConvert(session.conversationData.apply.startMon), session.conversationData.apply.startDate, session.conversationData.apply.startYear, monConvert(session.conversationData.apply.endMon), session.conversationData.apply.endDate, session.conversationData.apply.endYear);
         //get api url+
         session.endConversation();
     }
@@ -677,7 +608,7 @@ bot.dialog('ListAttachments', [
 function entityExtract(receivedEntity) {
     var o = new Object();
     if (receivedEntity.resolution.values) {
-        return receivedEntity.resolution.values[0]
+        return receivedEntity.resolution.values[0].toLowerCase();
     } else
         return null;
 };
@@ -714,7 +645,6 @@ function dateExtract(receivedDateEntityList) {
     // returned value is the millisecond
     return o;
 };
-
 function monConvert(m) {
     switch (m) {
         case 1: {
@@ -823,25 +753,6 @@ function dateAdd(interval, number, date) {
         }
     }
 };
-var phraseList = [];
-for (var a in sitLeaveBot.model_features) {
-    phraseList.push({
-        "name": sitLeaveBot.model_features[a].name,
-        "words": sitLeaveBot.model_features[a].words.split(",")
-    })
-};
-function checkLeaveType(entity, types, phraseList) {
-    var combinedList = [];
-    for (var a in types) {
-        combinedList.name.push(types[a]);
-        for (var b in phraseList) {
-            if (types[a].toLowerCase() == phraseList[b].name.toLowerCase())
-                combinedList.words.push()
-        }
-    }
-    if (checkEntity(entity, combinedList))
-        return null;
-}
 function checkEntity(entity, entityList) {
     var check = false;
     for (var a in entityList) {
@@ -882,22 +793,18 @@ function findCompositeEntities(compositeEntities, entities, parentType, childTyp
     } else
         return null;
 }
-
 function deleteAttachment(attachmentArray, n) {
     if (attachmentArray && attachmentArray > 0) {
         attachmentArray.splice(n, 1);
     }
     return attachmentArray;
 }
-function addAttachment(attachmentArray, attachmentItem) {
-    return attachmentArray.push(attachmentItem);
-}
-function validateAttachment(attachment) {
+function validateAttachment(attachmentType, attachmentSize) {
     var fileTyptLimit = ["image/jpg", "image/jpeg", "image/png", "image/bmp", "image/gif", "image/tiff", "application/pdf"];
     var fileSizeLimit = 3 * 1024 * 1024; // 3 Mega Bites
+    var check = false;
     for (var a in fileTypeLimit) {
-        var check = false;
-        if (attachment.contentType == fileTyptLimit && sizeOf(attachment.contentType) <= fileSizeLimit) {
+        if (attachmentType == fileTyptLimit && attachmentSize <= fileSizeLimit) {
             check = true;
             break;
         }
@@ -928,7 +835,7 @@ function matchLeaveQuotaCode(leaveType) {
     return code;
 }
 function matchLeaveApplicationCode(leaveType) {
-    var code ="";
+    var code = "";
     for (var a in sitLeaveApplicationData) {
         if (sitLeaveApplicationData[a]["Leave Type"].toLowerCase() == leaveType.toLowerCase()) {
             code = sitLeaveApplicationData[a]["Type Code"];
@@ -937,3 +844,19 @@ function matchLeaveApplicationCode(leaveType) {
     }
     return code;
 }
+
+/* 
+conversationData.received : save all information from the first message
+    => leaveType : should be lowercase string type.
+    => dateInfo : currerntly is the entity Object, should be futher replaced by Date Object or the millisecond number value
+    => starDateType & endDateType : currerently is the entity Object, should be futher replaced by string ("morning|afternoon|full day")
+conversationData.attachment : save the attachment Object with base 64 string
+    {
+        contentType: attachment.contentType,
+        contentUrl: 'data:' + attachment.contentType + ';base64,' + imageBase64Sting,
+        name: attachment.name
+    }
+conversationData.processing : save the middle information during processing with the Data, should only be used when needed
+conversationData.apply : used in leave application, save all "ready to send" information, should be used after user confirmation, should not be modified in middle
+conversationData.request: used in leave quota request, save all "ready to send information"
+*/
