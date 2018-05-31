@@ -10,7 +10,7 @@ var request = require('request-promise').defaults({ encoding: null });
 const sitLeaveApplicationData = JSON.parse(fs.readFileSync('./sitLeaveApplicationData.json', 'utf8'));
 const sitLeaveQuotaData = JSON.parse(fs.readFileSync('./sitLeaveQuotaData.json', 'utf8'));
 const sitLeaveBot = JSON.parse(fs.readFileSync('./sitLeaveBot.json', 'utf8'));
-const defaultArgs = { "intent": { "intent": "apply leave", "entities": [] } };
+const defaultArgs = { "intent": { "intent": "apply leave", "entities": [], "compositeEntities": [] } };
 const datetimeV2Types = ["daterange", "date", "duration", "datetime", "datetimerange"];
 var server = restify.createServer();
 //leave type saving
@@ -35,11 +35,11 @@ for (var a in sitLeaveQuotaData) {
     };
 };
 var connector = new builder.ChatConnector({
-    // appId: process.env.MICROSOFT_APP_ID,
-    // appPassword: process.env.MICROSOFT_APP_PASSWORD
-    appId: process.env.MicrosoftAppId,
-    appPassword: process.env.MicrosoftAppPassword,
-    openIdMetadata: process.env.BotOpenIdMetadata
+    appId: process.env.MICROSOFT_APP_ID,
+    appPassword: process.env.MICROSOFT_APP_PASSWORD
+    // appId: process.env.MicrosoftAppId,
+    // appPassword: process.env.MicrosoftAppPassword,
+    // openIdMetadata: process.env.BotOpenIdMetadata
 });
 server.post('api/messages', connector.listen());
 
@@ -72,20 +72,75 @@ bot.on("event", function (event) {
 bot.dialog('dialogApiToken', require('./dialogApiToken'));
 bot.dialog('Help', [
     function (session) {
-        builder.Prompts.choice(session, "This is a Leave Bot. You can use it to <br\>1. Apply leave<br\>2. Check your leave status<br\>3. Apply " + leaveTypeDisplayConvert("medical leave(c)") + " by uploading MC form directly", ["apply leave", "check leave status", "upload mc form"], { listStyle: 3 });
+        var msg = new builder.Message(session)
+            .text("This is a Leave Bot. You can use it to")
+            .attachmentLayout(builder.AttachmentLayout.list)
+            .attachments([
+                new builder.HeroCard(session)
+                    .text("1. Apply leave")
+                    .buttons([
+                        builder.CardAction.imBack(session, "apply leave", "apply leave")
+                    ]),
+                new builder.HeroCard(session)
+                    .text("2. Check your leave status")
+                    .buttons([
+                        builder.CardAction.imBack(session, "check leave status", "check leave status")
+                    ]),
+                new builder.HeroCard(session)
+                    .text("3. Apply " + leaveTypeDisplayConvert("medical leave(c)") + " by uploading MC form directly")
+                    .buttons([
+                        builder.CardAction.imBack(session, "upload mc form", "upload mc form")
+                    ]),
+            ])
+        builder.Prompts.text(session, msg);
+        // builder.Prompts.choice(session, "This is a Leave Bot. You can use it to <br\>1. Apply leave<br\>2. Check your leave status<br\>3. Apply " + leaveTypeDisplayConvert("medical leave(c)") + " by uploading MC form directly", ["apply leave", "check leave status", "upload mc form"], { listStyle: 3 });
     },
     function (session, results) {
-        console.log("chosen result: %s", JSON.stringify(results));
-        if (results.response.entity.toLowerCase() == "apply leave") {
-            session.cancelDialog(0, 'ApplyLeave', defaultArgs);
-            session.endConversation();
+        if (session.message.text) {
+            switch (session.message.text) {
+                case "apply leave": {
+                    session.cancelDialog(0, 'ApplyLeave', defaultArgs);
+                    break;
+                }
+                case "check leave status": {
+                    session.cancelDialog(0, 'ReqStatus')
+                    break;
+                }
+                case "upload mc form": {
+                    session.cancelDialog(0, 'OCR')
+                    break;
+                }
+                default: {
+                    builder.LuisRecognizer.recognize(session.message.text, luisModelUrlNoSpellCheck, function (err, intents, entities, compositeEntities) {
+                        session.send(intents[0].intent);
+                        switch (intents[0].intent) {
+                            case 'apply leave': {
+                                session.cancelDialog(0, 'ApplyLeave', { "intent": { "intent": "apply leave", "entities": [...entities] } });
+                                break;
+                            }
+                            case 'reqStatus': {
+                                session.cancelDialog(0, 'ReqStatus')
+                                break;
+                            }
+                            default:
+                                break;
+                        }
+                    });
+                }
+            }
         }
-        else if (results.response.entity.toLowerCase() == "check leave status")
-            session.cancelDialog(0, 'ReqStatus');
-        else if (results.response.entity.toLowerCase() == "upload mc form")
-            session.cancelDialog(0, 'OCR');
-        else
-            session.endConversation("Invalid input, conversation has ended");
+
+        // console.log("chosen result: %s", JSON.stringify(results));
+        // if (results.response.entity.toLowerCase() == "apply leave") {
+        //     session.cancelDialog(0, 'ApplyLeave', defaultArgs);
+        //     session.endConversation();
+        // }
+        // else if (results.response.entity.toLowerCase() == "check leave status")
+        //     session.cancelDialog(0, 'ReqStatus');
+        // else if (results.response.entity.toLowerCase() == "upload mc form")
+        //     session.cancelDialog(0, 'OCR');
+        // else
+        //     session.endConversation("Invalid input, conversation has ended");
     }
 ]).triggerAction({
     matches: /^help$|^main help$/i
@@ -291,21 +346,19 @@ bot.dialog('ConvertingData', [
         session.conversationData.received = new Object();
         session.conversationData.processing = new Object();
         session.conversationData.received.dateInfo = new Object();
-        if (args.intent.entities && args.intent.entities > 0) {
-            session.conversationData.received.leaveType = entityExtract(builder.EntityRecognizer.findEntity(args.intent.entities || {}, "leaveType"));
-            session.conversationData.received.startDayType = findCompositeEntities(args.intent.compositeEntities || {}, args.intent.entities, 'startDay', 'dayType');
-            session.conversationData.received.endDayType = findCompositeEntities(args.intent.compositeEntities || {}, args.intent.entities, 'endDay', 'dayType');
+        session.conversationData.processing.dateInfo = new Object();
+        session.conversationData.received.leaveType = entityExtract(builder.EntityRecognizer.findEntity(args.intent.entities || {}, "leaveType"));
+        session.conversationData.received.startDayType = entityExtract(findCompositeEntities(args.intent.compositeEntities || {}, args.intent.entities || {}, 'startDay', 'dayType')) || "FD";
+        session.conversationData.received.endDayType = entityExtract(findCompositeEntities(args.intent.compositeEntities || {}, args.intent.entities || {}, 'endDay', 'dayType')) || "FD";
 
-            // session.conversationData.received.dateInfo.startDate = findCompositeEntities(args.intent.compositeEntities || {}, args.intent.entities, 'startDay', 'builtin.datetimeV2.date');
-            // session.conversationData.received.dateInfo.endDate = findCompositeEntities(args.intent.compositeEntities || {}, args.intent.entities, 'endDay', 'builtin.datetimeV2.date');
-            // session.conversationData.processing.dateInfo.start = dateExtract(session.conversationData.received.dateInfo.startDate);
-            // session.conversationData.processing.dateInfo.end = dateExtract(session.conversationData.received.dateInfo.endDate)
-            for (var o in datetimeV2Types) {
-                session.conversationData.received.dateInfo[datetimeV2Types[o]] = builder.EntityRecognizer.findEntity(args.intent.entities || {}, 'builtin.datetimeV2.' + datetimeV2Types[o]);
-            };
-            session.conversationData.processing.dateInfo = dateExtract(session.conversationData.received.dateInfo);
-        }
-
+        // session.conversationData.received.dateInfo.startDate = findCompositeEntities(args.intent.compositeEntities || {}, args.intent.entities, 'startDay', 'builtin.datetimeV2.date');
+        // session.conversationData.received.dateInfo.endDate = findCompositeEntities(args.intent.compositeEntities || {}, args.intent.entities, 'endDay', 'builtin.datetimeV2.date');
+        // session.conversationData.processing.dateInfo.start = dateExtract(session.conversationData.received.dateInfo.startDate);
+        // session.conversationData.processing.dateInfo.end = dateExtract(session.conversationData.received.dateInfo.endDate)
+        for (var o in datetimeV2Types) {
+            session.conversationData.received.dateInfo[datetimeV2Types[o]] = builder.EntityRecognizer.findEntity(args.intent.entities || {}, 'builtin.datetimeV2.' + datetimeV2Types[o]);
+        };
+        session.conversationData.processing.dateInfo = dateExtract(session.conversationData.received.dateInfo);
         session.endDialog();
     }
 ]);
@@ -351,6 +404,20 @@ bot.dialog('AskDate', [
             session.send("Sorry, I can't proceed with leave end date ahead of leave start date. Please re-enter.");
             session.replaceDialog('AskDate', session, dialogData.type);
         }
+        session.endDialog();
+    }
+]);
+bot.dialog('AskDateType', [
+    function (session, args) {
+        session.dialogData.type = args;
+        builder.Prompts.choice(session, "Please enter your " + session.dialogData.type + " date type", ["AM", "PM", "FD"]);
+    },
+    function (session, results) {
+        console.log("Entered date: %s", JSON.stringify(results.response.entity));
+        if (session.dialogData.type == "start")
+            session.conversationData.received.startDayType = results.response.entity.toLowerCase();
+        else
+            session.conversationData.received.endDayType = results.response.entity.toLowerCase();
         session.endDialog();
     }
 ]);
@@ -428,7 +495,7 @@ bot.dialog('CheckLeaveType', [
         };
         if (check) {
             console.log("Checked the applying leave type is %s", args.toLowerCase());
-            session.endDialogWithResult(args.toLowerCase());
+            session.endDialog();
         } else {
             session.send("Please check the leave type. You have entered %s <br\>which is not in SIT leave type", session.conversationData.leaveType);
             session.replaceDialog('AskLeaveType', "all");
@@ -464,8 +531,8 @@ bot.dialog('Attachments', [
 ]);
 bot.dialog('CheckAttachment', [
     function (session, args, next) {
-        if (checkEntity(session.conversationData.received.leaveType, reqAttTypes) && session.conversationData.attachments && session.conversationData.attachments.length > 0) {
-            session.send(`An attachment for applying ${session.conversationData.rececived.leaveType} is required`);
+        if (checkEntity(session.conversationData.received.leaveType, reqAttTypes) && !session.conversationData.attachments) {
+            session.send(`An attachment for applying ${leaveTypeDisplayConvert(session.conversationData.received.leaveType)} is required`);
             session.beginDialog('AddAttachment');
         }
         next();
@@ -495,15 +562,17 @@ bot.dialog('AddAttachment', [
                             contentType: attachment.contentType,
                             contentUrl: 'data:' + attachment.contentType + ';base64,' + imageBase64Sting,
                             name: attachment.name
+                            // content:,
+                            // thumbnailUrl:
                         });
                         console.log(`The attachment has been saved`);
-                        next();
+                        session.endDialog();
                     } else {
                         session.send("The attachment should be image type or a PDF file within 3MB. Please try again.");
                         session.replaceDialog('AddAttachment');
                     }
                 }).catch(function (err) {
-                    console.log('Error downloading attachment:', { statusCode: err.statusCode, message: err.response.statusMessage });
+                    console.log('Error downloading attachment:', JSON.stringify(err));
                     session.endConversation("Sorry an error occured during downloading attachment");
                 });
         } else {
@@ -514,6 +583,15 @@ bot.dialog('AddAttachment', [
         }
     }
 ]);
+bot.dialog('DeleteAttachment', [
+    function (session, args, next) {
+        builder.Prompts.choice(session, "which attachment do you want to delete?", session.conversationData.attachments, { listStyle: 3 });
+    },
+    function (session, results, next) {
+        console.log(JSON.stringify(results.response));
+        session.endConversation();
+    }
+])
 bot.dialog('CheckApplyInfo', [
     function (session) {
         session.conversationData.apply.start = new Date(session.conversationData.processing.dateInfo.start);
@@ -524,8 +602,8 @@ bot.dialog('CheckApplyInfo', [
         session.conversationData.apply.endDate = session.conversationData.apply.end.getDate();
         session.conversationData.apply.endMon = session.conversationData.apply.end.getMonth() + 1;
         session.conversationData.apply.endYear = session.conversationData.apply.end.getFullYear();
-        session.send('Hi %s<br\>You are applying %s from %s-%s-%s to %s-%s-%s <br\>', session.message.user.name, leaveTypeDisplayConvert(session.conversationData.received.leaveType), monConvert(session.conversationData.apply.startMon), session.conversationData.apply.startDate, session.conversationData.apply.startYear, monConvert(session.conversationData.apply.endMon), session.conversationData.apply.endDate, session.conversationData.apply.endYear);
-        builder.Prompts.confirm(session, "Please confirm if your request information is correct", { listStyle: 3 });
+        session.send(`Hi ${session.message.user.name}, you are applying ${leaveTypeDisplayConvert(session.conversationData.received.leaveType)} from ${monConvert(session.conversationData.apply.startMon)}-${session.conversationData.apply.startDate}-${session.conversationData.apply.startYear} ${session.conversationData.received.startDayType} to ${monConvert(session.conversationData.apply.endMon)}-${session.conversationData.apply.endDate}-${session.conversationData.apply.endYear} ${session.conversationData.received.endDayType}`);
+        builder.Prompts.confirm(session, "Please confirm if your application information is correct", { listStyle: 3 });
     },
     function (session, results) {
         if (results.response)
@@ -537,34 +615,47 @@ bot.dialog('CheckApplyInfo', [
 ]);
 bot.dialog('CorrectingInfo', [
     function (session, args) {
-        if (args && args == "date") {
-            builder.Prompts.choice(session, "Please update your information", ["leave start date", "leave ending date", "cancel request"], { listStyle: 3 });
-        }
-        else {
-            builder.Prompts.choice(session, "Please specify the part your want to update", ["leave starting date", "leave ending date", "leave type", "attachment", "cancel request"], { listStyle: 3 });
+        switch (args) {
+            case "date": {
+                builder.Prompts.choice(session, "Please update your information", ["leave start date", "start day type", "leave end date", "end day type", "cancel application"], { listStyle: 3 });
+            }
+            default: {
+                builder.Prompts.choice(session, "Please specify the part your want to update", ["date information", "leave type", "attachments", "cancel application"], { listStyle: 3 });
+            }
         }
     },
     function (session, results) {
         switch (results.response.entity) {
-            case "leave starting date": {
+            case "leave start date": {
                 session.beginDialog('AskDate', "start");
                 break;
             }
-            case "leave ending date": {
+            case "start day type": {
+                session.beginDialog('AskDateType', "start");
+                break;
+            }
+            case "leave end date": {
                 session.beginDialog('AskDate', "end");
+                break;
+            }
+            case "end day type": {
+                session.beginDialog('AskDateType', "end");
                 break;
             }
             case "leave type": {
                 session.beginDialog('AskLeaveType', "all");
                 break;
             }
-            case "attachment": {
-                session.beginDialog('AddAttachment');
+            case "attachments": {
+                session.beginDialog('Attachments');
                 break;
             }
-            case "cancel request": {
+            case "date information": {
+                session.replaceDialog('CorrectingInfo', "date")
+            }
+            case "cancel application": {
                 session.send("Request canceled");
-                session.cancelDialog(0, 'Help');
+                session.cancelDialog(0, '/');
                 break;
             }
             default: {
@@ -575,9 +666,6 @@ bot.dialog('CorrectingInfo', [
     },
     function (session) {
         session.replaceDialog("CheckApplyInfo");
-    },
-    function (session) {
-        session.endDialog();
     }
 ])
 bot.dialog('ApplyConfirmed', [
@@ -591,17 +679,35 @@ bot.dialog('ListAttachments', [
     function (session, args, next) {
         if (session.conversationData.attachments) {
             var listAttachment1 = new builder.Message(session)
-                .text("You have uploaded " + session.conversationData.attachments.length + "attachments");
-            if (session.conversationData.attachments.length > 0) {
-                session.send(listAttachment1);
-                var listAttachment2 = new builder.Message(session)
-                    .attachmentLayout("list")//or carousel
-                    .attachments(session.conversationData.attachments);
-                session.send(listAttachment2)
-            }
+                .text("You have uploaded " + session.conversationData.attachments.length + "attachment(s)")
+                // session.send(listAttachment1);
+                // var listAttachment2 = new builder.Message(session)
+                .attachmentLayout("list")//or carousel
+                .attachments(session.conversationData.attachments);
+            session.send(listAttachment1);
         } else {
             var listAttachment3 = new builder.Message(session)
-                .text("You have not uploaded any attchments yet")
+                .text("You have not uploaded any attchments yet");
+            session.send(listAttachment3)
+        }
+        builder.Prompts.choice(session, ["add attachment", "delete an attachment", "proceed with current attachment", "cancel application"], { listStyle: 3 });
+    },
+    function (session, results, next) {
+        switch (results.response.entity) {
+            case "add attachment": {
+                session.replaceDialog('AddAttachment');
+                break;
+            }
+            case "delete an attachment": {
+                session.replaceDialog('DeleteAttachment');
+                break;
+            }
+            case "cancel application": {
+                session.endConversation();
+            }
+            case "proceed with current attachment": {
+                session.endDialog();
+            }
         }
     }
 ]);
