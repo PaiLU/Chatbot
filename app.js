@@ -105,7 +105,7 @@ bot.dialog('Help', [
                     break;
                 }
                 default: {
-                    builder.LuisRecognizer.recognize(session.message.text, luisModelUrlNoSpellCheck, function (err, intents, entities, compositeEntities) {
+                    builder.LuisRecognizer.recognize(session.message.text, LuisModelUrl, function (err, intents, entities, compositeEntities) {
                         session.send(intents[0].intent);
                         switch (intents[0].intent) {
                             case 'apply leave': {
