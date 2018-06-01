@@ -35,11 +35,11 @@ for (var a in sitLeaveQuotaData) {
     };
 };
 var connector = new builder.ChatConnector({
-    appId: process.env.MICROSOFT_APP_ID,
-    appPassword: process.env.MICROSOFT_APP_PASSWORD
-    // appId: process.env.MicrosoftAppId,
-    // appPassword: process.env.MicrosoftAppPassword,
-    // openIdMetadata: process.env.BotOpenIdMetadata
+    // appId: process.env.MICROSOFT_APP_ID,
+    // appPassword: process.env.MICROSOFT_APP_PASSWORD
+    appId: process.env.MicrosoftAppId,
+    appPassword: process.env.MicrosoftAppPassword,
+    openIdMetadata: process.env.BotOpenIdMetadata
 });
 server.post('api/messages', connector.listen());
 
@@ -58,9 +58,10 @@ var luisAPIHostName = process.env.LuisAPIHostName || 'westus.api.cognitive.micro
 var bingSpellCheckKey = process.env.BING_SPELL_CHECK_API_KEY;
 var OCRKey = process.env.OCRKey;
 
-const LuisModelUrl = 'https://' + luisAPIHostName + '/luis/v2.0/apps/' + luisAppId + '?subscription-key=' + luisAPIKey + '&spellCheck=true&bing-spell-check-subscription-key=' + bingSpellCheckKey + '&verbose=true&timezoneOffset=0&q=';
+// const LuisModelUrl = 'https://' + luisAPIHostName + '/luis/v2.0/apps/' + luisAppId + '?subscription-key=' + luisAPIKey + '&spellCheck=true&bing-spell-check-subscription-key=' + bingSpellCheckKey + '&verbose=true&timezoneOffset=0&q=';
+const LuisModelUrl = `https://${luisAPIHostName}/luis/v2.0/apps/${luisAppId}?subscription-key=${luisAPIKey}&verbose=true&timezoneOffset=0&q=`;
 var recognizer = new builder.LuisRecognizer(LuisModelUrl);
-bot.recognizer(recognizer);
+// bot.recognizer(recognizer);
 
 bot.on("event", function (event) {
     if (event.name === "apiToken") {
@@ -72,25 +73,18 @@ bot.on("event", function (event) {
 bot.dialog('dialogApiToken', require('./dialogApiToken'));
 bot.dialog('Help', [
     function (session) {
+        session.conversationData.attachments = [];
         var msg = new builder.Message(session)
             .text("This is a Leave Bot. You can use it to")
             .attachmentLayout(builder.AttachmentLayout.list)
             .attachments([
                 new builder.HeroCard(session)
-                    .text("1. Apply leave")
+                    // .text("1. Apply leave")
                     .buttons([
-                        builder.CardAction.imBack(session, "apply leave", "apply leave")
-                    ]),
-                new builder.HeroCard(session)
-                    .text("2. Check your leave status")
-                    .buttons([
-                        builder.CardAction.imBack(session, "check leave status", "check leave status")
-                    ]),
-                new builder.HeroCard(session)
-                    .text("3. Apply " + leaveTypeDisplayConvert("medical leave(c)") + " by uploading MC form directly")
-                    .buttons([
-                        builder.CardAction.imBack(session, "upload mc form", "upload mc form")
-                    ]),
+                        builder.CardAction.imBack(session, "apply leave", "apply leave"),
+                        builder.CardAction.imBack(session, "check leave status", "check leave status"),
+                        builder.CardAction.imBack(session, "upload mc form", `apply medical leave(c) by uploading MC form directly`)
+                    ])
             ])
         builder.Prompts.text(session, msg);
         // builder.Prompts.choice(session, "This is a Leave Bot. You can use it to <br\>1. Apply leave<br\>2. Check your leave status<br\>3. Apply " + leaveTypeDisplayConvert("medical leave(c)") + " by uploading MC form directly", ["apply leave", "check leave status", "upload mc form"], { listStyle: 3 });
@@ -119,11 +113,13 @@ bot.dialog('Help', [
                                 break;
                             }
                             case 'reqStatus': {
-                                session.cancelDialog(0, 'ReqStatus')
+                                session.cancelDialog(0, 'ReqStatus');
                                 break;
                             }
-                            default:
+                            default: {
+                                session.cancelDialog(0, 'Help');
                                 break;
+                            }
                         }
                     });
                 }
@@ -165,7 +161,6 @@ bot.dialog('ReqStatus', [
     },
     function (session, results, next) {
         if (results.response) {
-            console.log(results);
             // add patrameter
             if (results.response.entity == "show all balances") {
                 session.conversationData.request.leaveType = "";
@@ -180,12 +175,14 @@ bot.dialog('ReqStatus', [
     },
     function (session) {
         console.log(`${matchLeaveQuotaCode(session.conversationData.request.leaveType)} type: ${typeof (matchLeaveQuotaCode(session.conversationData.request.leaveType))}`);
-        apiServices.checkLeaveBalance(matchLeaveQuotaCode(session.conversationData.request.leaveType), session.conversationData.apiToken)
-            .then((value) => {
-                //do something with response
-                session.send(JSON.stringify(value));
-                session.endConversation();
-            });
+        
+        session.endConversation("The API is currently not responding");
+        // API goes here
+        // apiServices.checkLeaveBalance(matchLeaveQuotaCode(session.conversationData.request.leaveType), session.conversationData.apiToken)
+        //     .then((value) => {
+        //         //do something with response
+        //         session.send(JSON.stringify(value));
+        //     });
     }
 ]).triggerAction({
     matches: ['reqStatus']
@@ -217,12 +214,11 @@ bot.dialog('OCR', [
                         var req = https.request(
                             {
                                 host: 'southeastasia.api.cognitive.microsoft.com',
-                                path: '/vision/v1.0/ocr?language=en&detectOrientation=true',
+                                path: '/vision/v2.0/ocr?language=en&detectOrientation=true',
                                 method: 'POST',
                                 headers: {
-                                    'host': 'southeastasia.api.cognitive.microsoft.com',
                                     'Ocp-Apim-Subscription-Key': process.env.OCRKey,
-                                    "Content-Type": 'application/octet-stream'
+                                    'Content-Type': 'application/octet-stream'
                                 }
                             }, function (res) {
                                 res.setEncoding('utf8');
@@ -254,6 +250,7 @@ bot.dialog('OCR', [
                                                                 if (entity && entityExtract(entity) == "medical leave") {
                                                                     // call 'ApplyLeave' Dialog with all recognized entities
                                                                     session.dialogData.ocrArgs = { "intent": { "intent": "apply leave", "entities": [...allEntities] } };
+                                                                    console.log(JSON.stringify(session.dialogData.ocrArgs));
                                                                     session.cancelDialog(0, 'ApplyLeave', session.dialogData.ocrArgs);
                                                                 } else {
                                                                     builder.Prompts.confirm(session, "I didn't recognize any key words, like medical certificate, in the attachment. Do you still want to proceed the applciation with this attachment?", { listStyle: 3 })
@@ -271,14 +268,14 @@ bot.dialog('OCR', [
                                 }
                             }
                         );
-                        req.write(fileResponse);
+                        req.write(new Buffer(fileResponse, 'binary'));
                         req.end();
                     } else {
                         session.send("The attachment should be image type or a PDF file within 3MB. Please try again.");
                         session.replaceDialog('AddAttachment');
                     }
                 }).catch(function (err) {
-                    console.log('Error downloading attachment:', { statusCode: err.statusCode, message: err.response.statusMessage });
+                    console.log('Error downloading attachment:', JSON.stringify(err));
                     session.endConversation("Sorry an error occured during downloading attachment");
                 });
         } else {
@@ -343,6 +340,7 @@ bot.dialog('ApplyLeave', [
 });
 bot.dialog('ConvertingData', [
     function (session, args, next) {
+        console.log(JSON.stringify(args));
         session.conversationData.received = new Object();
         session.conversationData.processing = new Object();
         session.conversationData.received.dateInfo = new Object();
@@ -506,7 +504,7 @@ bot.dialog('AskSpecificType', [
     function (session) {
         switch (session.conversationData.received.leaveType) {
             case "medical leave": {
-                builder.Prompts.choice(session, "Please specify your medical leave, whether it is " + leaveTypeDisplayConvert("'Medical Leave (UC)'") + " or " + leaveTypeDisplayConvert("'Medical Leave (C)'"), ["Medical Leave (UC)", "Medical Leave (C)"], { listStyle: 3 });
+                builder.Prompts.choice(session, "Please specify your medical leave, whether it is " + leaveTypeDisplayConvert("'Medical Leave (UC)'") + " or " + leaveTypeDisplayConvert("'Medical Leave (C)'"), ["Medical Leave(UC)", "Medical Leave(C)"], { listStyle: 3 });
                 break;
             }
             case "ext maternity leave": {
@@ -618,9 +616,11 @@ bot.dialog('CorrectingInfo', [
         switch (args) {
             case "date": {
                 builder.Prompts.choice(session, "Please update your information", ["leave start date", "start day type", "leave end date", "end day type", "cancel application"], { listStyle: 3 });
+                break;
             }
             default: {
                 builder.Prompts.choice(session, "Please specify the part your want to update", ["date information", "leave type", "attachments", "cancel application"], { listStyle: 3 });
+                break;
             }
         }
     },
@@ -642,6 +642,9 @@ bot.dialog('CorrectingInfo', [
                 session.beginDialog('AskDateType', "end");
                 break;
             }
+            case "date information": {
+                session.replaceDialog('CorrectingInfo', "date")
+            }
             case "leave type": {
                 session.beginDialog('AskLeaveType', "all");
                 break;
@@ -649,9 +652,6 @@ bot.dialog('CorrectingInfo', [
             case "attachments": {
                 session.beginDialog('Attachments');
                 break;
-            }
-            case "date information": {
-                session.replaceDialog('CorrectingInfo', "date")
             }
             case "cancel application": {
                 session.send("Request canceled");
@@ -690,7 +690,7 @@ bot.dialog('ListAttachments', [
                 .text("You have not uploaded any attchments yet");
             session.send(listAttachment3)
         }
-        builder.Prompts.choice(session, ["add attachment", "delete an attachment", "proceed with current attachment", "cancel application"], { listStyle: 3 });
+        builder.Prompts.choice(session, "What do you want to do withh the attachment(s)?", ["add attachment", "delete an attachment", "proceed with current attachment", "cancel application"], { listStyle: 3 });
     },
     function (session, results, next) {
         switch (results.response.entity) {
@@ -713,7 +713,7 @@ bot.dialog('ListAttachments', [
 ]);
 function entityExtract(receivedEntity) {
     var o = new Object();
-    if (receivedEntity.resolution.values) {
+    if (receivedEntity && receivedEntity.resolution.values) {
         return receivedEntity.resolution.values[0].toLowerCase();
     } else
         return null;
@@ -810,55 +810,6 @@ function leaveTypeDisplayConvert(t) {
         return value;
     }).join('');
 };
-function dateAdd(interval, number, date) {
-    switch (interval) {
-        case "y ": {
-            date.setFullYear(date.getFullYear() + number);
-            return date;
-            break;
-        }
-        case "q ": {
-            date.setMonth(date.getMonth() + number * 3);
-            return date;
-            break;
-        }
-        case "m ": {
-            date.setMonth(date.getMonth() + number);
-            return date;
-            break;
-        }
-        case "w ": {
-            date.setDate(date.getDate() + number * 7);
-            return date;
-            break;
-        }
-        case "d ": {
-            date.setDate(date.getDate() + number);
-            return date;
-            break;
-        }
-        case "h ": {
-            date.setHours(date.getHours() + number);
-            return date;
-            break;
-        }
-        case "min ": {
-            date.setMinutes(date.getMinutes() + number);
-            return date;
-            break;
-        }
-        case "s ": {
-            date.setSeconds(date.getSeconds() + number);
-            return date;
-            break;
-        }
-        default: {
-            date.setDate(d.getDate() + number);
-            return date;
-            break;
-        }
-    }
-};
 function checkEntity(entity, entityList) {
     var check = false;
     for (var a in entityList) {
@@ -906,16 +857,16 @@ function deleteAttachment(attachmentArray, n) {
     return attachmentArray;
 }
 function validateAttachment(attachmentType, attachmentSize) {
-    var fileTyptLimit = ["image/jpg", "image/jpeg", "image/png", "image/bmp", "image/gif", "image/tiff", "application/pdf"];
+    var fileTypeLimit = ["image/jpg", "image/jpeg", "image/png", "image/bmp", "image/gif", "image/tiff", "application/pdf"];
     var fileSizeLimit = 3 * 1024 * 1024; // 3 Mega Bites
     var check = false;
     for (var a in fileTypeLimit) {
-        if (attachmentType == fileTyptLimit && attachmentSize <= fileSizeLimit) {
+        if (attachmentType == fileTypeLimit[a] && Number(attachmentSize) <= fileSizeLimit) {
             check = true;
             break;
         }
-        return check
     }
+    return check;
 }
 function parseOcrObject(ocrObj) {
     var lines = [];
