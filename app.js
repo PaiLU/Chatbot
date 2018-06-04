@@ -51,7 +51,7 @@ var inMemoryStorage = new builder.MemoryBotStorage();
 var bot = new builder.UniversalBot(connector, function (session, args, next) {
     console.log("Name: " + session.message.user.name + "\n")
     session.beginDialog('Help');
-});
+}).set('storage', inMemoryStorage); 
 var luisAppId = process.env.LuisAppId_LeaveBot;
 var luisAPIKey = process.env.LuisAPIKey;
 var luisAPIHostName = process.env.LuisAPIHostName || 'westus.api.cognitive.microsoft.com';
@@ -61,7 +61,7 @@ var OCRKey = process.env.OCRKey;
 // const LuisModelUrl = 'https://' + luisAPIHostName + '/luis/v2.0/apps/' + luisAppId + '?subscription-key=' + luisAPIKey + '&spellCheck=true&bing-spell-check-subscription-key=' + bingSpellCheckKey + '&verbose=true&timezoneOffset=0&q=';
 const LuisModelUrl = `https://${luisAPIHostName}/luis/v2.0/apps/${luisAppId}?subscription-key=${luisAPIKey}&verbose=true&timezoneOffset=0&q=`;
 var recognizer = new builder.LuisRecognizer(LuisModelUrl);
-bot.recognizer(recognizer);
+// bot.recognizer(recognizer);
 
 bot.on("event", function (event) {
     if (event.name === "apiToken") {
