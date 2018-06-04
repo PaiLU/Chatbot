@@ -33,6 +33,7 @@ module.exports = {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
+                    "Content-Type" :`application/json`
                 }
             }, function (res) {
                 res.setEncoding('utf8');
