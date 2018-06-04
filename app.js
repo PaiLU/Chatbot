@@ -51,7 +51,7 @@ var inMemoryStorage = new builder.MemoryBotStorage();
 var bot = new builder.UniversalBot(connector, function (session, args, next) {
     console.log("Name: " + session.message.user.name + "\n")
     session.beginDialog('Help');
-}).set('storage', inMemoryStorage); 
+}).set('storage', inMemoryStorage);
 var luisAppId = process.env.LuisAppId_LeaveBot;
 var luisAPIKey = process.env.LuisAPIKey;
 var luisAPIHostName = process.env.LuisAPIHostName || 'westus.api.cognitive.microsoft.com';
@@ -93,15 +93,15 @@ bot.dialog('Help', [
         if (session.message.text) {
             switch (session.message.text) {
                 case "apply leave": {
-                    session.beginDialog(0, 'ApplyLeave', defaultArgs);
+                    session.beginDialog('ApplyLeave', defaultArgs);
                     break;
                 }
                 case "check leave status": {
-                    session.beginDialog(0, 'ReqStatus')
+                    session.beginDialog('ReqStatus')
                     break;
                 }
                 case "apply medical leave(c) by uploading MC form directly": {
-                    session.beginDialog(0, 'OCR')
+                    session.beginDialog('OCR')
                     break;
                 }
                 default: {
@@ -138,7 +138,7 @@ bot.dialog('Help', [
         // else
         //     session.endConversation("Invalid input, conversation has ended");
     },
-    function(session){
+    function (session) {
         session.endDialog("Ending Help Dialog");
     }
 ]).triggerAction({
