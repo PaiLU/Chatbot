@@ -81,9 +81,9 @@ bot.dialog('Help', [
                 new builder.HeroCard(session)
                     // .text("1. Apply leave")
                     .buttons([
-                        builder.CardAction.postBack(session, "apply leave", "apply leave"),
-                        builder.CardAction.postBack(session, "check leave status", "check leave status"),
-                        builder.CardAction.postBack(session, "apply medical leave(c) by uploading MC form directly", `apply medical leave(c) by uploading MC form directly`)
+                        builder.CardAction.imBack(session, "apply leave", "apply leave"),
+                        builder.CardAction.imBack(session, "check leave status", "check leave status"),
+                        builder.CardAction.imBack(session, "apply medical leave(c) by uploading MC form directly", `apply medical leave(c) by uploading MC form directly`)
                     ])
             ])
         builder.Prompts.text(session, msg);
@@ -93,15 +93,15 @@ bot.dialog('Help', [
         if (session.message.text) {
             switch (session.message.text) {
                 case "apply leave": {
-                    session.cancelDialog(0, 'ApplyLeave', defaultArgs);
+                    session.beginDialog(0, 'ApplyLeave', defaultArgs);
                     break;
                 }
                 case "check leave status": {
-                    session.cancelDialog(0, 'ReqStatus')
+                    session.beginDialog(0, 'ReqStatus')
                     break;
                 }
                 case "apply medical leave(c) by uploading MC form directly": {
-                    session.cancelDialog(0, 'OCR')
+                    session.beginDialog(0, 'OCR')
                     break;
                 }
                 default: {
@@ -137,6 +137,9 @@ bot.dialog('Help', [
         //     session.cancelDialog(0, 'OCR');
         // else
         //     session.endConversation("Invalid input, conversation has ended");
+    },
+    function(session){
+        session.endDialog("Ending Help Dialog");
     }
 ]).triggerAction({
     matches: /^help$|^main help$^cancel$/i
