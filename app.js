@@ -100,7 +100,7 @@ bot.dialog('Help', [
                     session.cancelDialog(0, 'ReqStatus')
                     break;
                 }
-                case "upload mc form": {
+                case "apply medical leave(c) by uploading MC form directly": {
                     session.cancelDialog(0, 'OCR')
                     break;
                 }
