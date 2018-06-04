@@ -73,7 +73,7 @@ bot.on("event", function (event) {
 bot.dialog('dialogApiToken', require('./dialogApiToken'));
 bot.dialog('Help', [
     function (session) {
-        session.send(`${session.conversationData.apiToken}`);
+        session.send(session.conversationData.apiToken);
         session.conversationData.attachments = [];
         var msg = new builder.Message(session)
             .text("This is a Leave Bot. You can use it to")
