@@ -66,6 +66,7 @@ bot.recognizer(recognizer);
 bot.on("event", function (event) {
     if (event.name === "apiToken") {
         bot.beginDialog(event.address, 'dialogApiToken', event.text);
+        // bot.send(`${JSON.stringify(session.conversationData)}`);
         bot.beginDialog(event.address, '/');
     }
 })
@@ -73,6 +74,7 @@ bot.on("event", function (event) {
 bot.dialog('dialogApiToken', require('./dialogApiToken'));
 bot.dialog('Help', [
     function (session) {
+        session.send(`${session.conversationData.apiToken}`);
         session.conversationData.attachments = [];
         var msg = new builder.Message(session)
             .text("This is a Leave Bot. You can use it to")
@@ -175,14 +177,23 @@ bot.dialog('ReqStatus', [
     },
     function (session) {
         console.log(`${matchLeaveQuotaCode(session.conversationData.request.leaveType)} type: ${typeof (matchLeaveQuotaCode(session.conversationData.request.leaveType))}`);
-        
+
         // session.endConversation("The API is currently not responding");
         // API goes here
-        apiServices.checkLeaveBalance(matchLeaveQuotaCode(session.conversationData.request.leaveType), session.conversationData.apiToken)
-            .then((value) => {
-                //do something with response
-                session.send(JSON.stringify(value));
-            });
+        try {
+            session.send(session.conversationData.apiToken);
+            apiServices.checkLeaveBalance(matchLeaveQuotaCode(session.conversationData.request.leaveType), session.conversationData.apiToken)
+                .then((value) => {
+                    //do something with response
+                    session.send(JSON.stringify(value));
+                })
+                .on("error", (error) => {
+                    session.send(error);
+                });
+        }
+        catch (err) {
+            session.send(`${JSON.stringify(err)}`);
+        }
     }
 ]).triggerAction({
     matches: ['reqStatus']
@@ -199,7 +210,7 @@ bot.dialog('OCR', [
             fileDownload.then(
                 function (fileResponse) {
                     // validate the attachment
-                    if (validateAttachment(attachment.contentType, fileResponse.length)) {
+                    if (validateAttachment(attachment, fileResponse.length)) {
                         // convert to base64 string and save
                         var imageBase64Sting = new Buffer(fileResponse, 'binary').toString('base64');
                         session.conversationData.attachments.push({
@@ -861,10 +872,11 @@ function deleteAttachment(attachmentArray, n) {
 function validateAttachment(attachmentEntity, attachmentSize) {
     var fileTypeLimit = ["image/jpg", "image/jpeg", "image/png", "image/bmp", "image/gif", "image/tiff", "application/pdf"];
     var fileSizeLimit = 3 * 1024 * 1024; // 3 Mega Bites
-    var fileNameLimit = /./;
+    var fileNameLimit = /\./;
     var check = false;
+    attachmentEntity.name.match()
     for (var a in fileTypeLimit) {
-        if (attachmentType == fileTypeLimit[a] && Number(attachmentSize) <= fileSizeLimit) {
+        if (attachmentEntity.contentType == fileTypeLimit[a] && Number(attachmentSize) <= fileSizeLimit) {
             check = true;
             break;
         }
