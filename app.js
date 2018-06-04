@@ -688,7 +688,7 @@ bot.dialog('ApplyConfirmed', [
             "leaveType": matchLeaveApplicationCode(session.conversationData.received.leaveType),
             "startDate": `${session.conversationData.apply.startYear}-${session.conversationData.apply.startMon}-${session.conversationData.apply.startDate}`,
             "startType": session.conversationData.received.startDayType,
-            "endDate": `${session.conversationData.apply.endear}-${session.conversationData.apply.endMon}-${session.conversationData.apply.endDate}`,
+            "endDate": `${session.conversationData.apply.endYear}-${session.conversationData.apply.endMon}-${session.conversationData.apply.endDate}`,
             // "endType": "XX", //"FD"||"AM"||"PM"
             "notes": [ //if have, or otherwise it is an empty array
                 // {
@@ -726,7 +726,7 @@ bot.dialog('ApplyConfirmed', [
                 "leaveType": matchLeaveApplicationCode(session.conversationData.received.leaveType),
                 "startDate": `${session.conversationData.apply.startYear}-${session.conversationData.apply.startMon}-${session.conversationData.apply.startDate}`,
                 "startType": session.conversationData.received.startDayType,
-                "endDate": `${session.conversationData.apply.endear}-${session.conversationData.apply.endMon}-${session.conversationData.apply.endDate}`,
+                "endDate": `${session.conversationData.apply.endYear}-${session.conversationData.apply.endMon}-${session.conversationData.apply.endDate}`,
                 // "endType": "XX", //"FD"||"AM"||"PM"
                 "notes": [ //if have, or otherwise it is an empty array
                     // {
