@@ -6,6 +6,7 @@ var https = require('https');
 var fs = require('fs');
 var apiServices = require('./apiServices');
 var request = require('request-promise').defaults({ encoding: null });
+var azure = require('botbuilder-azure');
 
 const sitLeaveApplicationData = JSON.parse(fs.readFileSync('./sitLeaveApplicationData.json', 'utf8'));
 const sitLeaveQuotaData = JSON.parse(fs.readFileSync('./sitLeaveQuotaData.json', 'utf8'));
@@ -47,16 +48,30 @@ server.listen(process.env.port || 3978, function () {
     console.log('%s listening to %s', server.name, server.url);
 })
 
-var inMemoryStorage = new builder.MemoryBotStorage();
-var bot = new builder.UniversalBot(connector, function (session, args, next) {
-    console.log("Name: " + session.message.user.name + "\n")
-    session.beginDialog('Help');
-});
+// Table storage
+var tableName = "LeaveBotStorage"; // You define
+var storageName = process.env["Table-Storage-Name"]; // Obtain from Azure Portal
+var storageKey = process.env["Azure-Table-Key"]; // Obtain from Azure Portal
+var azureTableClient = new azure.AzureTableClient(tableName, storageName, storageKey);
+var tableStorage = new azure.AzureBotStorage({ gzipData: false }, azureTableClient);
+// var inMemoryStorage = new builder.MemoryBotStorage();
+var bot = new builder.UniversalBot(connector, [
+    function (session, args, next) {
+        if (!session.conversationData.apiToken) {
+            session.conversationData.apiToken = args;
+        }
+        next();
+    },
+    function (session, args, next) {
+        session.beginDialog('Help');
+    }
+]).set('storage', tableStorage);
 var luisAppId = process.env.LuisAppId_LeaveBot;
 var luisAPIKey = process.env.LuisAPIKey;
 var luisAPIHostName = process.env.LuisAPIHostName || 'westus.api.cognitive.microsoft.com';
 var bingSpellCheckKey = process.env.BING_SPELL_CHECK_API_KEY;
 var OCRKey = process.env.OCRKey;
+
 
 // const LuisModelUrl = 'https://' + luisAPIHostName + '/luis/v2.0/apps/' + luisAppId + '?subscription-key=' + luisAPIKey + '&spellCheck=true&bing-spell-check-subscription-key=' + bingSpellCheckKey + '&verbose=true&timezoneOffset=0&q=';
 const LuisModelUrl = `https://${luisAPIHostName}/luis/v2.0/apps/${luisAppId}?subscription-key=${luisAPIKey}&verbose=true&timezoneOffset=0&q=`;
@@ -65,8 +80,7 @@ var recognizer = new builder.LuisRecognizer(LuisModelUrl);
 
 bot.on("event", function (event) {
     if (event.name === "apiToken") {
-        bot.beginDialog(event.address, 'dialogApiToken', event.text);
-        bot.beginDialog(event.address, '/');
+        bot.beginDialog(event.address, '/', event.text);
     }
 });
 // main program
@@ -704,17 +718,34 @@ bot.dialog('ApplyConfirmed', [
         try {
             apiServices.applyLeave(application, session.conversationData.apiToken)
                 .then((response) => {
-                    if (Array.isArray(response)) {
-                        if (response && response[0].Type === "E") {
-                            session.send(`Error: ${response[0].Message}`);
-                            session.cancelDialog(0, '/');
-                        } else if (response && response[0].Type === "W") {
-                            session.send(`Warning: ${response[0].Message}`);
-                            builder.Prompts.confirm(session, "Proceed with warning?", { listStyle: 3 });
-                        } else {
-                            session.send('Hi %s<br\>You are applying %s from %s-%s-%s to %s-%s-%s <br\>The information has been sent to the server successfully.', session.message.user.name, leaveTypeDisplayConvert(session.conversationData.received.leaveType), monConvert(session.conversationData.apply.startMon), session.conversationData.apply.startDate, session.conversationData.apply.startYear, monConvert(session.conversationData.apply.endMon), session.conversationData.apply.endDate, session.conversationData.apply.endYear);
-                            session.cancelDialog(0, '/');
+                    try {
+                        if (response.Et01messages) {
+                            var messages = response.Et01messages.map((item) => {
+                                switch (item.Type) {
+                                    case "E":
+                                        return "Error: " + item.Message;
+                                    case "W":
+                                        return "Warning: " + item.Message;
+                                    case "S":
+                                        return "Success:" + item.Message;
+                                    default:
+                                        return item.Message;
+                                }
+                            });
+                            if (response.Et01messages[0].Type === "E") {
+                                session.send(messages.join("\n"));
+                                session.cancelDialog(0, '/');
+                            } else if (response.Et01messages[0].Type === "W") {
+                                session.send(messages.join("\n"));
+                                builder.Prompts.confirm(session, "Proceed with warning?", { listStyle: 3 });
+                            } else if (response.Et01messages[0].Type === "S") {
+                                session.send(messages.join("\n"));
+                                session.cancelDialog(0, '/');
+                            }
                         }
+                    }
+                    catch (err) {
+                        session.send(err.message);
                     }
                 })
         }
@@ -724,7 +755,6 @@ bot.dialog('ApplyConfirmed', [
     },
     function (session, results, next) {
         if (results.response) {
-
             var application = {
                 "leaveType": matchLeaveApplicationCode(session.conversationData.received.leaveType),
                 "startDate": `${session.conversationData.apply.startYear}-${session.conversationData.apply.startMon}-${session.conversationData.apply.startDate}`,
@@ -742,12 +772,22 @@ bot.dialog('ApplyConfirmed', [
             try {
                 apiServices.applyLeave(application, session.conversationData.apiToken)
                     .then((response) => {
-                        if (response && response.Type === "E") {
-                            session.send(`Error: ${response.Message}`);
-                            session.cancelDialog(0, '/');
-                        } else {
-                            session.send('Hi %s<br\>You are applying %s from %s-%s-%s to %s-%s-%s <br\>The information has been sent to the server successfully.', session.message.user.name, leaveTypeDisplayConvert(session.conversationData.received.leaveType), monConvert(session.conversationData.apply.startMon), session.conversationData.apply.startDate, session.conversationData.apply.startYear, monConvert(session.conversationData.apply.endMon), session.conversationData.apply.endDate, session.conversationData.apply.endYear);
-                            session.cancelDialog(0, '/');
+                        try {
+                            if (response.Et01messages) {
+                                if (response.Et01messages[0].Type === "E") {
+                                    session.send(`Error: ${response.Et01messages[0].Message}`);
+                                    session.cancelDialog(0, '/');
+                                } else if (response.Et01messages[0].Type === "W") {
+                                    session.send(`Warning: ${response.Et01messages[0].Message}`);
+                                    builder.Prompts.confirm(session, "Proceed with warning?", { listStyle: 3 });
+                                } else if (response.Et01messages[0].Type === "S") {
+                                    session.send(`Success: ${response.Et01messages[0].Message}`);
+                                    session.cancelDialog(0, '/');
+                                }
+                            }
+                        }
+                        catch (err) {
+                            session.send(err.message);
                         }
                     })
             }

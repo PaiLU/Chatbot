@@ -26,14 +26,14 @@ module.exports = {
     },
     applyLeave: function (leaveApplicationRequest, token) {
         return new Promise(function (resolve, reject) {
-
+            var response = '';
             var req = https.request({
                 host: process.env.ApiServiceEndpoint,
                 path: '/leaveapplication',
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
-                    "Content-Type" :`application/json`
+                    "Content-Type": `application/json`
                 }
             }, function (res) {
                 res.setEncoding('utf8');
