@@ -25,25 +25,28 @@ module.exports = {
         });
     },
     applyLeave: function (leaveApplicationRequest, token) {
-        var req = https.request({
-            host: process.env.ApiServiceEndpoint,
-            path: '/leaveapplication',
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            }
-        }, function (res) {
-            res.setEncoding('utf8');
-            if (res.statusCode === 200) {
-                res.on('data', function (buffer) {
-                    response += buffer;
-                });
-                res.on('end', (err) => {
-                    resolve(JSON.parse(response));
-                })
-            }
+        return new Promise(function (resolve, reject) {
+
+            var req = https.request({
+                host: process.env.ApiServiceEndpoint,
+                path: '/leaveapplication',
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                }
+            }, function (res) {
+                res.setEncoding('utf8');
+                if (res.statusCode === 200) {
+                    res.on('data', function (buffer) {
+                        response += buffer;
+                    });
+                    res.on('end', (err) => {
+                        resolve(JSON.parse(response));
+                    })
+                }
+            });
+            req.write(JSON.stringify(leaveApplicationRequest));
+            req.end();
         });
-        req.write(JSON.stringify(leaveApplicationRequest));
-        req.end();
     }
-};
+}
