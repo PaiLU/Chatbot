@@ -51,7 +51,7 @@ var inMemoryStorage = new builder.MemoryBotStorage();
 var bot = new builder.UniversalBot(connector, function (session, args, next) {
     console.log("Name: " + session.message.user.name + "\n")
     session.beginDialog('Help');
-}).set('storage', inMemoryStorage);
+});
 var luisAppId = process.env.LuisAppId_LeaveBot;
 var luisAPIKey = process.env.LuisAPIKey;
 var luisAPIHostName = process.env.LuisAPIHostName || 'westus.api.cognitive.microsoft.com';
@@ -73,7 +73,7 @@ bot.on("event", function (event) {
 bot.dialog('dialogApiToken', require('./dialogApiToken'));
 bot.dialog('Help', [
     function (session) {
-        session.send(session.conversationData.apiToken);
+        session.send(session.conversationData.apiToken | "xyz");
         session.conversationData.attachments = [];
         var msg = new builder.Message(session)
             .text("This is a Leave Bot. You can use it to")
@@ -180,11 +180,11 @@ bot.dialog('ReqStatus', [
         // session.endConversation("The API is currently not responding");
         // API goes here
         try {
-            session.send(session.conversationData.apiToken);
+            session.send(session.conversationData.apiToken ? session.conversationData.apiToken : "aaa");
             apiServices.checkLeaveBalance(matchLeaveQuotaCode(session.conversationData.request.leaveType), session.conversationData.apiToken)
                 .then((value) => {
                     //do something with response
-                    session.send(JSON.stringify(value));
+                    session.send(value ? JSON.stringify(value) : "abc");
                 })
         }
         catch (err) {
