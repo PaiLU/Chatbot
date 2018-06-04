@@ -61,7 +61,7 @@ var OCRKey = process.env.OCRKey;
 // const LuisModelUrl = 'https://' + luisAPIHostName + '/luis/v2.0/apps/' + luisAppId + '?subscription-key=' + luisAPIKey + '&spellCheck=true&bing-spell-check-subscription-key=' + bingSpellCheckKey + '&verbose=true&timezoneOffset=0&q=';
 const LuisModelUrl = `https://${luisAPIHostName}/luis/v2.0/apps/${luisAppId}?subscription-key=${luisAPIKey}&verbose=true&timezoneOffset=0&q=`;
 var recognizer = new builder.LuisRecognizer(LuisModelUrl);
-// bot.recognizer(recognizer);
+bot.recognizer(recognizer);
 
 bot.on("event", function (event) {
     if (event.name === "apiToken") {
@@ -83,7 +83,7 @@ bot.dialog('Help', [
                     .buttons([
                         builder.CardAction.imBack(session, "apply leave", "apply leave"),
                         builder.CardAction.imBack(session, "check leave status", "check leave status"),
-                        builder.CardAction.imBack(session, "upload mc form", `apply medical leave(c) by uploading MC form directly`)
+                        builder.CardAction.imBack(session, "apply medical leave(c) by uploading MC form directly", `apply medical leave(c) by uploading MC form directly`)
                     ])
             ])
         builder.Prompts.text(session, msg);
@@ -176,13 +176,13 @@ bot.dialog('ReqStatus', [
     function (session) {
         console.log(`${matchLeaveQuotaCode(session.conversationData.request.leaveType)} type: ${typeof (matchLeaveQuotaCode(session.conversationData.request.leaveType))}`);
         
-        session.endConversation("The API is currently not responding");
+        // session.endConversation("The API is currently not responding");
         // API goes here
-        // apiServices.checkLeaveBalance(matchLeaveQuotaCode(session.conversationData.request.leaveType), session.conversationData.apiToken)
-        //     .then((value) => {
-        //         //do something with response
-        //         session.send(JSON.stringify(value));
-        //     });
+        apiServices.checkLeaveBalance(matchLeaveQuotaCode(session.conversationData.request.leaveType), session.conversationData.apiToken)
+            .then((value) => {
+                //do something with response
+                session.send(JSON.stringify(value));
+            });
     }
 ]).triggerAction({
     matches: ['reqStatus']
@@ -357,6 +357,8 @@ bot.dialog('ConvertingData', [
             session.conversationData.received.dateInfo[datetimeV2Types[o]] = builder.EntityRecognizer.findEntity(args.intent.entities || {}, 'builtin.datetimeV2.' + datetimeV2Types[o]);
         };
         session.conversationData.processing.dateInfo = dateExtract(session.conversationData.received.dateInfo);
+        console.log(`received: ${JSON.stringify(session.conversationData.received)}`);
+        console.log(`processing: ${JSON.stringify(session.conversationData.processing)}`);
         session.endDialog();
     }
 ]);
@@ -856,9 +858,10 @@ function deleteAttachment(attachmentArray, n) {
     }
     return attachmentArray;
 }
-function validateAttachment(attachmentType, attachmentSize) {
+function validateAttachment(attachmentEntity, attachmentSize) {
     var fileTypeLimit = ["image/jpg", "image/jpeg", "image/png", "image/bmp", "image/gif", "image/tiff", "application/pdf"];
     var fileSizeLimit = 3 * 1024 * 1024; // 3 Mega Bites
+    var fileNameLimit = /./;
     var check = false;
     for (var a in fileTypeLimit) {
         if (attachmentType == fileTypeLimit[a] && Number(attachmentSize) <= fileSizeLimit) {
