@@ -48,7 +48,7 @@ server.listen(process.env.port || 3978, function () {
 })
 
 var inMemoryStorage = new builder.MemoryBotStorage();
-var bot = new builder.UniversalBot(connector, function (session) {
+var bot = new builder.UniversalBot(connector, function (session, args, next) {
     console.log("Name: " + session.message.user.name + "\n")
     session.beginDialog('Help');
 }).set('storage', inMemoryStorage);
@@ -66,7 +66,6 @@ bot.recognizer(recognizer);
 bot.on("event", function (event) {
     if (event.name === "apiToken") {
         bot.beginDialog(event.address, 'dialogApiToken', event.text);
-        // bot.send(`${JSON.stringify(session.conversationData)}`);
         bot.beginDialog(event.address, '/');
     }
 })
@@ -99,7 +98,7 @@ bot.dialog('Help', [
                     break;
                 }
                 case "check leave status": {
-                    session.cancelDialog(0, 'ReqStatus')
+                    session.beginDialog('ReqStatus')
                     break;
                 }
                 case "apply medical leave(c) by uploading MC form directly": {
@@ -115,7 +114,7 @@ bot.dialog('Help', [
                                 break;
                             }
                             case 'reqStatus': {
-                                session.cancelDialog(0, 'ReqStatus');
+                                session.beginDialog('ReqStatus');
                                 break;
                             }
                             default: {

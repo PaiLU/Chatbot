@@ -11,7 +11,8 @@ const luisModelUrlNoSpellCheck = `https://${luisHostName}/luis/v2.0/apps/${luisA
 const luisModelUrl = `https://${luisHostName}/luis/v2.0/apps/${luisAppId}?subscription-key=${luisSubscriptionKey}` +
     `&spellCheck=true&bing-spell-check-subscription-key=${bingSpellCheckSubscriptionKey}&verbose=true&timezoneOffset=0&q=`;
 
-module.exports = [    function (session) {
+module.exports = [
+    function (session) {
         if (session.message.text) {
             builder.LuisRecognizer.recognize(session.message.text, luisModelUrlNoSpellCheck, function (err, intents, entities, compositeEntities) {
                 session.send(intents[0].intent);
