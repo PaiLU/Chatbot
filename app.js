@@ -50,7 +50,7 @@ server.listen(process.env.port || 3978, function () {
 var inMemoryStorage = new builder.MemoryBotStorage();
 var bot = new builder.UniversalBot(connector, function (session) {
     console.log("Name: " + session.message.user.name + "\n")
-    session.cancelDialog(0, 'Help');
+    session.beginDialog('Help');
 }).set('storage', inMemoryStorage);
 var luisAppId = process.env.LuisAppId_LeaveBot;
 var luisAPIKey = process.env.LuisAPIKey;
