@@ -81,9 +81,9 @@ bot.dialog('Help', [
                 new builder.HeroCard(session)
                     // .text("1. Apply leave")
                     .buttons([
-                        builder.CardAction.imBack(session, "apply leave", "apply leave"),
-                        builder.CardAction.imBack(session, "check leave status", "check leave status"),
-                        builder.CardAction.imBack(session, "apply medical leave(c) by uploading MC form directly", `apply medical leave(c) by uploading MC form directly`)
+                        builder.CardAction.postBack(session, "apply leave", "apply leave"),
+                        builder.CardAction.postBack(session, "check leave status", "check leave status"),
+                        builder.CardAction.postBack(session, "apply medical leave(c) by uploading MC form directly", `apply medical leave(c) by uploading MC form directly`)
                     ])
             ])
         builder.Prompts.text(session, msg);
