@@ -181,16 +181,16 @@ bot.dialog('ReqStatus', [
         try {
             // session.send(session.conversationData.apiToken ? session.conversationData.apiToken : "aaa");
             apiServices.checkLeaveBalance(matchLeaveQuotaCode(session.conversationData.request.leaveType), session.conversationData.apiToken)
-            .then((response) => {
-                if (response && response.Type === "E") {
-                    session.send(`Error: ${response.Message}`);
-                    session.cancelDialog(0,'/');
-                } else {
-                    var messages = value.map((item) => {return `${item.LeaveQuotaDesc}: ${item.LeaveRemainder} day(s)`});
-                    session.send(messages.join("\n"));
-                    session.cancelDialog(0,'/');
-                }
-            });
+                .then((response) => {
+                    if (Array.isArray(response)) {
+                        var messages = value.map((item) => { return `${item.LeaveQuotaDesc}: ${item.LeaveRemainder} day(s)` });
+                        session.send(messages.join("\n"));
+                        session.cancelDialog(0, '/');
+                    } else if (response && response.Type === "E") {
+                        session.send(`Error: ${response.Message}`);
+                        session.cancelDialog(0, '/');
+                    }
+                });
         }
         catch (err) {
             session.send(err.message);
@@ -699,20 +699,61 @@ bot.dialog('ApplyConfirmed', [
         }
         try {
             apiServices.applyLeave(application, session.conversationData.apiToken)
-                .then((value) => {
-                    //do something with response
-                    var msg = new builder.Message()
-                        .text(value);
-                    session.send(msg);
-                    session.cancelDialog(0, '/');
+                .then((response) => {
+                    if (Array.isArray(response)) {
+                        if (response && response[0].Type === "E") {
+                            session.send(`Error: ${response[0].Message}`);
+                            session.cancelDialog(0, '/');
+                        } else if (response && response[0].Type === "W") {
+                            session.send(`Warning: ${response[0].Message}`);
+                            builder.Prompts.confirm(session, "Proceed with warning?", { listStyle: 3 });
+                        } else {
+                            session.send('Hi %s<br\>You are applying %s from %s-%s-%s to %s-%s-%s <br\>The information has been sent to the server successfully.', session.message.user.name, leaveTypeDisplayConvert(session.conversationData.received.leaveType), monConvert(session.conversationData.apply.startMon), session.conversationData.apply.startDate, session.conversationData.apply.startYear, monConvert(session.conversationData.apply.endMon), session.conversationData.apply.endDate, session.conversationData.apply.endYear);
+                            session.cancelDialog(0, '/');
+                        }
+                    }
                 })
         }
         catch (err) {
             session.send(err.message);
         }
-        session.send('Hi %s<br\>You are applying %s from %s-%s-%s to %s-%s-%s <br\>The information has been sent to the server successfully.', session.message.user.name, leaveTypeDisplayConvert(session.conversationData.received.leaveType), monConvert(session.conversationData.apply.startMon), session.conversationData.apply.startDate, session.conversationData.apply.startYear, monConvert(session.conversationData.apply.endMon), session.conversationData.apply.endDate, session.conversationData.apply.endYear);
-        //get api url+
-        session.endConversation();
+    },
+    function (session, results, next) {
+        if (results.response) {
+
+            var application = {
+                "leaveType": matchLeaveApplicationCode(session.conversationData.received.leaveType),
+                "startDate": `${session.conversationData.apply.startYear}-${session.conversationData.apply.startMon}-${session.conversationData.apply.startDate}`,
+                "startType": session.conversationData.received.startDayType,
+                "endDate": `${session.conversationData.apply.endear}-${session.conversationData.apply.endMon}-${session.conversationData.apply.endDate}`,
+                // "endType": "XX", //"FD"||"AM"||"PM"
+                "notes": [ //if have, or otherwise it is an empty array
+                    // {
+                    //     "text": ""
+                    // }
+                ],
+                "attachments": session.conversationData.attachments,
+                "confirmation": "Y"
+            }
+            try {
+                apiServices.applyLeave(application, session.conversationData.apiToken)
+                    .then((response) => {
+                        if (response && response.Type === "E") {
+                            session.send(`Error: ${response.Message}`);
+                            session.cancelDialog(0, '/');
+                        } else {
+                            session.send('Hi %s<br\>You are applying %s from %s-%s-%s to %s-%s-%s <br\>The information has been sent to the server successfully.', session.message.user.name, leaveTypeDisplayConvert(session.conversationData.received.leaveType), monConvert(session.conversationData.apply.startMon), session.conversationData.apply.startDate, session.conversationData.apply.startYear, monConvert(session.conversationData.apply.endMon), session.conversationData.apply.endDate, session.conversationData.apply.endYear);
+                            session.cancelDialog(0, '/');
+                        }
+                    })
+            }
+            catch (err) {
+                session.send(err.message);
+            }
+        } else {
+            session.send("The application is canceled");
+            session.cancelDialog(0, '/');
+        }
     }
 ]);
 bot.dialog('ListAttachments', [
