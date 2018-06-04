@@ -156,7 +156,8 @@ bot.dialog('Help', [
         session.endDialog("Ending Help Dialog");
     }
 ]).triggerAction({
-    matches: /^help$|^main help$^cancel$/i
+    matches: /^help$|^main help$|^cancel$/i,
+    confirmPrompt:"This will cancel your urrent application. Do you want to proceed?"
 });
 bot.dialog('ReqStatus', [
     function (session, args, next) {
