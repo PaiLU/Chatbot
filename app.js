@@ -97,7 +97,7 @@ bot.dialog('Help', [
                     break;
                 }
                 case "check leave status": {
-                    session.beginDialog('ReqStatus')
+                    session.cancelDialog(0,'ReqStatus')
                     break;
                 }
                 case "apply medical leave(c) by uploading MC form directly": {
@@ -139,7 +139,7 @@ bot.dialog('Help', [
         //     session.endConversation("Invalid input, conversation has ended");
     }
 ]).triggerAction({
-    matches: /^help$|^main help$/i
+    matches: /^help$|^main help$^cancel$/i
 });
 bot.dialog('ReqStatus', [
     function (session, args, next) {
@@ -184,6 +184,7 @@ bot.dialog('ReqStatus', [
                 .then((value) => {
                     //do something with response
                     session.send(value ? JSON.stringify(value) : "abc");
+                    session.cancelDialog(0,'/');
                 })
         }
         catch (err) {
