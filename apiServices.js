@@ -43,7 +43,7 @@ module.exports = {
                 })
             }
         });
-        req.write(leaveApplicationRequest);
+        req.write(JSON.stringify(leaveApplicationRequest));
         req.end();
     }
 };
