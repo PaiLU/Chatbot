@@ -182,8 +182,9 @@ bot.dialog('ReqStatus', [
             // session.send(session.conversationData.apiToken ? session.conversationData.apiToken : "aaa");
             apiServices.checkLeaveBalance(matchLeaveQuotaCode(session.conversationData.request.leaveType), session.conversationData.apiToken)
                 .then((response) => {
+                    session.send(JSON.stringify(response));
                     if (Array.isArray(response)) {
-                        var messages = value.map((item) => { return `${item.LeaveQuotaDesc}: ${item.LeaveRemainder} day(s)` });
+                        var messages = response.map((item) => { return `${item.LeaveQuotaDesc}: ${item.LeaveRemainder} day(s)` });
                         session.send(messages.join("\n"));
                         session.cancelDialog(0, '/');
                     } else if (response && response.Type === "E") {
