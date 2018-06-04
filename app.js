@@ -51,7 +51,7 @@ var inMemoryStorage = new builder.MemoryBotStorage();
 var bot = new builder.UniversalBot(connector, function (session, args, next) {
     console.log("Name: " + session.message.user.name + "\n")
     session.beginDialog('Help');
-}).set('storage', inMemoryStorage);
+});
 var luisAppId = process.env.LuisAppId_LeaveBot;
 var luisAPIKey = process.env.LuisAPIKey;
 var luisAPIHostName = process.env.LuisAPIHostName || 'westus.api.cognitive.microsoft.com';
@@ -68,7 +68,7 @@ bot.on("event", function (event) {
         bot.beginDialog(event.address, 'dialogApiToken', event.text);
         bot.beginDialog(event.address, '/');
     }
-})
+});
 // main program
 bot.dialog('dialogApiToken', require('./dialogApiToken'));
 bot.dialog('Help', [
