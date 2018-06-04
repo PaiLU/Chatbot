@@ -54,7 +54,7 @@ var storageName = process.env["Table-Storage-Name"]; // Obtain from Azure Portal
 var storageKey = process.env["Azure-Table-Key"]; // Obtain from Azure Portal
 var azureTableClient = new azure.AzureTableClient(tableName, storageName, storageKey);
 var tableStorage = new azure.AzureBotStorage({ gzipData: false }, azureTableClient);
-// var inMemoryStorage = new builder.MemoryBotStorage();
+var inMemoryStorage = new builder.MemoryBotStorage();
 var bot = new builder.UniversalBot(connector, [
     function (session, args, next) {
         if (!session.conversationData.apiToken) {
@@ -65,7 +65,8 @@ var bot = new builder.UniversalBot(connector, [
     function (session, args, next) {
         session.beginDialog('Help');
     }
-]).set('storage', tableStorage);
+]).set('storage', inMemoryStorage);
+// ]).set('storage', tableStorage);
 var luisAppId = process.env.LuisAppId_LeaveBot;
 var luisAPIKey = process.env.LuisAPIKey;
 var luisAPIHostName = process.env.LuisAPIHostName || 'westus.api.cognitive.microsoft.com';
@@ -157,7 +158,7 @@ bot.dialog('Help', [
     }
 ]).triggerAction({
     matches: /^help$|^main help$|^cancel$/i,
-    confirmPrompt:"This will cancel your urrent application. Do you want to proceed?"
+    confirmPrompt: "This will cancel your urrent application. Do you want to proceed?"
 });
 bot.dialog('ReqStatus', [
     function (session, args, next) {
@@ -562,7 +563,7 @@ bot.dialog('Attachments', [
 ]);
 bot.dialog('CheckAttachment', [
     function (session, args, next) {
-        if (checkEntity(session.conversationData.received.leaveType, reqAttTypes) && !session.conversationData.attachments) {
+        if (checkEntity(session.conversationData.received.leaveType, reqAttTypes) && session.conversationData.attachments.length == 0) {
             session.send(`An attachment for applying ${leaveTypeDisplayConvert(session.conversationData.received.leaveType)} is required`);
             session.beginDialog('AddAttachment');
         }
@@ -584,16 +585,14 @@ bot.dialog('AddAttachment', [
             var attachment = msg.attachments[0];
             var fileDownload = request(attachment.contentUrl);
             fileDownload.then(
-                function (fileResponse) {
-                    // Send reply with attachment type & size
-                    if (validateAttachment(attachment.contentType, fileResponse.length)) {
+                function (fileResponse) {                    // validate the attachment
+                    if (validateAttachment(attachment, fileResponse.length)) {
                         // convert to base64 string and save
                         var imageBase64Sting = new Buffer(fileResponse, 'binary').toString('base64');
                         session.conversationData.attachments.push({
-                            attachmentContent: imageBase64Sting,
-                            attachmentName: attachment.name
-                            // content:,
-                            // thumbnailUrl:
+                            contentType: attachment.contentType,
+                            contentUrl: 'data:' + attachment.contentType + ';base64,' + imageBase64Sting,
+                            name: attachment.name
                         });
                         console.log(`The attachment has been saved`);
                         session.endDialog();
@@ -702,6 +701,20 @@ bot.dialog('CorrectingInfo', [
 ])
 bot.dialog('ApplyConfirmed', [
     function (session) {
+
+        // contentType: attachment.contentType,
+        // contentUrl: 'data:' + attachment.contentType + ';base64,' + imageBase64Sting,
+        // name: attachment.name
+
+        var attachments = [];
+        if (session.conversationData.attachments.length > 0) {
+            attachments = session.conversationData.attachments.map((item) => {
+                return {
+                    FileName: item.name,
+                    Contents: item.contentUrl.split(";")[1].split(",")[1]
+                };
+            });
+        }
         var application = {
             "leaveType": matchLeaveApplicationCode(session.conversationData.received.leaveType),
             "startDate": `${session.conversationData.apply.startYear}-${session.conversationData.apply.startMon}-${session.conversationData.apply.startDate}`,
@@ -713,7 +726,7 @@ bot.dialog('ApplyConfirmed', [
                 //     "text": ""
                 // }
             ],
-            "attachments": session.conversationData.attachments,
+            "attachments": attachments,
             "confirmation": "N"
         }
         try {
@@ -756,6 +769,15 @@ bot.dialog('ApplyConfirmed', [
     },
     function (session, results, next) {
         if (results.response) {
+            var attachments = [];
+            if (session.conversationData.attachments.length > 0) {
+                attachments = session.conversationData.attachments.map((item) => {
+                    return {
+                        FileName: item.name,
+                        Contents: item.contentUrl.split(";")[1].split(",")[1]
+                    };
+                });
+            }
             var application = {
                 "leaveType": matchLeaveApplicationCode(session.conversationData.received.leaveType),
                 "startDate": `${session.conversationData.apply.startYear}-${session.conversationData.apply.startMon}-${session.conversationData.apply.startDate}`,
@@ -767,7 +789,7 @@ bot.dialog('ApplyConfirmed', [
                     //     "text": ""
                     // }
                 ],
-                "attachments": session.conversationData.attachments,
+                "attachments": attachments,
                 "confirmation": "Y"
             }
             try {
