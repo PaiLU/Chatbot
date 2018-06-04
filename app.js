@@ -186,12 +186,9 @@ bot.dialog('ReqStatus', [
                     //do something with response
                     session.send(JSON.stringify(value));
                 })
-                .on("error", (error) => {
-                    session.send(error);
-                });
         }
         catch (err) {
-            session.send(`${JSON.stringify(err)}`);
+            session.send(err.message);
         }
     }
 ]).triggerAction({
