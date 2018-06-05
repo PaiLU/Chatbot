@@ -11,7 +11,7 @@ var azure = require('botbuilder-azure');
 const sitLeaveApplicationData = JSON.parse(fs.readFileSync('./sitLeaveApplicationData.json', 'utf8'));
 const sitLeaveQuotaData = JSON.parse(fs.readFileSync('./sitLeaveQuotaData.json', 'utf8'));
 const sitLeaveBot = JSON.parse(fs.readFileSync('./sitLeaveBot.json', 'utf8'));
-const defaultArgs = { "intent": { "intent": "apply leave", "entities": [], "compositeEntities": [] } };
+const defaultArgs = { "intent": { "entities": [], "compositeEntities": [] } };
 var server = restify.createServer();
 //leave type saving
 var sitLeaveApplicationTypes = [];
@@ -56,12 +56,14 @@ var tableStorage = new azure.AzureBotStorage({ gzipData: false }, azureTableClie
 var inMemoryStorage = new builder.MemoryBotStorage();
 var bot = new builder.UniversalBot(connector, [
     function (session, args, next) {
+        session.send(`Args: ${JSON.stringify(args)}`)
         if (!session.conversationData.apiToken) {
             session.conversationData.apiToken = args;
         }
         next();
     },
     function (session, args, next) {
+        session.send(`apiToken: ${JSON.stringify(session.conversationData.apiToken)}`);
         session.beginDialog('Help');
     }
 ]).set('storage', inMemoryStorage);
@@ -111,7 +113,7 @@ bot.dialog('Help', [
                     break;
                 }
                 case "check leave status": {
-                    session.beginDialog('ReqStatus')
+                    session.beginDialog('ReqStatus', defaultArgs);
                     break;
                 }
                 case "apply medical leave(c) by uploading MC form directly": {
@@ -123,15 +125,15 @@ bot.dialog('Help', [
                         session.send(intents[0].intent);
                         switch (intents[0].intent) {
                             case 'apply leave': {
-                                session.cancelDialog(0, 'ApplyLeave', { "intent": { "intent": "apply leave", "entities": [...entities] } });
+                                session.beginDialog('ApplyLeave', { "intent": { "intent": "apply leave", "entities": [...entities] } });
                                 break;
                             }
                             case 'reqStatus': {
-                                session.beginDialog('ReqStatus');
+                                session.beginDialog('ReqStatus', { "intent": { "intent": "reqStatus", "entities": [...entities] } });
                                 break;
                             }
                             default: {
-                                session.cancelDialog(0, 'Help');
+                                session.beginDialog('Help');
                                 break;
                             }
                         }
@@ -153,11 +155,11 @@ bot.dialog('Help', [
         //     session.endConversation("Invalid input, conversation has ended");
     },
     function (session) {
-        session.endDialog("Ending Help Dialog");
+        session.endDialog("Ending of dialog");
     }
 ]).triggerAction({
     matches: /^help$|^main help$|^cancel$/i,
-    confirmPrompt: "This will cancel your urrent application. Do you want to proceed?"
+    confirmPrompt: "This will cancel your csurrent application. Do you want to proceed?"
 });
 bot.dialog('ReqStatus', [
     function (session, args, next) {
@@ -382,7 +384,7 @@ bot.dialog('ConvertingData', [
 
         const datetimeV2Types = ["daterange", "date", "duration", "datetime", "datetimerange"];
         for (var o in datetimeV2Types) {
-            session.conversationData.received.dateInfo[datetimeV2Types[o]] = builder.EntityRecognizer.findEntity(args.intent.entities || {}, 'builtin.datetimeV2.' + datetimeV2Types[o]);
+            session.conversationData.received.dateInfo[datetimeV2Types[o]] = builder.EntityRecognizer.findAllEntities(args.intent.entities || {}, 'builtin.datetimeV2.' + datetimeV2Types[o]);
         };
         session.conversationData.processing.dateInfo = dateExtract(session.conversationData.received.dateInfo);
         console.log(`received: ${JSON.stringify(session.conversationData.received)}`);
@@ -1062,21 +1064,62 @@ conversationData.apply : used in leave application, save all "ready to send" inf
 conversationData.request: used in leave quota request, save all "ready to send information"
     .leaveType : should be lowercase leave type description.
 
+dateExtract builtin.datetimeV2.
+    daterange
+        => save the nearest entity
+        {
+            "type": "daterange",
+            "start": "2018-06-05",
+            "end": "2018-06-06"
+        }
+    datetimerange
+        => gets the nearest entity
+        => extract(startDate, endDate, startTime, endTime)
+            datetimerange
+                if interval is small => 1 datetime / date
+                if the interval is large => 2 datetime
+
+                2 date / datetime
+                1 date / datetime => duration?
+            // if(startTime < 12pm) startDateType = am else pm;if (endTime <= 12pm) endDateType = am else pm
+            // if(startDate == endDate && startDateType != endDateType) -> save the entity as {"dayType":"FD", "value":startDate}
+    date
+        => save the nearest entity
+        {
+            "type": "date",
+            "value": "2018-06-05"
+        }
+    
+    datetime
+        => save the nearest
+    duration
+        => save the milisecond value
+    timerange
+        => N.A.
+    time
+        => N.A.
+    set
+        => N.A.
 Date scenarios
     1. received (recognized from LUIS) Possible types, the types are checking in order: builtin.datetimeV2.
-        daterange     
-            => save start and end date 
-            => done
-        date          
-            => 
-        datetimerange 
-            => extract(
-                startDate, endDate, // if (startDate == endDate) 
-                startDateType, endDateType // if (time <= 12pm) am; if (time > 12pm)
-                )
-        duration      =>
+        daterange 
+            => only one entity recognized ? Step 1 : Step 2
+                Step 1
+                    => save start and end date 
+                    => done
+                Step 2
+                    => take the first one and do Step 1
+        date
+            => only one entity recognized? Step 1 : Step 2
+                Step 1
+                    => 
+                Step 2
+                    =>
+        datetimerange
+            => only one entity recognized? Step 1 : Step 2
+        duration      => 
         timerange     => N.A. may proceed to ask date
-        datetime      => 
+        datetime      => N.A.
         time          => N.A.
         set           => N.A.
     2. futher inputed 
