@@ -12,7 +12,6 @@ const sitLeaveApplicationData = JSON.parse(fs.readFileSync('./sitLeaveApplicatio
 const sitLeaveQuotaData = JSON.parse(fs.readFileSync('./sitLeaveQuotaData.json', 'utf8'));
 const sitLeaveBot = JSON.parse(fs.readFileSync('./sitLeaveBot.json', 'utf8'));
 const defaultArgs = { "intent": { "intent": "apply leave", "entities": [], "compositeEntities": [] } };
-const datetimeV2Types = ["daterange", "date", "duration", "datetime", "datetimerange"];
 var server = restify.createServer();
 //leave type saving
 var sitLeaveApplicationTypes = [];
@@ -381,10 +380,7 @@ bot.dialog('ConvertingData', [
         session.conversationData.received.startDayType = entityExtract(findCompositeEntities(args.intent.compositeEntities || {}, args.intent.entities || {}, 'startDay', 'dayType')) || "FD";
         session.conversationData.received.endDayType = entityExtract(findCompositeEntities(args.intent.compositeEntities || {}, args.intent.entities || {}, 'endDay', 'dayType')) || "FD";
 
-        // session.conversationData.received.dateInfo.startDate = findCompositeEntities(args.intent.compositeEntities || {}, args.intent.entities, 'startDay', 'builtin.datetimeV2.date');
-        // session.conversationData.received.dateInfo.endDate = findCompositeEntities(args.intent.compositeEntities || {}, args.intent.entities, 'endDay', 'builtin.datetimeV2.date');
-        // session.conversationData.processing.dateInfo.start = dateExtract(session.conversationData.received.dateInfo.startDate);
-        // session.conversationData.processing.dateInfo.end = dateExtract(session.conversationData.received.dateInfo.endDate)
+        const datetimeV2Types = ["daterange", "date", "duration", "datetime", "datetimerange"];
         for (var o in datetimeV2Types) {
             session.conversationData.received.dateInfo[datetimeV2Types[o]] = builder.EntityRecognizer.findEntity(args.intent.entities || {}, 'builtin.datetimeV2.' + datetimeV2Types[o]);
         };
@@ -394,32 +390,6 @@ bot.dialog('ConvertingData', [
         session.endDialog();
     }
 ]);
-bot.dialog('AskLeaveType', [
-    function (session, args, next) {
-        console.log(args);
-        if (args != "all") {
-            builder.Prompts.choice(session, "Please specify your leave type.", sitLeaveApplicationTypes.slice(0, 3).concat("show all leave types"), { listStyle: 3 });
-        } else {
-            builder.Prompts.choice(session, "Please specify your leave type.", sitLeaveApplicationTypes, { listStyle: 3 });
-        }
-    },
-    function (session, results) {
-        console.log("chosen result: %s", JSON.stringify(results));
-        if (results.response.entity.toLowerCase() == "show all leave types")
-            session.replaceDialog('AskLeaveType', "all")
-        else {
-            session.conversationData.received.leaveType = results.response.entity.toLowerCase();
-            session.endDialog();
-        }
-    },
-    function (session, results) {
-        session.conversationData.received.leaveType = results.response.entity;
-        session.endDialog();
-    },
-]).cancelAction({
-    matches: /^cancel$|^abort$/i,
-    confirmPrompt: "This will cancel your current request. Are you sure?"
-});
 bot.dialog('AskDate', [
     function (session, args) {
         session.dialogData.type = args;
@@ -534,6 +504,32 @@ bot.dialog('CheckLeaveType', [
         };
     }
 ]);
+bot.dialog('AskLeaveType', [
+    function (session, args, next) {
+        console.log(args);
+        if (args != "all") {
+            builder.Prompts.choice(session, "Please specify your leave type.", sitLeaveApplicationTypes.slice(0, 3).concat("show all leave types"), { listStyle: 3 });
+        } else {
+            builder.Prompts.choice(session, "Please specify your leave type.", sitLeaveApplicationTypes, { listStyle: 3 });
+        }
+    },
+    function (session, results) {
+        console.log("chosen result: %s", JSON.stringify(results));
+        if (results.response.entity.toLowerCase() == "show all leave types")
+            session.replaceDialog('AskLeaveType', "all")
+        else {
+            session.conversationData.received.leaveType = results.response.entity.toLowerCase();
+            session.endDialog();
+        }
+    },
+    function (session, results) {
+        session.conversationData.received.leaveType = results.response.entity;
+        session.endDialog();
+    },
+]).cancelAction({
+    matches: /^cancel$|^abort$/i,
+    confirmPrompt: "This will cancel your current request. Are you sure?"
+});
 bot.dialog('AskSpecificType', [
     function (session) {
         switch (session.conversationData.received.leaveType) {
@@ -621,6 +617,42 @@ bot.dialog('DeleteAttachment', [
         session.endConversation();
     }
 ])
+bot.dialog('ListAttachments', [
+    function (session, args, next) {
+        if (session.conversationData.attachments) {
+            var listAttachment1 = new builder.Message(session)
+                .text("You have uploaded " + session.conversationData.attachments.length + "attachment(s)")
+                // session.send(listAttachment1);
+                // var listAttachment2 = new builder.Message(session)
+                .attachmentLayout("list")//or carousel
+                .attachments(session.conversationData.attachments);
+            session.send(listAttachment1);
+        } else {
+            var listAttachment3 = new builder.Message(session)
+                .text("You have not uploaded any attchments yet");
+            session.send(listAttachment3)
+        }
+        builder.Prompts.choice(session, "What do you want to do withh the attachment(s)?", ["add attachment", "delete an attachment", "proceed with current attachment", "cancel application"], { listStyle: 3 });
+    },
+    function (session, results, next) {
+        switch (results.response.entity) {
+            case "add attachment": {
+                session.replaceDialog('AddAttachment');
+                break;
+            }
+            case "delete an attachment": {
+                session.replaceDialog('DeleteAttachment');
+                break;
+            }
+            case "cancel application": {
+                session.endConversation();
+            }
+            case "proceed with current attachment": {
+                session.endDialog();
+            }
+        }
+    }
+]);
 bot.dialog('CheckApplyInfo', [
     function (session) {
         session.conversationData.apply.start = new Date(session.conversationData.processing.dateInfo.start);
@@ -701,11 +733,6 @@ bot.dialog('CorrectingInfo', [
 ])
 bot.dialog('ApplyConfirmed', [
     function (session) {
-
-        // contentType: attachment.contentType,
-        // contentUrl: 'data:' + attachment.contentType + ';base64,' + imageBase64Sting,
-        // name: attachment.name
-
         var attachments = [];
         if (session.conversationData.attachments.length > 0) {
             attachments = session.conversationData.attachments.map((item) => {
@@ -823,42 +850,6 @@ bot.dialog('ApplyConfirmed', [
         }
     }
 ]);
-bot.dialog('ListAttachments', [
-    function (session, args, next) {
-        if (session.conversationData.attachments) {
-            var listAttachment1 = new builder.Message(session)
-                .text("You have uploaded " + session.conversationData.attachments.length + "attachment(s)")
-                // session.send(listAttachment1);
-                // var listAttachment2 = new builder.Message(session)
-                .attachmentLayout("list")//or carousel
-                .attachments(session.conversationData.attachments);
-            session.send(listAttachment1);
-        } else {
-            var listAttachment3 = new builder.Message(session)
-                .text("You have not uploaded any attchments yet");
-            session.send(listAttachment3)
-        }
-        builder.Prompts.choice(session, "What do you want to do withh the attachment(s)?", ["add attachment", "delete an attachment", "proceed with current attachment", "cancel application"], { listStyle: 3 });
-    },
-    function (session, results, next) {
-        switch (results.response.entity) {
-            case "add attachment": {
-                session.replaceDialog('AddAttachment');
-                break;
-            }
-            case "delete an attachment": {
-                session.replaceDialog('DeleteAttachment');
-                break;
-            }
-            case "cancel application": {
-                session.endConversation();
-            }
-            case "proceed with current attachment": {
-                session.endDialog();
-            }
-        }
-    }
-]);
 function entityExtract(receivedEntity) {
     var o = new Object();
     if (receivedEntity && receivedEntity.resolution.values) {
@@ -958,11 +949,11 @@ function leaveTypeDisplayConvert(t) {
         return value;
     }).join('');
 };
-function checkEntity(entity, entityList) {
+function checkEntity(string, list) {
     var check = false;
-    for (var a in entityList) {
-        if (entity.toString().toLowerCase() == entityList[a].toString().toLowerCase()) {
-            check = entityList[a].toString();
+    for (var a in list) {
+        if (string.toString().toLowerCase() == list[a].toString().toLowerCase()) {
+            check = list[a].toString();
             break;
         }
     }
@@ -1007,11 +998,11 @@ function deleteAttachment(attachmentArray, n) {
 function validateAttachment(attachmentEntity, attachmentSize) {
     var fileTypeLimit = ["image/jpg", "image/jpeg", "image/png", "image/bmp", "image/gif", "image/tiff", "application/pdf"];
     var fileSizeLimit = 3 * 1024 * 1024; // 3 Mega Bites
-    var fileNameLimit = /\./;
+    var fileNameLimit = /^[^\.]+\.[^\.]+$/;
+    // var fileNameLimit = /^[^\.]+(\.[^\.]+)?$/; //match with no type suffix
     var check = false;
-    attachmentEntity.name.match()
     for (var a in fileTypeLimit) {
-        if (attachmentEntity.contentType == fileTypeLimit[a] && Number(attachmentSize) <= fileSizeLimit) {
+        if (attachmentEntity.contentType == fileTypeLimit[a] && Number(attachmentSize) <= fileSizeLimit && attachmentEntity.name.match(fileNameLimit)) {
             check = true;
             break;
         }
@@ -1054,16 +1045,39 @@ function matchLeaveApplicationCode(leaveType) {
 
 /* 
 conversationData.received : save all information from the first message
-    => leaveType : should be lowercase string type.
-    => dateInfo : currerntly is the entity Object, should be futher replaced by Date Object or the millisecond number value
-    => starDateType & endDateType : currerently is the entity Object, should be futher replaced by string ("morning|afternoon|full day")
+    .leaveType : should be lowercase leave type description.
+    .dateInfo : currerntly is the entity Object, should be futher replaced by Date Object or the millisecond number value
+    .starDateType & endDateType : currerently is the entity Object, should be futher replaced by string ("AM|PM|FD")
 conversationData.attachment : save the attachment Object with base 64 string
-    {
-        contentType: attachment.contentType,
-        contentUrl: 'data:' + attachment.contentType + ';base64,' + imageBase64Sting,
-        name: attachment.name
-    }
+    [
+        {
+            contentType: attachment.contentType,
+            contentUrl: 'data:' + attachment.contentType + ';base64,' + imageBase64Sting,
+            name: attachment.name
+        }
+    ]
 conversationData.processing : save the middle information during processing with the Data, should only be used when needed
+
 conversationData.apply : used in leave application, save all "ready to send" information, should be used after user confirmation, should not be modified in middle
 conversationData.request: used in leave quota request, save all "ready to send information"
+    .leaveType : should be lowercase leave type description.
+
+Date scenarios
+    1. received (recognized from LUIS) Possible types, the types are checking in order: builtin.datetimeV2.
+        daterange     
+            => save start and end date 
+            => done
+        date          
+            => 
+        datetimerange 
+            => extract(
+                startDate, endDate, // if (startDate == endDate) 
+                startDateType, endDateType // if (time <= 12pm) am; if (time > 12pm)
+                )
+        duration      =>
+        timerange     => N.A. may proceed to ask date
+        datetime      => 
+        time          => N.A.
+        set           => N.A.
+    2. futher inputed 
 */
