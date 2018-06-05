@@ -860,38 +860,42 @@ function entityExtract(receivedEntity) {
         return null;
 };
 function dateExtract(receivedDateEntityList) {
-    var o = new Object;
+    var o = new Object();
     for (var p in receivedDateEntityList) {
-        if (receivedDateEntityList[p] && receivedDateEntityList[p].length > 0 && receivedDateEntityList[p].resolution.values.length > 0) {
-            var i = receivedDateEntityList[p].resolution.values.length;
-            switch (p) {
-                case "daterange": {
-                    o.start = Date.parse(receivedDateEntityList[p].resolution.values[i]["start"]);
-                    o.end = Date.parse(receivedDateEntityList[p].resolution.values[i]["end"]);
-                    break;
-                };
-                case "date": {
-                    o.date = Date.parse(receivedDateEntityList[p].resolution.values[i].value);
-                    break;
-                };
-                case "duration": {
-                    o.duration = Number(receivedDateEntityList[p].resolution.values[i].value) * 1000
-                    break;
-                };
-                case "datetime": {
-                    break;
-                };
-                case "datetimerange": {
-                    break;
-                };
-                default:
-                    break;
-            }
+        switch (p) {
+            case "daterange": {
+                o.start = Date.parse(receivedDateEntityList[p].resolution.values[i]["start"]);
+                o.end = Date.parse(receivedDateEntityList[p].resolution.values[i]["end"]);
+                break;
+            };
+            case "datetimerange": {
+                break;
+            };
+            case "date": {
+                o.date = Date.parse(receivedDateEntityList[p].resolution.values[i].value);
+                break;
+            };
+            case "datetime": {
+                break;
+            };
+            case "duration": {
+                o.duration = Number(receivedDateEntityList[p].resolution.values[i].value) * 1000
+                break;
+            };
+            default:
+                break;
         }
     }
     // returned value is the millisecond
     return o;
 };
+function getOneDateEntity(fromList) {
+    var now = new Date();
+    if (fromList.length >= 0) {
+
+    } else
+        return null;
+}
 function monConvert(m) {
     switch (m) {
         case 1: {
@@ -1087,7 +1091,7 @@ dateExtract builtin.datetimeV2.
         => save the nearest entity
         {
             "type": "date",
-            "value": "2018-06-05"
+            "value": Date("2018-07-08")
         }
     
     datetime
