@@ -18,7 +18,7 @@ server.post('/api/messages', connector.listen());
 
 // Receive messages from the user
 var bot = new builder.UniversalBot(connector, [
-    function (session) {
+    function (session,args,next) {
         session.beginDialog('dialogIntro');
     },
     function (session) {

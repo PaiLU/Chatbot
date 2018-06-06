@@ -7,6 +7,7 @@ var fs = require('fs');
 var apiServices = require('./apiServices');
 var request = require('request-promise').defaults({ encoding: null });
 var azure = require('botbuilder-azure');
+var moment = require('moment');
 
 const sitLeaveApplicationData = JSON.parse(fs.readFileSync('./sitLeaveApplicationData.json', 'utf8'));
 const sitLeaveQuotaData = JSON.parse(fs.readFileSync('./sitLeaveQuotaData.json', 'utf8'));
@@ -770,7 +771,7 @@ bot.dialog('ApplyConfirmed', [
                                     case "W":
                                         return "Warning: " + item.Message;
                                     case "S":
-                                        return "Success:" + item.Message;
+                                        return "Success: " + item.Message;
                                     default:
                                         return item.Message;
                                 }
@@ -860,26 +861,119 @@ function entityExtract(receivedEntity) {
         return null;
 };
 function dateExtract(receivedDateEntityList) {
-    var o = new Object();
+    var o = {
+        "dateTime": [],
+        "duration": []
+    };
     for (var p in receivedDateEntityList) {
+        // each item is an IEntity[] list
         switch (p) {
             case "daterange": {
-                o.start = Date.parse(receivedDateEntityList[p].resolution.values[i]["start"]);
-                o.end = Date.parse(receivedDateEntityList[p].resolution.values[i]["end"]);
+                //1. get nearest entity
+                var nearestEntityList = receivedDateEntityList[p].map(
+                    // each item is an IEntity item
+                    (item) => {
+                        return getNearestDateEntity(item.resolution.values);
+                    });
+                //2. save as 2 seperatre entities
+                var dateItem = nearestEntityList.map((item) => {
+                    var k = item.start.split(/\:|\-|\s/);
+                    var startDate = new Date(new Date(k[0], k[1] - 1, k[2], k[3] || 0, k[4] || 0, k[5] || 0).getTime() - new Date().getTimezoneOffset() * 60000);
+                    var l = item.end.split(/\:|\-|\s/);
+                    var endDate = new Date(new Date(l[0], l[1] - 1, l[2], l[3] || 0, l[4] || 0, l[5] || 0).getTime() - new Date().getTimezoneOffset() * 60000);
+                    return [
+                        {
+                            "value": startDate,
+                            "type": "FD"
+                        }, {
+                            "value": endDate,
+                            "type": "FD"
+                        }
+                    ];
+                })
+                for (var a in dateItem)
+                    o.dateTime.push(...dateItem[a]);
                 break;
             };
             case "datetimerange": {
+                //1. get nearest entity
+                var nearestEntityList = receivedDateEntityList[p].map(
+                    // each item is an IEntity item
+                    (item) => {
+                        return getNearestDateEntity(item.resolution.values);
+                    });
+                var dateItem = nearestEntityList.map((item) => {
+                    var k = item.start.split(/\:|\-|\s/).map((item) => { return Number(item) });
+                    var startDate = new Date(new Date(k[0], k[1] - 1, k[2], k[3] || 0, k[4] || 0, k[5] || 0).getTime() - new Date().getTimezoneOffset() * 60000);
+                    var l = item.end.split(/\:|\-|\s/).map((item) => { return Number(item) });
+                    var endDate = new Date(new Date(l[0], l[1] - 1, l[2], l[3] || 0, l[4] || 0, l[5] || 0).getTime() - new Date().getTimezoneOffset() * 60000);
+                    if (k[0] == l[0] && k[1] == l[1] && k[2] == l[2]) {
+                        if (k[3] >= 12 && l[3] >= 12) {
+                            return [{
+                                "value": startDate,
+                                "type": "PM"
+                            }]
+                        }   else if (k[3] <= 12 && l[3] <= 12) {
+                            return [{
+                                "value": startDate,
+                                "type": "AM"
+                            }]
+                        } else {
+                            return [{
+                                "value": startDate,
+                                "type": "FD"
+                            }]
+                        }
+                    } else{
+
+                    }
+                })
+                //2. check
+                //+ startDate == endDate save as 1 entity
+                // - startTime & endTime <= 12PM => AM
+                // - startTime & endTime >= 12PM => PM
+                // - Else => FD
+                //+ startDate != endDate save as 2 seperatre entities
+                // - startTime < 12:00pm : FD; else PM
+                // - endTime > 12:00PM : FD; else AM
                 break;
             };
             case "date": {
-                o.date = Date.parse(receivedDateEntityList[p].resolution.values[i].value);
+                //1. get nearest entity
+                var nearestEntityList = receivedDateEntityList[p].map(
+                    // each item is an IEntity item
+                    (item) => {
+                        return getNearestDateEntity(item.resolution.values);
+                    });
+                //2. save as an entity
+                var dateItem = nearestEntityList.map((item) => {
+                    return [
+                        {
+                            "value": new Date(new Date(item.value).getTime() + new Date().getTimezoneOffset() * 60000),
+                            "type": "FD"
+                        }
+                    ];
+                })
+                for (var a in dateItem)
+                    o.dateTime.push(...dateItem[a]);
                 break;
             };
             case "datetime": {
+                o.dateTime.push(...receivedDateEntityList[p].map(
+                    // each item is an IEntity item
+                    (item) => {
+                        //1. get nearest entity
+                        //2. save as 2 seperatre entities
+                    }));
                 break;
             };
             case "duration": {
-                o.duration = Number(receivedDateEntityList[p].resolution.values[i].value) * 1000
+                o.duration.push(...receivedDateEntityList[p].map(
+                    // each item is an IEntity item
+                    (item) => {
+                        // save as millisecond number
+                        return Number(item.resolution.values[0].value) * 1000;
+                    }));
                 break;
             };
             default:
@@ -889,12 +983,23 @@ function dateExtract(receivedDateEntityList) {
     // returned value is the millisecond
     return o;
 };
-function getOneDateEntity(fromList) {
+function getNearestDateEntity(fromList) {
     var now = new Date();
-    if (fromList.length >= 0) {
-
-    } else
-        return null;
+    var minDiff = 0;
+    var entity = new Object();
+    for (var i in fromList) {
+        if (minDiff == 0) {
+            minDiff = Math.abs(new Date(fromList[i].value || fromList[i].start) - now);
+            entity = fromList[i];
+        } else {
+            var diff = Math.abs(new Date(fromList[i].value || fromList[i].start) - now)
+            if (diff < minDiff) {
+                minDiff = diff;
+                entity = fromList[i];
+            }
+        }
+    }
+    return entity || null;
 }
 function monConvert(m) {
     switch (m) {
