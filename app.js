@@ -64,7 +64,7 @@ var bot = new builder.UniversalBot(connector, [
         next();
     },
     function (session, args, next) {
-        // session.send(`apiToken: ${JSON.stringify(session.userData.apiToken)}`);
+        session.send(`apiToken: ${JSON.stringify(session.userData.apiToken)}`);
         session.beginDialog('Help');
     }
 ]).set('storage', inMemoryStorage);
