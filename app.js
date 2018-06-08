@@ -348,7 +348,7 @@ bot.dialog('ApplyLeave', [
         session.conversationData.processing.dateInfo.end = new Object();
         if (session.conversationData.processing.dateInfo.dateTime.length >= 2) {
             session.beginDialog('Daterange')
-        } else if (session.conversationData.processing.dateInfo.dateTime.length == 1 && session.conversationData.processing.dateInfo.duration.length >= 0) {
+        } else if (session.conversationData.processing.dateInfo.dateTime.length == 1 && session.conversationData.processing.dateInfo.duration.length > 0) {
             session.beginDialog('DateAndDuration');
         } else if (session.conversationData.processing.dateInfo.dateTime.length == 1) {
             session.beginDialog('Date');
@@ -483,7 +483,7 @@ bot.dialog('DateAndDuration', [
             session.conversationData.processing.dateInfo.end = {
                 "value": moment(session.conversationData.processing.dateInfo.start.value).add(Math.ceil(durationDays - 1), 'days')
             }
-            if (durationDays % 1)
+            if (durationDays % 1 != 0)
                 session.conversationData.processing.dateInfo.end.type = "AM";
             else
                 session.conversationData.processing.dateInfo.end.type = "FD";
@@ -491,9 +491,9 @@ bot.dialog('DateAndDuration', [
             session.conversationData.processing.dateInfo.end = {
                 "value": moment(session.conversationData.processing.dateInfo.start.value).add(Math.floor(durationDays), 'days')
             }
-            if (durationDays % 1)
-                session.conversationData.processing.dateInfo.end.type = "FD";
-            else
+            if (durationDays % 1 != 0) {
+                 session.conversationData.processing.dateInfo.end.type = durationDays <= 0.5 ? "PM" : "FD";
+            } else
                 session.conversationData.processing.dateInfo.end.type = "AM";
         }
         session.endDialog();
@@ -776,6 +776,7 @@ bot.dialog('CorrectingInfo', [
             }
             case "date information": {
                 session.replaceDialog('CorrectingInfo', "date")
+                break;
             }
             case "leave type": {
                 session.beginDialog('AskLeaveType', "all");
@@ -1080,11 +1081,11 @@ function dateExtract(receivedDateEntityList) {
                 break;
         }
     }
-    
+
     //check no duplicated item
     var q = {
         "dateTime": [],
-        "duration": []
+        "duration": o.duration
     }
     o.dateTime.forEach((item) => {
         var check = true;
