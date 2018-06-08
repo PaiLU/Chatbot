@@ -58,13 +58,13 @@ var inMemoryStorage = new builder.MemoryBotStorage();
 var bot = new builder.UniversalBot(connector, [
     function (session, args, next) {
         session.send(`Args: ${JSON.stringify(args)}`)
-        if (!session.conversationData.apiToken) {
-            session.conversationData.apiToken = args;
+        if (!session.userData.apiToken) {
+            session.userData.apiToken = args;
         }
         next();
     },
     function (session, args, next) {
-        session.send(`apiToken: ${JSON.stringify(session.conversationData.apiToken)}`);
+        session.send(`apiToken: ${JSON.stringify(session.userData.apiToken)}`);
         session.beginDialog('Help');
     }
 ]).set('storage', inMemoryStorage);
@@ -100,7 +100,7 @@ bot.dialog('Help', [
                     .buttons([
                         builder.CardAction.imBack(session, "apply leave", "apply leave"),
                         builder.CardAction.imBack(session, "check leave status", "check leave status"),
-                        builder.CardAction.imBack(session, "apply medical leave(c) by uploading MC form directly", `apply medical leave(c) by uploading MC form directly`)
+                        builder.CardAction.imBack(session, "upload MC form", `upload MC form`)
                     ])
             ])
         builder.Prompts.text(session, msg);
@@ -117,7 +117,7 @@ bot.dialog('Help', [
                     session.beginDialog('ReqStatus', defaultArgs);
                     break;
                 }
-                case "apply medical leave(c) by uploading MC form directly": {
+                case "upload MC form": {
                     session.beginDialog('OCR')
                     break;
                 }
@@ -200,8 +200,8 @@ bot.dialog('ReqStatus', [
         // session.endConversation("The API is currently not responding");
         // API goes here
         try {
-            // session.send(session.conversationData.apiToken ? session.conversationData.apiToken : "aaa");
-            apiServices.checkLeaveBalance(matchLeaveQuotaCode(session.conversationData.request.leaveType), session.conversationData.apiToken)
+            // session.send(session.userData.apiToken ? session.userData.apiToken : "aaa");
+            apiServices.checkLeaveBalance(matchLeaveQuotaCode(session.conversationData.request.leaveType), session.userData.apiToken)
                 .then((response) => {
                     // session.send(JSON.stringify(response));
                     if (Array.isArray(response)) {
@@ -283,6 +283,7 @@ bot.dialog('OCR', [
                                                                 var entity = builder.EntityRecognizer.findEntity(allEntities, "leaveType");
                                                                 if (entity && entityExtract(entity) == "medical leave") {
                                                                     // call 'ApplyLeave' Dialog with all recognized entities
+                                                                    // dont save the time type entity & leave type entity
                                                                     session.dialogData.ocrArgs = { "intent": { "intent": "apply leave", "entities": [...allEntities] } };
                                                                     console.log(JSON.stringify(session.dialogData.ocrArgs));
                                                                     session.cancelDialog(0, 'ApplyLeave', session.dialogData.ocrArgs);
@@ -329,7 +330,6 @@ bot.dialog('OCR', [
 bot.dialog('ApplyLeave', [
     function (session, args) {
         console.log(JSON.stringify(args));
-        session.conversationData.apply = new Object;
         var now = new Date();
         session.conversationData.offset = now.getTimezoneOffset() * 60 * 1000;
         console.log("offset is " + session.conversationData.offset / 60 / 60 / 1000 + " hours");
@@ -344,11 +344,13 @@ bot.dialog('ApplyLeave', [
         }
     },
     function (session) {
-        if (session.conversationData.received.dateInfo.daterange) {
-            session.beginDialog('Daterange');
-        } else if (session.conversationData.received.dateInfo.date && session.conversationData.received.dateInfo.duration) {
+        session.conversationData.processing.dateInfo.start = new Object();
+        session.conversationData.processing.dateInfo.end = new Object();
+        if (session.conversationData.processing.dateInfo.dateTime.length >= 2) {
+            session.beginDialog('Daterange')
+        } else if (session.conversationData.processing.dateInfo.dateTime.length == 1 && session.conversationData.processing.dateInfo.duration.length >= 0) {
             session.beginDialog('DateAndDuration');
-        } else if (session.conversationData.received.dateInfo.date) {
+        } else if (session.conversationData.processing.dateInfo.dateTime.length == 1) {
             session.beginDialog('Date');
         } else if (session.conversationData.received.dateInfo.duration) {
             session.beginDialog('Duration');
@@ -357,6 +359,8 @@ bot.dialog('ApplyLeave', [
         }
     },
     function (session) {
+        console.log(session.conversationData.processing);
+        console.log(session.conversationData.processing);
         // currerently using list Entity in LUIS, this step is a dupilicate checking
         session.beginDialog('CheckLeaveType', session.conversationData.received.leaveType);
     },
@@ -367,6 +371,7 @@ bot.dialog('ApplyLeave', [
         session.beginDialog('CheckApplyInfo');
     },
     function (session) {
+        session.conversationData.apply = new Object();
         session.beginDialog('ApplyConfirmed');
     }
 ]).triggerAction({
@@ -402,12 +407,17 @@ bot.dialog('AskDate', [
         console.log("Entered date: %s", JSON.stringify(results.response));
         session.dialogData.test = results.response.resolution.start;
         session.dialogData.test.setHours(0, 0, 0, 0);
-        session.conversationData.processing.dateInfo[session.dialogData.type] = Date.parse(session.dialogData.test);
-        if (session.dialogData.type == "end")
-            session.conversationData.processing.dateInfo[session.dialogData.type] += 1000 * 60 * 60 * 24 - 1000;
-        if (session.conversationData.processing.dateInfo.end < session.conversationData.processing.dateInfo.start) {
-            session.send("Sorry, I can't proceed with leave end date ahead of leave start date. Please re-enter.");
-            session.replaceDialog('AskDate', session, dialogData.type);
+        session.conversationData.processing.dateInfo[session.dialogData.type].value = moment(results.response.resolution.start).set({ h: 0, m: 0, s: 0, ms: 0 });
+        if (session.conversationData.processing.dateInfo.end) {
+            if (session.conversationData.processing.dateInfo.end.value.isBefore(session.conversationData.processing.dateInfo.start)) {
+                session.send("Sorry, I can't proceed with leave end date ahead of leave start date. Please re-enter.");
+                session.replaceDialog('AskDate', session, dialogData.type);
+            } else if (session.conversationData.processing.dateInfo.end.value.isSame(session.conversationData.processing.dateInfo.start)) {
+                if (session.conversationData.processing.dateInfo.end.type == "AM" && session.conversationData.processing.dateInfo.start.type == "PM") {
+                    session.send("Sorry, I can't proceed with leave end date ahead of leave start date. Please re-enter.");
+                    session.replaceDialog('AskDate', session, dialogData.type);
+                }
+            }
         }
         session.endDialog();
     }
@@ -418,33 +428,81 @@ bot.dialog('AskDateType', [
         builder.Prompts.choice(session, "Please enter your " + session.dialogData.type + " date type", ["AM", "PM", "FD"]);
     },
     function (session, results) {
-        console.log("Entered date: %s", JSON.stringify(results.response.entity));
-        if (session.dialogData.type == "start")
-            session.conversationData.received.startDayType = results.response.entity.toLowerCase();
-        else
-            session.conversationData.received.endDayType = results.response.entity.toLowerCase();
+        console.log("Entered type: %s", JSON.stringify(results.response.entity));
+        session.conversationData.processing.dateInfo[session.dialogData.type].type = results.response.entity;
+        if (session.conversationData.processing.dateInfo.end) {
+            if (session.conversationData.processing.dateInfo.end.value.isBefore(session.conversationData.processing.dateInfo.start)) {
+                session.send("Sorry, I can't proceed with leave end date ahead of leave start date. Please re-enter.");
+                session.replaceDialog('AskDateType', session, dialogData.type);
+            } else if (session.conversationData.processing.dateInfo.end.value.isSame(session.conversationData.processing.dateInfo.start)) {
+                if (session.conversationData.processing.dateInfo.end.type == "AM" && session.conversationData.processing.dateInfo.start.type == "PM") {
+                    session.send("Sorry, I can't proceed with leave end date ahead of leave start date. Please re-enter.");
+                    session.replaceDialog('AskDateType', session, dialogData.type);
+                }
+            }
+        }
         session.endDialog();
     }
 ]);
 bot.dialog('Daterange', [
     function (session) {
-        console.log("start: " + new Date(session.conversationData.processing.dateInfo.start) + "end: " + new Date(session.conversationData.processing.dateInfo.end));
+        var min = new Array();
+        var minEntity = new Array();
+        session.conversationData.processing.dateInfo.dateTime.forEach((item) => {
+            var diff = Math.abs(moment(item.value).diff(moment()))
+            if (!min[0] || diff < min[0]) {
+                min[1] = min[0];
+                minEntity[1] = minEntity[0];
+                min[0] = diff;
+                minEntity[0] = item;
+            } else if (!min[1] || diff < min[1]) {
+                min[1] = diff;
+                minEntity[1] = item;
+            }
+        })
+        if (moment(minEntity[1].value).isBefore(moment(minEntity[0].value))) {
+            var temp = minEntity[1];
+            minEntity[1] = minEntity[0];
+            minEntity[0] = temp;
+        } else if (moment(minEntity[1].value).isSame(moment(minEntity[0].value)) && (minEntity[1].type === "AM" || minEntity[0].type === "PM")) {
+            var temp = minEntity[1];
+            minEntity[1] = minEntity[0];
+            minEntity[0] = temp;
+        }
+
+        session.conversationData.processing.dateInfo.start = minEntity[0];
+        session.conversationData.processing.dateInfo.end = minEntity[1];
         session.endDialog();
     }
 ]);
 bot.dialog('DateAndDuration', [
     function (session) {
-        session.conversationData.processing.dateInfo.start = session.conversationData.processing.dateInfo.date + session.conversationData.offset
-        session.conversationData.processing.dateInfo.end = session.conversationData.processing.dateInfo.start + session.conversationData.processing.dateInfo.duration - 1000;
-        console.log("start: " + new Date(session.conversationData.processing.dateInfo.start) + "end: " + new Date(session.conversationData.processing.dateInfo.end));
+        session.conversationData.processing.dateInfo.start = session.conversationData.processing.dateInfo.dateTime[0];
+        var durationDays = session.conversationData.processing.dateInfo.duration[0] / 1000 / 3600 / 24;
+        if (session.conversationData.processing.dateInfo.start.type === "AM" || session.conversationData.processing.dateInfo.start.type === "FD") {
+            session.conversationData.processing.dateInfo.end = {
+                "value": moment(session.conversationData.processing.dateInfo.start.value).add(Math.ceil(durationDays - 1), 'days')
+            }
+            if (durationDays % 1)
+                session.conversationData.processing.dateInfo.end.type = "AM";
+            else
+                session.conversationData.processing.dateInfo.end.type = "FD";
+        } else {//"PM"
+            session.conversationData.processing.dateInfo.end = {
+                "value": moment(session.conversationData.processing.dateInfo.start.value).add(Math.floor(durationDays), 'days')
+            }
+            if (durationDays % 1)
+                session.conversationData.processing.dateInfo.end.type = "FD";
+            else
+                session.conversationData.processing.dateInfo.end.type = "AM";
+        }
         session.endDialog();
     }
 ]);
 bot.dialog('Date', [
     function (session) {
-        session.conversationData.processing.dateInfo.start = session.conversationData.processing.dateInfo.date + session.conversationData.offset;
-        session.conversationData.processing.dateInfo.end = session.conversationData.processing.dateInfo.start + 1000 * 60 * 60 * 24 - 1000;
-        console.log("start: " + new Date(session.conversationData.processing.dateInfo.start) + "end: " + new Date(session.conversationData.processing.dateInfo.end));
+        session.conversationData.processing.dateInfo.start = session.conversationData.processing.dateInfo.dateTime[0];
+        session.conversationData.processing.dateInfo.end = session.conversationData.processing.dateInfo.dateTime[0];
         session.endDialog();
     }
 ]).cancelAction({
@@ -453,13 +511,29 @@ bot.dialog('Date', [
 });
 bot.dialog('Duration', [
     function (session) {
-        session.send('You are applying a leave for %s days.', session.conversationData.processing.dateInfo.duration / 86400000);
+        session.send('You are applying a leave for %s days.', session.conversationData.processing.dateInfo.duration[0] / 24 / 3600 / 1000);
         session.beginDialog('AskDate', "start");
     },
     function (session) {
-        session.conversationData.processing.dateInfo.end = session.conversationData.processing.dateInfo.start + session.conversationData.processing.dateInfo.duration - 1000;
-        console.log("start: " + new Date(session.conversationData.processing.dateInfo.start) + "end: " + new Date(session.conversationData.processing.dateInfo.end));
-        session.endDialog()
+        var durationDays = session.conversationData.processing.dateInfo.duration[0] / 1000 / 3600 / 24;
+        if (session.conversationData.processing.dateInfo.start.type === "AM" || session.conversationData.processing.dateInfo.start.type === "FD") {
+            session.conversationData.processing.dateInfo.end = {
+                "value": moment(session.conversationData.processing.dateInfo.start.value).add(Math.ceil(durationDays - 1), 'days')
+            }
+            if (durationDays % 1)
+                session.conversationData.processing.dateInfo.end.type = "AM";
+            else
+                session.conversationData.processing.dateInfo.end.type = "FD";
+        } else {//"PM"
+            session.conversationData.processing.dateInfo.end = {
+                "value": moment(session.conversationData.processing.dateInfo.start.value).add(Math.floor(durationDays), 'days')
+            }
+            if (durationDays % 1)
+                session.conversationData.processing.dateInfo.end.type = "FD";
+            else
+                session.conversationData.processing.dateInfo.end.type = "AM";
+        }
+        session.endDialog();
     }
 ]).cancelAction({
     matches: /^cancel$|^abort$/i,
@@ -467,21 +541,22 @@ bot.dialog('Duration', [
 });
 bot.dialog('NoDateInfo', [
     function (session) {
+        session.conversationData.processing.dateInfo.start = { "value": moment(), "type": "FD" };
         session.beginDialog('AskDate', "start");
     },
     function (session) {
         builder.Prompts.choice(session, "Are you applying the leave for one day or multiple days", ["one day", "multiple days"], { listStyle: 3 })
     },
     function (session, results, next) {
+        session.conversationData.processing.dateInfo.start = { "value": moment(), "type": "FD" };
         if (results.response.entity == "one day") {
-            session.conversationData.processing.dateInfo.end = session.conversationData.processing.dateInfo.start + 1000 * 60 * 60 * 24 - 1000;
+            session.conversationData.processing.dateInfo.end = session.conversationData.processing.dateInfo.start;
             next();
         } else if (results.response.entity == "multiple days") {
             session.beginDialog('AskDate', "end");
         }
     },
     function (session, args) {
-        console.log("start: " + new Date(session.conversationData.processing.dateInfo.start) + "end: " + new Date(session.conversationData.processing.dateInfo.end));
         session.endDialog();
     }
 ]).cancelAction({
@@ -494,7 +569,6 @@ bot.dialog('CheckLeaveType', [
         for (var a in sitLeaveApplicationTypes) {
             if (args.toLowerCase() == sitLeaveApplicationTypes[a].toLowerCase()) {
                 check = true;
-                // session.conversationData.apply.leaveType = args.toLowerCase();
                 break;
             }
         };
@@ -658,15 +732,7 @@ bot.dialog('ListAttachments', [
 ]);
 bot.dialog('CheckApplyInfo', [
     function (session) {
-        session.conversationData.apply.start = new Date(session.conversationData.processing.dateInfo.start);
-        session.conversationData.apply.end = new Date(session.conversationData.processing.dateInfo.end);
-        session.conversationData.apply.startDate = session.conversationData.apply.start.getDate();
-        session.conversationData.apply.startMon = session.conversationData.apply.start.getMonth() + 1;
-        session.conversationData.apply.startYear = session.conversationData.apply.start.getFullYear();
-        session.conversationData.apply.endDate = session.conversationData.apply.end.getDate();
-        session.conversationData.apply.endMon = session.conversationData.apply.end.getMonth() + 1;
-        session.conversationData.apply.endYear = session.conversationData.apply.end.getFullYear();
-        session.send(`Hi ${session.message.user.name}, you are applying ${leaveTypeDisplayConvert(session.conversationData.received.leaveType)} from ${monConvert(session.conversationData.apply.startMon)}-${session.conversationData.apply.startDate}-${session.conversationData.apply.startYear} ${session.conversationData.received.startDayType} to ${monConvert(session.conversationData.apply.endMon)}-${session.conversationData.apply.endDate}-${session.conversationData.apply.endYear} ${session.conversationData.received.endDayType}`);
+        session.send(`Hi ${session.message.user.name}, you are applying ${leaveTypeDisplayConvert(session.conversationData.received.leaveType)} from ${moment(session.conversationData.processing.dateInfo.start.value).format("YYYY-MMM-D")} ${session.conversationData.processing.dateInfo.start.type} to ${moment(session.conversationData.processing.dateInfo.end.value).format("YYYY-MMM-D")} ${session.conversationData.processing.dateInfo.end.type}`);
         builder.Prompts.confirm(session, "Please confirm if your application information is correct", { listStyle: 3 });
     },
     function (session, results) {
@@ -685,7 +751,7 @@ bot.dialog('CorrectingInfo', [
                 break;
             }
             default: {
-                builder.Prompts.choice(session, "Please specify the part your want to update", ["date information", "leave type", "attachments", "cancel application"], { listStyle: 3 });
+                builder.Prompts.choice(session, "Please specify the part your want to update", ["date information", "leave type", "add attachments", "cancel application"], { listStyle: 3 });
                 break;
             }
         }
@@ -715,8 +781,8 @@ bot.dialog('CorrectingInfo', [
                 session.beginDialog('AskLeaveType', "all");
                 break;
             }
-            case "attachments": {
-                session.beginDialog('Attachments');
+            case "add attachments": {
+                session.beginDialog('AddAttachments');
                 break;
             }
             case "cancel application": {
@@ -729,6 +795,9 @@ bot.dialog('CorrectingInfo', [
                 break;
             }
         };
+    },
+    function (session) {
+        session.beginDialog("CheckAttachment");
     },
     function (session) {
         session.replaceDialog("CheckApplyInfo");
@@ -745,11 +814,48 @@ bot.dialog('ApplyConfirmed', [
                 };
             });
         }
-        var application = {
+        // var requests = [];
+        // if (startType === "PM") {
+        //     // First request here
+        //     // var application = {
+        //     //     "leaveType": matchLeaveApplicationCode(session.conversationData.received.leaveType),
+        //     //     "startDate": startDate.format("YYYY-MM-DD"),
+        //     //     "startType": "PM",
+        //     //     "endDate": startDate.format("YYYY-MM-DD"),
+        //     //     "notes": [],
+        //     //     "attachments": attachments,
+        //     //     "confirmation": "N"
+        //     // }
+        // }
+        // if (endDate > startDate) {
+        //     // Second request
+        //     var application = {
+        //         "leaveType": matchLeaveApplicationCode(session.conversationData.received.leaveType),
+        //         "startDate": startDate.add(1, 'days').format("YYYY-MM-DD"),
+        //         "startType": "FD",
+        //         "endDate": endType === "AM" ? endDate.add(-1, 'days').format("YYYY-MM-DD") : endDate.format("YYYY-MM-DD"),
+        //         "notes": [],
+        //         "attachments": attachments,
+        //         "confirmation": "N"
+        //     }
+        // }
+        // if (endDate > startDate && endType === "AM") {
+        //     // Third request here
+        //     var application = {
+        //         "leaveType": matchLeaveApplicationCode(session.conversationData.received.leaveType),
+        //         "startDate": endDate.add(1, 'days').format("YYYY-MM-DD"),
+        //         "startType": "AM",
+        //         "endDate": endDate.format("YYYY-MM-DD"),
+        //         "notes": [],
+        //         "attachments": attachments,
+        //         "confirmation": "N"
+        //     }
+        // }
+        session.conversationData.apply = {
             "leaveType": matchLeaveApplicationCode(session.conversationData.received.leaveType),
-            "startDate": `${session.conversationData.apply.startYear}-${session.conversationData.apply.startMon}-${session.conversationData.apply.startDate}`,
-            "startType": session.conversationData.received.startDayType,
-            "endDate": `${session.conversationData.apply.endYear}-${session.conversationData.apply.endMon}-${session.conversationData.apply.endDate}`,
+            "startDate": moment(session.conversationData.processing.dateInfo.start.value).format('YYYY[-]M[-]D'),
+            "startType": session.conversationData.processing.dateInfo.start.type,
+            "endDate": moment(session.conversationData.processing.dateInfo.end.value).format('YYYY[-]M[-]D'),
             // "endType": "XX", //"FD"||"AM"||"PM"
             "notes": [ //if have, or otherwise it is an empty array
                 // {
@@ -759,8 +865,9 @@ bot.dialog('ApplyConfirmed', [
             "attachments": attachments,
             "confirmation": "N"
         }
+        //
         try {
-            apiServices.applyLeave(application, session.conversationData.apiToken)
+            apiServices.applyLeave(session.conversationData.apply, session.userData.apiToken)
                 .then((response) => {
                     try {
                         if (response.Et01messages) {
@@ -799,31 +906,9 @@ bot.dialog('ApplyConfirmed', [
     },
     function (session, results, next) {
         if (results.response) {
-            var attachments = [];
-            if (session.conversationData.attachments.length > 0) {
-                attachments = session.conversationData.attachments.map((item) => {
-                    return {
-                        FileName: item.name,
-                        Contents: item.contentUrl.split(";")[1].split(",")[1]
-                    };
-                });
-            }
-            var application = {
-                "leaveType": matchLeaveApplicationCode(session.conversationData.received.leaveType),
-                "startDate": `${session.conversationData.apply.startYear}-${session.conversationData.apply.startMon}-${session.conversationData.apply.startDate}`,
-                "startType": session.conversationData.received.startDayType,
-                "endDate": `${session.conversationData.apply.endYear}-${session.conversationData.apply.endMon}-${session.conversationData.apply.endDate}`,
-                // "endType": "XX", //"FD"||"AM"||"PM"
-                "notes": [ //if have, or otherwise it is an empty array
-                    // {
-                    //     "text": ""
-                    // }
-                ],
-                "attachments": attachments,
-                "confirmation": "Y"
-            }
+            session.conversationData.apply.confirmation = "Y"
             try {
-                apiServices.applyLeave(application, session.conversationData.apiToken)
+                apiServices.applyLeave(session.conversationData.apply, session.userData.apiToken)
                     .then((response) => {
                         try {
                             if (response.Et01messages) {
@@ -877,16 +962,14 @@ function dateExtract(receivedDateEntityList) {
                     });
                 //2. save as 2 seperatre entities
                 var dateItem = nearestEntityList.map((item) => {
-                    var k = item.start.split(/\:|\-|\s/);
-                    var startDate = new Date(new Date(k[0], k[1] - 1, k[2], k[3] || 0, k[4] || 0, k[5] || 0).getTime() - new Date().getTimezoneOffset() * 60000);
-                    var l = item.end.split(/\:|\-|\s/);
-                    var endDate = new Date(new Date(l[0], l[1] - 1, l[2], l[3] || 0, l[4] || 0, l[5] || 0).getTime() - new Date().getTimezoneOffset() * 60000);
+                    var x = moment(item.start);
+                    var y = moment(item.end);
                     return [
                         {
-                            "value": startDate,
+                            "value": x.set({ h: 0, m: 0, s: 0, ms: 0 }),
                             "type": "FD"
                         }, {
-                            "value": endDate,
+                            "value": y.set({ h: 0, m: 0, s: 0, ms: 0 }),
                             "type": "FD"
                         }
                     ];
@@ -903,31 +986,31 @@ function dateExtract(receivedDateEntityList) {
                         return getNearestDateEntity(item.resolution.values);
                     });
                 var dateItem = nearestEntityList.map((item) => {
-                    var k = item.start.split(/\:|\-|\s/).map((item) => { return Number(item) });
-                    var startDate = new Date(new Date(k[0], k[1] - 1, k[2], k[3] || 0, k[4] || 0, k[5] || 0).getTime() - new Date().getTimezoneOffset() * 60000);
-                    var l = item.end.split(/\:|\-|\s/).map((item) => { return Number(item) });
-                    var endDate = new Date(new Date(l[0], l[1] - 1, l[2], l[3] || 0, l[4] || 0, l[5] || 0).getTime() - new Date().getTimezoneOffset() * 60000);
-                    if (k[0] == l[0] && k[1] == l[1] && k[2] == l[2]) {
-                        if (k[3] >= 12 && l[3] >= 12) {
+                    var x = moment(item.start);
+                    var y = moment(item.end);
+                    if (x.isSame(y, "day")) {
+                        if (x.isSameOrAfter(moment(x).set({ h: 12, m: 0, s: 0, ms: 0 })) && y.isSameOrAfter(moment(x).set({ h: 12, m: 0, s: 0, ms: 0 }))) {
                             return [{
-                                "value": startDate,
+                                "value": x.set({ h: 0, m: 0, s: 0, ms: 0 }),
                                 "type": "PM"
                             }]
-                        }   else if (k[3] <= 12 && l[3] <= 12) {
+                        } else if (x.isSameOrBefore(moment(x).set({ h: 12, m: 0, s: 0, ms: 0 })) && y.isSameOrBefore(moment(x).set({ h: 12, m: 0, s: 0, ms: 0 }))) {
                             return [{
-                                "value": startDate,
+                                "value": x.set({ h: 0, m: 0, s: 0, ms: 0 }),
                                 "type": "AM"
                             }]
                         } else {
                             return [{
-                                "value": startDate,
+                                "value": x.set({ h: 0, m: 0, s: 0, ms: 0 }),
                                 "type": "FD"
                             }]
                         }
-                    } else{
-
+                    } else {
+                        return [correctDateType(item.start, "start"), correctDateType(item.end, "end")];
                     }
                 })
+                for (var a in dateItem)
+                    o.dateTime.push(...dateItem[a]);
                 //2. check
                 //+ startDate == endDate save as 1 entity
                 // - startTime & endTime <= 12PM => AM
@@ -949,7 +1032,7 @@ function dateExtract(receivedDateEntityList) {
                 var dateItem = nearestEntityList.map((item) => {
                     return [
                         {
-                            "value": new Date(new Date(item.value).getTime() + new Date().getTimezoneOffset() * 60000),
+                            "value": moment(item.value).set({ h: 0, m: 0, s: 0, ms: 0 }),
                             "type": "FD"
                         }
                     ];
@@ -959,12 +1042,29 @@ function dateExtract(receivedDateEntityList) {
                 break;
             };
             case "datetime": {
-                o.dateTime.push(...receivedDateEntityList[p].map(
+                var nearestEntityList = receivedDateEntityList[p].map(
                     // each item is an IEntity item
                     (item) => {
-                        //1. get nearest entity
-                        //2. save as 2 seperatre entities
-                    }));
+                        return getNearestDateEntity(item.resolution.values);
+                    });
+                //2. save as an entity
+                var nearestEntityList = nearestEntityList.map((item) => { return getNearestDateEntity(item.resolution.values) })
+                var dateItem = nearestEntityList.map((item) => {
+                    var x = moment(item.value)
+                    if (x.isSameOrBefore(moment(x).set({ h: 0, m: 0, s: 0, ms: 0 }))) {
+                        return {
+                            "value": x.set({ h: 0, m: 0, s: 0, ms: 0 }),
+                            "type": "AM"
+                        }
+                    } else {
+                        return {
+                            "value": x.set({ h: 0, m: 0, s: 0, ms: 0 }),
+                            "type": "PM"
+                        }
+                    }
+                })
+                for (var a in dateItem)
+                    o.dateTime.push(...dateItem[a]);
                 break;
             };
             case "duration": {
@@ -980,9 +1080,65 @@ function dateExtract(receivedDateEntityList) {
                 break;
         }
     }
-    // returned value is the millisecond
-    return o;
+    
+    //check no duplicated item
+    var q = {
+        "dateTime": [],
+        "duration": []
+    }
+    o.dateTime.forEach((item) => {
+        var check = true;
+        for (var a in q.dateTime) {
+            if (item.value == q.dateTime[a].value && item.type == q.dateTime[a].type)
+                check = false;
+        }
+        if (check)
+            q.dateTime.push(item)
+    })
+    return q;
+    // {
+    //     "dateTime": [{
+    //         "value": "2018-06-07 12:00:00",
+    //         "type": "FD"
+    //     },{}...],
+    //     "duration": [4320000, ... ]
+    // }
 };
+function correctDateType(entity, startOrEnd) {
+    var x = moment(entity.value);
+    switch (startOrEnd) {
+        case "start": {
+            if (x.isBefore(moment(x).set({ h: 0, m: 0, s: 0, ms: 0 }))) {
+                return {
+                    "value": x.set({ h: 0, m: 0, s: 0, ms: 0 }),
+                    "type": "FD"
+                }
+            } else {
+                return {
+                    "value": x.set({ h: 0, m: 0, s: 0, ms: 0 }),
+                    "type": "PM"
+                }
+            }
+            break;
+        };
+        case "end": {
+            if (x.isAfter(moment(x).set({ h: 0, m: 0, s: 0, ms: 0 }))) {
+                return {
+                    "value": x.set({ h: 0, m: 0, s: 0, ms: 0 }),
+                    "type": "FD"
+                }
+            } else {
+                return {
+                    "value": x.set({ h: 0, m: 0, s: 0, ms: 0 }),
+                    "type": "AM"
+                }
+            }
+            break;
+        };
+        default:
+            break;
+    }
+}
 function getNearestDateEntity(fromList) {
     var now = new Date();
     var minDiff = 0;
