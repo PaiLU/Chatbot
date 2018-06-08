@@ -57,14 +57,14 @@ var tableStorage = new azure.AzureBotStorage({ gzipData: false }, azureTableClie
 var inMemoryStorage = new builder.MemoryBotStorage();
 var bot = new builder.UniversalBot(connector, [
     function (session, args, next) {
-        session.send(`Args: ${JSON.stringify(args)}`)
+        // session.send(`Args: ${JSON.stringify(args)}`)
         if (!session.userData.apiToken) {
             session.userData.apiToken = args;
         }
         next();
     },
     function (session, args, next) {
-        session.send(`apiToken: ${JSON.stringify(session.userData.apiToken)}`);
+        // session.send(`apiToken: ${JSON.stringify(session.userData.apiToken)}`);
         session.beginDialog('Help');
     }
 ]).set('storage', inMemoryStorage);
