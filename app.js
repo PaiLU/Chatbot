@@ -60,6 +60,8 @@ var bot = new builder.UniversalBot(connector, [
         if (args) {
             session.userData.apiToken = args;
         }
+        if (!session.userData.apiToken)
+            session.endConversation(`API service is currently unavailable`);
         next();
     },
     function (session, args, next) {
@@ -106,12 +108,12 @@ bot.dialog('Help', [
                     // .text("1. Apply leave")
                     .buttons([
                         builder.CardAction.imBack(session, "apply leave", "apply leave"),
-                        builder.CardAction.imBack(session, "check leave status", "check leave status"),
+                        builder.CardAction.imBack(session, "check leave balance", "check leave balance"),
                         builder.CardAction.imBack(session, "upload MC form", `upload MC form`)
                     ])
             ])
         builder.Prompts.text(session, msg);
-        // builder.Prompts.choice(session, "This is a Leave Bot. You can use it to <br\>1. Apply leave<br\>2. Check your leave status<br\>3. Apply " + leaveTypeDisplayConvert("medical leave(c)") + " by uploading MC form directly", ["apply leave", "check leave status", "upload mc form"], { listStyle: 3 });
+        // builder.Prompts.choice(session, "This is a Leave Bot. You can use it to <br\>1. Apply leave<br\>2. Check your leave status<br\>3. Apply " + leaveTypeDisplayConvert("medical leave(c)") + " by uploading MC form directly", ["apply leave", "check leave balance", "upload mc form"], { listStyle: 3 });
     },
     function (session, results) {
         if (session.message.text) {
@@ -120,8 +122,8 @@ bot.dialog('Help', [
                     session.beginDialog('ApplyLeave', defaultArgs);
                     break;
                 }
-                case "check leave status": {
-                    session.beginDialog('ReqStatus', defaultArgs);
+                case "check leave balance": {
+                    session.beginDialog('CheckLeaveBalance', defaultArgs);
                     break;
                 }
                 case "upload MC form": {
@@ -133,12 +135,12 @@ bot.dialog('Help', [
                         console.log(`intents: ${intents}\nentities: ${entities}`)
                         session.send(intents[0].intent);
                         switch (intents[0].intent) {
-                            case 'apply leave': {
-                                session.beginDialog('ApplyLeave', { "intent": { "intent": "apply leave", "entities": [...entities] } });
+                            case 'ApplyLeave': {
+                                session.beginDialog('ApplyLeave', { "intent": { "intent": "ApplyLeave", "entities": [...entities] } });
                                 break;
                             }
-                            case 'reqStatus': {
-                                session.beginDialog('ReqStatus', { "intent": { "intent": "reqStatus", "entities": [...entities] } });
+                            case 'CheckLeaveBalance': {
+                                session.beginDialog('CheckLeaveBalance', { "intent": { "intent": "CheckLeaveBalance", "entities": [...entities] } });
                                 break;
                             }
                             default: {
@@ -156,8 +158,8 @@ bot.dialog('Help', [
         //     session.cancelDialog(0, 'ApplyLeave', defaultArgs);
         //     session.endConversation();
         // }
-        // else if (results.response.entity.toLowerCase() == "check leave status")
-        //     session.cancelDialog(0, 'ReqStatus');
+        // else if (results.response.entity.toLowerCase() == "check leave balance")
+        //     session.cancelDialog(0, 'CheckLeaveBalance');
         // else if (results.response.entity.toLowerCase() == "upload mc form")
         //     session.cancelDialog(0, 'OCR');
         // else
@@ -170,7 +172,7 @@ bot.dialog('Help', [
     matches: /^help$|^main help$|^cancel$/i,
     confirmPrompt: "This will cancel your current application. Do you want to proceed?"
 });
-bot.dialog('ReqStatus', [
+bot.dialog('CheckLeaveBalance', [
     function (session, args, next) {
         session.conversationData.request = new Object();
         if (args) {
@@ -230,7 +232,7 @@ bot.dialog('ReqStatus', [
         }
     }
 ]).triggerAction({
-    matches: ['reqStatus']
+    matches: ['CheckLeaveBalance']
 });
 bot.dialog('OCR', [
     function (session, args) {
@@ -302,7 +304,7 @@ bot.dialog('OCR', [
                                                                 })
                                                                 session.dialogData.ocrArgs = {
                                                                     "intent": {
-                                                                        "intent": "apply leave", "entities": [{
+                                                                        "intent": "ApplyLeave", "entities": [{
                                                                             entity: 'medical certificate',
                                                                             type: 'leaveType',
                                                                             startIndex: 1,
@@ -400,7 +402,7 @@ bot.dialog('ApplyLeave', [
         session.beginDialog('ApplyConfirmed');
     }
 ]).triggerAction({
-    matches: ['apply leave']
+    matches: ['ApplyLeave']
 });
 bot.dialog('ConvertingData', [
     function (session, args, next) {
