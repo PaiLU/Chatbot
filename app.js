@@ -99,7 +99,7 @@ bot.dialog('Help', [
     function (session) {
         session.conversationData.attachments = [];
         var msg = new builder.Message(session)
-            .text("'Hi, I am Leave Bot. I can help you to do these")
+            .text("Hi, I am Leave Bot. I can help you to do these")
             .attachmentLayout(builder.AttachmentLayout.list)
             .attachments([
                 new builder.HeroCard(session)
@@ -427,10 +427,8 @@ bot.dialog('AskDate', [
     },
     function (session, results) {
         console.log("Entered date: %s", JSON.stringify(results.response));
-        session.dialogData.test = results.response.resolution.start;
-        session.dialogData.test.setHours(0, 0, 0, 0);
-        session.conversationData.processing.dateInfo[session.dialogData.type].value = moment(results.response.resolution.start).set({ h: 0, m: 0, s: 0, ms: 0 });
-        if (session.conversationData.processing.dateInfo.end) {
+        session.conversationData.processing.dateInfo[session.dialogData.type].value = moment(results.response.resolution.start).subtract(session.conversationData.offset,'ms').set({ h: 0, m: 0, s: 0, ms: 0 });
+        if (session.conversationData.processing.dateInfo.end.hasOwnProperty()) {
             if (session.conversationData.processing.dateInfo.end.value.isBefore(session.conversationData.processing.dateInfo.start)) {
                 session.send("Sorry, I can't proceed with leave end date ahead of leave start date. Please re-enter.");
                 session.replaceDialog('AskDate', session, dialogData.type);
@@ -453,10 +451,10 @@ bot.dialog('AskDateType', [
         console.log("Entered type: %s", JSON.stringify(results.response.entity));
         session.conversationData.processing.dateInfo[session.dialogData.type].type = results.response.entity;
         if (session.conversationData.processing.dateInfo.end) {
-            if (session.conversationData.processing.dateInfo.end.value.isBefore(session.conversationData.processing.dateInfo.start)) {
+            if (moment(session.conversationData.processing.dateInfo.end.value).isBefore(session.conversationData.processing.dateInfo.start.value)) {
                 session.send("Sorry, I can't proceed with leave end date ahead of leave start date. Please re-enter.");
                 session.replaceDialog('AskDateType', session, dialogData.type);
-            } else if (session.conversationData.processing.dateInfo.end.value.isSame(session.conversationData.processing.dateInfo.start)) {
+            } else if (moment(session.conversationData.processing.dateInfo.end.value).isSame(session.conversationData.processing.dateInfo.start.value)) {
                 if (session.conversationData.processing.dateInfo.end.type == "AM" && session.conversationData.processing.dateInfo.start.type == "PM") {
                     session.send("Sorry, I can't proceed with leave end date ahead of leave start date. Please re-enter.");
                     session.replaceDialog('AskDateType', session, dialogData.type);
