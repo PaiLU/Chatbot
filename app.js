@@ -57,7 +57,7 @@ var inMemoryStorage = new builder.MemoryBotStorage();
 var bot = new builder.UniversalBot(connector, [
     function (session, args, next) {
         // session.send(`Args: ${JSON.stringify(args)}`)
-        if (!session.userData.apiToken) {
+        if (args) {
             session.userData.apiToken = args;
         }
         next();
@@ -220,7 +220,7 @@ bot.dialog('ReqStatus', [
                         session.send(`Error: ${response.Message}`);
                         session.cancelDialog(0, '/');
                     } else if (response) {
-                        session.send(`Unexpected Error: ${JSON.stringify(response.Message)}`);
+                        session.send(`Unexpected Error: ${JSON.stringify(response)}`);
                         session.cancelDialog(0, '/');
                     }
                 });
@@ -571,7 +571,7 @@ bot.dialog('NoDateInfo', [
         builder.Prompts.choice(session, "Are you applying the leave for one day or multiple days", ["one day", "multiple days"], { listStyle: 3 })
     },
     function (session, results, next) {
-        session.conversationData.processing.dateInfo.start = { "value": moment(), "type": "FD" };
+        session.conversationData.processing.dateInfo.end = { "value": moment(), "type": "FD" };
         if (results.response.entity == "one day") {
             session.conversationData.processing.dateInfo.end = session.conversationData.processing.dateInfo.start;
             next();
@@ -918,7 +918,7 @@ bot.dialog('ApplyConfirmed', [
                                 session.cancelDialog(0, '/');
                             }
                         } else if (response) {
-                            session.send(`Unexpected Error: ${JSON.stringify(response.Message)}`);
+                            session.send(`Unexpected Error: ${JSON.stringify(response)}`);
                             session.cancelDialog(0, '/');
                         }
                     }
@@ -950,7 +950,7 @@ bot.dialog('ApplyConfirmed', [
                                     session.cancelDialog(0, '/');
                                 }
                             } else if (response) {
-                                session.send(`Unexpected Error: ${JSON.stringify(response.Message)}`);
+                                session.send(`Unexpected Error: ${JSON.stringify(response)}`);
                                 session.cancelDialog(0, '/');
                             }
                         }
