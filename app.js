@@ -119,30 +119,30 @@ bot.dialog('Help', [
         if (session.message.text) {
             switch (session.message.text) {
                 case "apply leave": {
-                    session.cancleDialog(0, 'ApplyLeave', defaultArgs);
+                    session.cancelDialog(0, 'ApplyLeave', defaultArgs);
                     break;
                 }
                 case "check leave balance": {
-                    session.cancleDialog(0, 'CheckLeaveBalance', defaultArgs);
+                    session.cancelDialog(0, 'CheckLeaveBalance', defaultArgs);
                     break;
                 }
                 case "upload MC form": {
-                    session.cancleDialog(0, 'OCR')
+                    session.cancelDialog(0, 'OCR')
                     break;
                 }
                 default: {
                     builder.LuisRecognizer.recognize(session.message.text, LuisModelUrl, function (err, intents, entities, compositeEntities) {
                         switch (intents[0].intent) {
                             case 'ApplyLeave': {
-                                session.cancleDialog(0, 'ApplyLeave', { "intent": { "intent": "ApplyLeave", "entities": [...entities] } });
+                                session.cancelDialog(0, 'ApplyLeave', { "intent": { "intent": "ApplyLeave", "entities": [...entities] } });
                                 break;
                             }
                             case 'CheckLeaveBalance': {
-                                session.cancleDialog(0, 'CheckLeaveBalance', { "intent": { "intent": "CheckLeaveBalance", "entities": [...entities] } });
+                                session.cancelDialog(0, 'CheckLeaveBalance', { "intent": { "intent": "CheckLeaveBalance", "entities": [...entities] } });
                                 break;
                             }
                             default: {
-                                session.cancleDialog(0, 'Help');
+                                session.cancelDialog(0, 'Help');
                                 break;
                             }
                         }
