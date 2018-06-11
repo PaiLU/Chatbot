@@ -243,7 +243,7 @@ bot.dialog('OCR', [
                     // validate the attachment
                     if (validateOCRAttachment(attachment, fileResponse.length)) {
                         // convert to base64 string and save
-                        var imageBase64Sting = new Buffer(fileResponse, 'binary').toString('base64');
+                        session.dialogData.imageBase64Sting = new Buffer(fileResponse, 'binary').toString('base64');
                         // https calls to OCR
                         var ocrResponseStr = '';
                         var LUISResString = '';
@@ -305,7 +305,7 @@ bot.dialog('OCR', [
                                                                 console.log(JSON.stringify(session.dialogData.ocrArgs));
                                                                 session.conversationData.attachments.push({
                                                                     contentType: attachment.contentType,
-                                                                    contentUrl: 'data:' + attachment.contentType + ';base64,' + imageBase64Sting,
+                                                                    contentUrl: 'data:' + attachment.contentType + ';base64,' + session.dialogData.imageBase64Sting,
                                                                     name: attachment.name
                                                                 });
                                                                 session.cancelDialog(0, 'ApplyLeave', session.dialogData.ocrArgs);
@@ -350,6 +350,11 @@ bot.dialog('OCR', [
         }
     }, function (session, results, next) {
         if (results.response) {
+            session.conversationData.attachments.push({
+                contentType: attachment.contentType,
+                contentUrl: 'data:' + attachment.contentType + ';base64,' + session.dialogData.imageBase64Sting,
+                name: attachment.name
+            });
             session.cancelDialog(0, 'ApplyLeave', defaultArgs);
         } else {
             session.cancelDialog(0, 'Help')
@@ -688,10 +693,10 @@ bot.dialog('AddAttachment', [
                 function (fileResponse) {                    // validate the attachment
                     if (validateAttachment(attachment, fileResponse.length)) {
                         // convert to base64 string and save
-                        var imageBase64Sting = new Buffer(fileResponse, 'binary').toString('base64');
+                        session.dialogData.imageBase64Sting = new Buffer(fileResponse, 'binary').toString('base64');
                         session.conversationData.attachments.push({
                             contentType: attachment.contentType,
-                            contentUrl: 'data:' + attachment.contentType + ';base64,' + imageBase64Sting,
+                            contentUrl: 'data:' + attachment.contentType + ';base64,' + session.dialogData.imageBase64Sting,
                             name: attachment.name
                         });
                         console.log(`The attachment has been saved`);
@@ -1310,7 +1315,7 @@ conversationData.attachment : save the attachment Object with base 64 string
     [
         {
             contentType: attachment.contentType,
-            contentUrl: 'data:' + attachment.contentType + ';base64,' + imageBase64Sting,
+            contentUrl: 'data:' + attachment.contentType + ';base64,' + session.dialogData.imageBase64Sting,
             name: attachment.name
         }
     ]
