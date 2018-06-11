@@ -241,15 +241,9 @@ bot.dialog('OCR', [
             fileDownload.then(
                 function (fileResponse) {
                     // validate the attachment
-                    if (validateAttachment(attachment, fileResponse.length)) {
+                    if (validateOCRAttachment(attachment, fileResponse.length)) {
                         // convert to base64 string and save
                         var imageBase64Sting = new Buffer(fileResponse, 'binary').toString('base64');
-                        session.conversationData.attachments.push({
-                            contentType: attachment.contentType,
-                            contentUrl: 'data:' + attachment.contentType + ';base64,' + imageBase64Sting,
-                            name: attachment.name
-                        });
-                        console.log(`The attachment has been saved`);
                         // https calls to OCR
                         var ocrResponseStr = '';
                         var LUISResString = '';
@@ -309,6 +303,11 @@ bot.dialog('OCR', [
                                                                     }
                                                                 };
                                                                 console.log(JSON.stringify(session.dialogData.ocrArgs));
+                                                                session.conversationData.attachments.push({
+                                                                    contentType: attachment.contentType,
+                                                                    contentUrl: 'data:' + attachment.contentType + ';base64,' + imageBase64Sting,
+                                                                    name: attachment.name
+                                                                });
                                                                 session.cancelDialog(0, 'ApplyLeave', session.dialogData.ocrArgs);
                                                             } else {
                                                                 builder.Prompts.confirm(session, "I didn't recognize any key words, like medical certificate, in the attachment. Do you still want to proceed the appliciation with this attachment?", { listStyle: 3 })
@@ -322,14 +321,22 @@ bot.dialog('OCR', [
                                         }
                                         session.send("Please wait for a few seconds while I read through your attachment");
                                     })
+                                } else {
+                                    res.on('data', (data) => {
+                                        ocrResponseStr += data;
+                                    });
+                                    res.on('end', (err) => {
+                                        session.send(ocrResponseStr.message || `Input data is not a valid image`);
+                                        session.cancelDialog(0, '/');
+                                    })
                                 }
                             }
                         );
                         req.write(new Buffer(fileResponse, 'binary'));
                         req.end();
                     } else {
-                        session.send("The attachment should be image type or a PDF file within 3MB. Please try again.");
-                        session.replaceDialog('AddAttachment');
+                        session.send("The attachment for bot to recognize should be image type within 3MB. Please try again.");
+                        session.cancelDialog(0, '/');
                     }
                 }).catch(function (err) {
                     console.log('Error downloading attachment:', JSON.stringify(err));
@@ -872,7 +879,7 @@ bot.dialog('ApplyConfirmed', [
         //         "confirmation": "N"
         //     }
         // }
-        session.conversationData.apply = {
+            session.conversationData.apply = {
             "leaveType": matchLeaveApplicationCode(session.conversationData.received.leaveType),
             "startDate": moment(session.conversationData.processing.dateInfo.start.value).format('YYYY[-]M[-]D'),
             "startType": session.conversationData.processing.dateInfo.start.type,
@@ -1179,58 +1186,6 @@ function getNearestDateEntity(fromList) {
     }
     return entity || null;
 }
-function monConvert(m) {
-    switch (m) {
-        case 1: {
-            return "Jan";
-            break;
-        }
-        case 2: {
-            return "Feb";
-            break;
-        }
-        case 3: {
-            return "Mar";
-            break;
-        }
-        case 4: {
-            return "Apr";
-            break;
-        }
-        case 5: {
-            return "May";
-            break;
-        }
-        case 6: {
-            return "Jun";
-            break;
-        }
-        case 7: {
-            return "Jul";
-            break;
-        }
-        case 8: {
-            return "Aug";
-            break;
-        }
-        case 9: {
-            return "Sep";
-            break;
-        }
-        case 10: {
-            return "Oct";
-            break;
-        }
-        case 11: {
-            return "Nov";
-            break;
-        }
-        case 12: {
-            return "Dec";
-            break
-        }
-    }
-};
 function leaveTypeDisplayConvert(t) {
     return t.split('').map(function (value, index, array) {
         var temp = value.charCodeAt(0).toString(16).toUpperCase();
@@ -1286,6 +1241,20 @@ function deleteAttachment(attachmentArray, n) {
 }
 function validateAttachment(attachmentEntity, attachmentSize) {
     var fileTypeLimit = ["image/jpg", "image/jpeg", "image/png", "image/bmp", "image/gif", "image/tiff", "application/pdf"];
+    var fileSizeLimit = 3 * 1024 * 1024; // 3 Mega Bites
+    var fileNameLimit = /^[^\.]+\.[^\.]+$/;
+    // var fileNameLimit = /^[^\.]+(\.[^\.]+)?$/; //match with no type suffix
+    var check = false;
+    for (var a in fileTypeLimit) {
+        if (attachmentEntity.contentType == fileTypeLimit[a] && Number(attachmentSize) <= fileSizeLimit && attachmentEntity.name.match(fileNameLimit)) {
+            check = true;
+            break;
+        }
+    }
+    return check;
+}
+function validateOCRAttachment(attachmentEntity, attachmentSize) {
+    var fileTypeLimit = ["image/jpg", "image/jpeg", "image/png", "image/bmp", "image/gif"];
     var fileSizeLimit = 3 * 1024 * 1024; // 3 Mega Bites
     var fileNameLimit = /^[^\.]+\.[^\.]+$/;
     // var fileNameLimit = /^[^\.]+(\.[^\.]+)?$/; //match with no type suffix
