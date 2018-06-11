@@ -36,8 +36,6 @@ for (var a in sitLeaveQuotaData) {
     };
 };
 var connector = new builder.ChatConnector({
-    // appId: process.env.MICROSOFT_APP_ID,
-    // appPassword: process.env.MICROSOFT_APP_PASSWORD
     appId: process.env.MicrosoftAppId,
     appPassword: process.env.MicrosoftAppPassword,
     openIdMetadata: process.env.BotOpenIdMetadata
@@ -55,6 +53,7 @@ var storageKey = process.env["Azure-Table-Key"]; // Obtain from Azure Portal
 var azureTableClient = new azure.AzureTableClient(tableName, storageName, storageKey);
 var tableStorage = new azure.AzureBotStorage({ gzipData: false }, azureTableClient);
 var inMemoryStorage = new builder.MemoryBotStorage();
+
 var bot = new builder.UniversalBot(connector, [
     function (session, args, next) {
         // session.send(`Args: ${JSON.stringify(args)}`)
@@ -64,7 +63,7 @@ var bot = new builder.UniversalBot(connector, [
         next();
     },
     function (session, args, next) {
-        session.send(`apiToken: ${JSON.stringify(session.userData.apiToken)}`);
+        // session.send(`apiToken: ${JSON.stringify(session.userData.apiToken)}`);
         session.beginDialog('Help');
     }
 ]).set('storage', inMemoryStorage);
@@ -86,13 +85,17 @@ bot.on("event", function (event) {
         bot.beginDialog(event.address, '/', event.text);
     }
 });
+
+bot.on('error',function(err){
+    bot.send(`${JSON.stringify(err)}`);
+})
 // main program
 bot.dialog('dialogApiToken', require('./dialogApiToken'));
 bot.dialog('Help', [
     function (session) {
         session.conversationData.attachments = [];
         var msg = new builder.Message(session)
-            .text("This is a Leave Bot. You can use it to")
+            .text("'Hi, I am Leave Bot. I can help you to do these")
             .attachmentLayout(builder.AttachmentLayout.list)
             .attachments([
                 new builder.HeroCard(session)
@@ -160,7 +163,7 @@ bot.dialog('Help', [
     }
 ]).triggerAction({
     matches: /^help$|^main help$|^cancel$/i,
-    confirmPrompt: "This will cancel your csurrent application. Do you want to proceed?"
+    confirmPrompt: "This will cancel your current application. Do you want to proceed?"
 });
 bot.dialog('ReqStatus', [
     function (session, args, next) {
@@ -284,21 +287,26 @@ bot.dialog('OCR', [
                                                                 if (entity && entityExtract(entity) == "medical leave") {
                                                                     // call 'ApplyLeave' Dialog with all recognized entities
                                                                     // dont save the time type entity & leave type entity
-                                                                    session.dialogData.ocrArgs = { "intent": { "intent": "apply leave", "entities": [...allEntities] } };
+                                                                    var desiredEntities = []
+                                                                    allEntities.forEach((item) => {
+                                                                        if (item.type.match(/^builtin/))
+                                                                            desiredEntities.push(item);
+                                                                    })
+                                                                    session.dialogData.ocrArgs = { "intent": { "intent": "apply leave", "entities": [...desiredEntities] } };
                                                                     console.log(JSON.stringify(session.dialogData.ocrArgs));
                                                                     session.cancelDialog(0, 'ApplyLeave', session.dialogData.ocrArgs);
                                                                 } else {
-                                                                    builder.Prompts.confirm(session, "I didn't recognize any key words, like medical certificate, in the attachment. Do you still want to proceed the applciation with this attachment?", { listStyle: 3 })
+                                                                    builder.Prompts.confirm(session, "I didn't recognize any key words, like medical certificate, in the attachment. Do you still want to proceed the appliciation with this attachment?", { listStyle: 3 })
                                                                 };
                                                             } else {
-                                                                builder.Prompts.confirm(session, "I didn't recognize any key words, like medical certificate, in the attachment. Do you still want to proceed the applciation with this attachment?", { listStyle: 3 })
+                                                                builder.Prompts.confirm(session, "I didn't recognize any key words, like medical certificate, in the attachment. Do you still want to proceed the appliciation with this attachment?", { listStyle: 3 })
                                                             }
                                                         }
                                                     });
                                                 }, 200 * (a + 1));
                                             })(a);
                                         }
-                                        session.send("Please wait for few seconds for the Bot to work on your attachment");
+                                        session.send("Please wait for a few seconds while I read through your attachment");
                                     })
                                 }
                             }
@@ -352,7 +360,7 @@ bot.dialog('ApplyLeave', [
             session.beginDialog('DateAndDuration');
         } else if (session.conversationData.processing.dateInfo.dateTime.length == 1) {
             session.beginDialog('Date');
-        } else if (session.conversationData.received.dateInfo.duration) {
+        } else if (session.conversationData.processing.dateInfo.duration.length > 0) {
             session.beginDialog('Duration');
         } else {
             session.beginDialog('NoDateInfo');
@@ -492,7 +500,7 @@ bot.dialog('DateAndDuration', [
                 "value": moment(session.conversationData.processing.dateInfo.start.value).add(Math.floor(durationDays), 'days')
             }
             if (durationDays % 1 != 0) {
-                 session.conversationData.processing.dateInfo.end.type = durationDays <= 0.5 ? "PM" : "FD";
+                session.conversationData.processing.dateInfo.end.type = durationDays <= 0.5 ? "PM" : "FD";
             } else
                 session.conversationData.processing.dateInfo.end.type = "AM";
         }
