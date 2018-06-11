@@ -86,8 +86,12 @@ bot.on("event", function (event) {
     }
 });
 
-bot.on('error',function(err){
-    bot.send(`${JSON.stringify(err)}`);
+// bot.on('error', function (err) {
+//     bot.beginDialog(err.address, 'Error', err);
+// })
+bot.dialog('Error', function (session, args) {
+    session.send(`${JSON.stringify(args)}`);
+    session.endDialog();
 })
 // main program
 bot.dialog('dialogApiToken', require('./dialogApiToken'));
@@ -126,6 +130,7 @@ bot.dialog('Help', [
                 }
                 default: {
                     builder.LuisRecognizer.recognize(session.message.text, LuisModelUrl, function (err, intents, entities, compositeEntities) {
+                        console.log(`intents: ${intents}\nentities: ${entities}`)
                         session.send(intents[0].intent);
                         switch (intents[0].intent) {
                             case 'apply leave': {
@@ -270,41 +275,50 @@ bot.dialog('OCR', [
                                         var allIntents = [];
                                         var allEntities = [];
                                         var count = 0;
-                                        for (var a in ocrStr) {
-                                            (function (num) {
-                                                setTimeout(function () {
-                                                    console.log(num);
-                                                    builder.LuisRecognizer.recognize(ocrStr[num].toString(), LuisModelUrl, function (err, intents, entities) {
-                                                        if (err) {
-                                                            console.log(err);
-                                                        }
-                                                        allIntents.push(...(intents.filter(i => i.score > 0.6 && i.intent !== "None")));
-                                                        allEntities.push(...entities);
-                                                        count++;
-                                                        if (count === ocrStr.length) {
-                                                            if (allEntities) {
-                                                                var entity = builder.EntityRecognizer.findEntity(allEntities, "leaveType");
-                                                                if (entity && entityExtract(entity) == "medical leave") {
-                                                                    // call 'ApplyLeave' Dialog with all recognized entities
-                                                                    // dont save the time type entity & leave type entity
-                                                                    var desiredEntities = []
-                                                                    allEntities.forEach((item) => {
-                                                                        if (item.type.match(/^builtin/))
-                                                                            desiredEntities.push(item);
-                                                                    })
-                                                                    session.dialogData.ocrArgs = { "intent": { "intent": "apply leave", "entities": [...desiredEntities] } };
-                                                                    console.log(JSON.stringify(session.dialogData.ocrArgs));
-                                                                    session.cancelDialog(0, 'ApplyLeave', session.dialogData.ocrArgs);
-                                                                } else {
-                                                                    builder.Prompts.confirm(session, "I didn't recognize any key words, like medical certificate, in the attachment. Do you still want to proceed the appliciation with this attachment?", { listStyle: 3 })
+                                        for (var index in ocrStr) {
+                                            var num = index;
+                                            setTimeout(function (num) {
+                                                builder.LuisRecognizer.recognize(ocrStr[num].toString(), LuisModelUrl, function (err, intents, entities) {
+                                                    if (err) {
+                                                        console.log(err);
+                                                    }
+                                                    allIntents.push(...(intents.filter(i => i.score > 0.6 && i.intent !== "None")));
+                                                    allEntities.push(...entities);
+                                                    count++;
+                                                    console.log(count);
+                                                    if (count === ocrStr.length) {
+                                                        if (allEntities) {
+                                                            var entity = builder.EntityRecognizer.findEntity(allEntities, "leaveType");
+                                                            if (entity && entityExtract(entity) == "medical leave") {
+                                                                // call 'ApplyLeave' Dialog with all recognized entities
+                                                                // dont save the time type entity & leave type entity
+                                                                var desiredEntities = []
+                                                                allEntities.forEach((item) => {
+                                                                    if (item.type.match(/^builtin/))
+                                                                        desiredEntities.push(item);
+                                                                })
+                                                                session.dialogData.ocrArgs = {
+                                                                    "intent": {
+                                                                        "intent": "apply leave", "entities": [{
+                                                                            entity: 'medical certificate',
+                                                                            type: 'leaveType',
+                                                                            startIndex: 1,
+                                                                            endIndex: 19,
+                                                                            resolution: { values: ['medical leave(c)'] }
+                                                                        }, ...desiredEntities]
+                                                                    }
                                                                 };
+                                                                console.log(JSON.stringify(session.dialogData.ocrArgs));
+                                                                session.cancelDialog(0, 'ApplyLeave', session.dialogData.ocrArgs);
                                                             } else {
                                                                 builder.Prompts.confirm(session, "I didn't recognize any key words, like medical certificate, in the attachment. Do you still want to proceed the appliciation with this attachment?", { listStyle: 3 })
-                                                            }
+                                                            };
+                                                        } else {
+                                                            builder.Prompts.confirm(session, "I didn't recognize any key words, like medical certificate, in the attachment. Do you still want to proceed the appliciation with this attachment?", { listStyle: 3 })
                                                         }
-                                                    });
-                                                }, 200 * (a + 1));
-                                            })(a);
+                                                    }
+                                                });
+                                            }, 300 * index, num);
                                         }
                                         session.send("Please wait for a few seconds while I read through your attachment");
                                     })
@@ -393,8 +407,8 @@ bot.dialog('ConvertingData', [
         session.conversationData.received.dateInfo = new Object();
         session.conversationData.processing.dateInfo = new Object();
         session.conversationData.received.leaveType = entityExtract(builder.EntityRecognizer.findEntity(args.intent.entities || {}, "leaveType"));
-        session.conversationData.received.startDayType = entityExtract(findCompositeEntities(args.intent.compositeEntities || {}, args.intent.entities || {}, 'startDay', 'dayType')) || "FD";
-        session.conversationData.received.endDayType = entityExtract(findCompositeEntities(args.intent.compositeEntities || {}, args.intent.entities || {}, 'endDay', 'dayType')) || "FD";
+        // session.conversationData.received.startDayType = entityExtract(findCompositeEntities(args.intent.compositeEntities || {}, args.intent.entities || {}, 'startDay', 'dayType')) || "FD";
+        // session.conversationData.received.endDayType = entityExtract(findCompositeEntities(args.intent.compositeEntities || {}, args.intent.entities || {}, 'endDay', 'dayType')) || "FD";
 
         const datetimeV2Types = ["daterange", "date", "duration", "datetime", "datetimerange"];
         for (var o in datetimeV2Types) {
@@ -1039,15 +1053,12 @@ function dateExtract(receivedDateEntityList) {
                     });
                 //2. save as an entity
                 var dateItem = nearestEntityList.map((item) => {
-                    return [
-                        {
-                            "value": moment(item.value).set({ h: 0, m: 0, s: 0, ms: 0 }),
-                            "type": "FD"
-                        }
-                    ];
+                    return {
+                        "value": moment(item.value).set({ h: 0, m: 0, s: 0, ms: 0 }),
+                        "type": "FD"
+                    };
                 })
-                for (var a in dateItem)
-                    o.dateTime.push(...dateItem[a]);
+                o.dateTime.push(...dateItem);
                 break;
             };
             case "datetime": {
@@ -1057,7 +1068,6 @@ function dateExtract(receivedDateEntityList) {
                         return getNearestDateEntity(item.resolution.values);
                     });
                 //2. save as an entity
-                var nearestEntityList = nearestEntityList.map((item) => { return getNearestDateEntity(item.resolution.values) })
                 var dateItem = nearestEntityList.map((item) => {
                     var x = moment(item.value)
                     if (x.isSameOrBefore(moment(x).set({ h: 0, m: 0, s: 0, ms: 0 }))) {
@@ -1072,8 +1082,7 @@ function dateExtract(receivedDateEntityList) {
                         }
                     }
                 })
-                for (var a in dateItem)
-                    o.dateTime.push(...dateItem[a]);
+                o.dateTime.push(...dateItem);
                 break;
             };
             case "duration": {
