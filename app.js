@@ -185,7 +185,7 @@ bot.dialog('ReqStatus', [
             next();
         } else {
 
-            builder.Prompts.choice(session, "Which balance are you looking for?", ["show all balances"].concat(sitLeaveQuotaShortlistTypes), { listStyle: 3 });
+            builder.Prompts.choice(session, "Which balance are you looking for?", ["show all balances"].concat(sitLeaveQuotaTypes), { listStyle: 3 });
         }
     },
     function (session, results, next) {
@@ -223,7 +223,7 @@ bot.dialog('ReqStatus', [
                 });
         }
         catch (err) {
-            session.send(err.message);
+            session.send(`err: ${JSON.stringify(err)}`);
         }
     }
 ]).triggerAction({
@@ -752,7 +752,7 @@ bot.dialog('ListAttachments', [
 ]);
 bot.dialog('CheckApplyInfo', [
     function (session) {
-        session.send(`Hi ${session.message.user.name}, you are applying ${leaveTypeDisplayConvert(session.conversationData.received.leaveType)} from ${moment(session.conversationData.processing.dateInfo.start.value).format("YYYY-MMM-D")} ${session.conversationData.processing.dateInfo.start.type} to ${moment(session.conversationData.processing.dateInfo.end.value).format("YYYY-MMM-D")} ${session.conversationData.processing.dateInfo.end.type}`);
+        session.send(`Hi ${session.message.user.name}, you are applying ${leaveTypeDisplayConvert(session.conversationData.received.leaveType)} from ${moment(session.conversationData.processing.dateInfo.start.value).format("DD-MMM-YYYY")} ${session.conversationData.processing.dateInfo.start.type} to ${moment(session.conversationData.processing.dateInfo.end.value).format("DD-MMM-YYYY")} ${session.conversationData.processing.dateInfo.end.type}`);
         builder.Prompts.confirm(session, "Please confirm if your application information is correct", { listStyle: 3 });
     },
     function (session, results) {
@@ -807,7 +807,7 @@ bot.dialog('CorrectingInfo', [
                 break;
             }
             case "cancel application": {
-                session.send("Request canceled");
+                session.send("Request cancelled");
                 session.cancelDialog(0, '/');
                 break;
             }
@@ -917,12 +917,12 @@ bot.dialog('ApplyConfirmed', [
                         }
                     }
                     catch (err) {
-                        session.send(err.message);
+                        session.send(`err: ${JSON.stringify(err)}`);
                     }
                 })
         }
         catch (err) {
-            session.send(err.message);
+            session.send(`err: ${JSON.stringify(err)}`);
         }
     },
     function (session, results, next) {
@@ -946,12 +946,12 @@ bot.dialog('ApplyConfirmed', [
                             }
                         }
                         catch (err) {
-                            session.send(err.message);
+                            session.send(`err: ${JSON.stringify(err)}`);
                         }
                     })
             }
             catch (err) {
-                session.send(err.message);
+                session.send(`err: ${JSON.stringify(err)}`);
             }
         } else {
             session.send("The application is canceled");
