@@ -185,7 +185,7 @@ bot.dialog('ReqStatus', [
             next();
         } else {
 
-            builder.Prompts.choice(session, "Which balance are you looking for?", ["show all balances"].concat(sitLeaveQuotaTypes), { listStyle: 3 });
+            builder.Prompts.choice(session, "Which balance are you looking for?", sitLeaveQuotaTypes.concat(["show all balances"]), { listStyle: 3 });
         }
     },
     function (session, results, next) {
@@ -213,11 +213,14 @@ bot.dialog('ReqStatus', [
                 .then((response) => {
                     // session.send(JSON.stringify(response));
                     if (Array.isArray(response)) {
-                        var messages = response.map((item) => { return `${item.LeaveQuotaDesc}: ${item.LeaveRemainder} day(s)` });
-                        session.send(messages.join("\n"));
+                        var messages = response.map((item) => { return `${item.LeaveQuotaDesc}: ${item.LeaveRemainder} day(s)` }).join("\n");
+                        session.send(messages);
                         session.cancelDialog(0, '/');
                     } else if (response && response.Type === "E") {
                         session.send(`Error: ${response.Message}`);
+                        session.cancelDialog(0, '/');
+                    } else if (response) {
+                        session.send(`Unexpected Error: ${JSON.stringify(response.Message)}`);
                         session.cancelDialog(0, '/');
                     }
                 });
@@ -427,7 +430,7 @@ bot.dialog('AskDate', [
     },
     function (session, results) {
         console.log("Entered date: %s", JSON.stringify(results.response));
-        session.conversationData.processing.dateInfo[session.dialogData.type].value = moment(results.response.resolution.start).subtract(session.conversationData.offset,'ms').set({ h: 0, m: 0, s: 0, ms: 0 });
+        session.conversationData.processing.dateInfo[session.dialogData.type].value = moment(results.response.resolution.start).subtract(session.conversationData.offset, 'ms').set({ h: 0, m: 0, s: 0, ms: 0 });
         if (session.conversationData.processing.dateInfo.end.hasOwnProperty()) {
             if (moment(session.conversationData.processing.dateInfo.end.value).isBefore(session.conversationData.processing.dateInfo.start)) {
                 session.send("Sorry, I can't proceed with leave end date ahead of leave start date. Please re-enter.");
@@ -914,6 +917,9 @@ bot.dialog('ApplyConfirmed', [
                                 session.send(messages.join("\n"));
                                 session.cancelDialog(0, '/');
                             }
+                        } else if (response) {
+                            session.send(`Unexpected Error: ${JSON.stringify(response.Message)}`);
+                            session.cancelDialog(0, '/');
                         }
                     }
                     catch (err) {
@@ -943,6 +949,9 @@ bot.dialog('ApplyConfirmed', [
                                     session.send(`Success: ${response.Et01messages[0].Message}`);
                                     session.cancelDialog(0, '/');
                                 }
+                            } else if (response) {
+                                session.send(`Unexpected Error: ${JSON.stringify(response.Message)}`);
+                                session.cancelDialog(0, '/');
                             }
                         }
                         catch (err) {
