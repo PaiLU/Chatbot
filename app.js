@@ -429,10 +429,10 @@ bot.dialog('AskDate', [
         console.log("Entered date: %s", JSON.stringify(results.response));
         session.conversationData.processing.dateInfo[session.dialogData.type].value = moment(results.response.resolution.start).subtract(session.conversationData.offset,'ms').set({ h: 0, m: 0, s: 0, ms: 0 });
         if (session.conversationData.processing.dateInfo.end.hasOwnProperty()) {
-            if (session.conversationData.processing.dateInfo.end.value.isBefore(session.conversationData.processing.dateInfo.start)) {
+            if (moment(session.conversationData.processing.dateInfo.end.value).isBefore(session.conversationData.processing.dateInfo.start)) {
                 session.send("Sorry, I can't proceed with leave end date ahead of leave start date. Please re-enter.");
                 session.replaceDialog('AskDate', session, dialogData.type);
-            } else if (session.conversationData.processing.dateInfo.end.value.isSame(session.conversationData.processing.dateInfo.start)) {
+            } else if (moment(session.conversationData.processing.dateInfo.end.value).isSame(session.conversationData.processing.dateInfo.start)) {
                 if (session.conversationData.processing.dateInfo.end.type == "AM" && session.conversationData.processing.dateInfo.start.type == "PM") {
                     session.send("Sorry, I can't proceed with leave end date ahead of leave start date. Please re-enter.");
                     session.replaceDialog('AskDate', session, dialogData.type);
