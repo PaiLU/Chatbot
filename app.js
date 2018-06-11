@@ -119,40 +119,38 @@ bot.dialog('Help', [
         if (session.message.text) {
             switch (session.message.text) {
                 case "apply leave": {
-                    session.beginDialog('ApplyLeave', defaultArgs);
+                    session.cancleDialog(0, 'ApplyLeave', defaultArgs);
                     break;
                 }
                 case "check leave balance": {
-                    session.beginDialog('CheckLeaveBalance', defaultArgs);
+                    session.cancleDialog(0, 'CheckLeaveBalance', defaultArgs);
                     break;
                 }
                 case "upload MC form": {
-                    session.beginDialog('OCR')
+                    session.cancleDialog(0, 'OCR')
                     break;
                 }
                 default: {
                     builder.LuisRecognizer.recognize(session.message.text, LuisModelUrl, function (err, intents, entities, compositeEntities) {
-                        console.log(`intents: ${intents}\nentities: ${entities}`)
-                        session.send(intents[0].intent);
                         switch (intents[0].intent) {
                             case 'ApplyLeave': {
-                                session.beginDialog('ApplyLeave', { "intent": { "intent": "ApplyLeave", "entities": [...entities] } });
+                                session.cancleDialog(0, 'ApplyLeave', { "intent": { "intent": "ApplyLeave", "entities": [...entities] } });
                                 break;
                             }
                             case 'CheckLeaveBalance': {
-                                session.beginDialog('CheckLeaveBalance', { "intent": { "intent": "CheckLeaveBalance", "entities": [...entities] } });
+                                session.cancleDialog(0, 'CheckLeaveBalance', { "intent": { "intent": "CheckLeaveBalance", "entities": [...entities] } });
                                 break;
                             }
                             default: {
-                                session.beginDialog('Help');
+                                session.cancleDialog(0, 'Help');
                                 break;
                             }
                         }
                     });
                 }
             }
-        }
-
+        } else
+            session.cancelDialog(0, '/');
         // console.log("chosen result: %s", JSON.stringify(results));
         // if (results.response.entity.toLowerCase() == "apply leave") {
         //     session.cancelDialog(0, 'ApplyLeave', defaultArgs);
@@ -164,9 +162,6 @@ bot.dialog('Help', [
         //     session.cancelDialog(0, 'OCR');
         // else
         //     session.endConversation("Invalid input, conversation has ended");
-    },
-    function (session) {
-        session.endDialog("Ending of dialog");
     }
 ]).triggerAction({
     matches: /^help$|^main help$|^cancel$/i,
