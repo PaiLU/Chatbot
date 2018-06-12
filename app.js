@@ -88,12 +88,12 @@ bot.on("event", function (event) {
     }
 });
 
-// bot.on('error', function (err) {
-//     bot.beginDialog(err.address, 'Error', err);
-// })
+bot.on('error', function (err) {
+    bot.beginDialog(err.address, 'Error', err);
+})
 bot.dialog('Error', function (session, args) {
     session.send(`${JSON.stringify(args)}`);
-    session.endDialog();
+    session.endConversation();
 })
 // main program
 bot.dialog('dialogApiToken', require('./dialogApiToken'));
@@ -101,7 +101,7 @@ bot.dialog('Help', [
     function (session) {
         session.conversationData.attachments = [];
         var msg = new builder.Message(session)
-            .text("Hi, I am Leave Bot. I can help you to do these")
+            .text("Hi, I am Leave Bot. \nYou can apply leave by typing 'take annual leave today afternoon' or 'take child care leave on 11 Jun'. \nType 'check annual leave balance' to find out the leave balance.\nType 'cancel' anywhere to return to here.\n<br\>You may also do these step by step:")
             .attachmentLayout(builder.AttachmentLayout.list)
             .attachments([
                 new builder.HeroCard(session)
@@ -837,7 +837,7 @@ bot.dialog('CorrectingInfo', [
     }
 ])
 bot.dialog('ApplyConfirmed', [
-    function (session) {
+    function (session, args) {
         var attachments = [];
         if (session.conversationData.attachments.length > 0) {
             attachments = session.conversationData.attachments.map((item) => {
@@ -899,51 +899,53 @@ bot.dialog('ApplyConfirmed', [
             "confirmation": args
         }
         //
-        // try {
-        apiServices.applyLeave(session.conversationData.apply, session.userData.apiToken)
-            .then((response) => {
-                try {
-                    if (response.Et01messages) {
-                        var messages = response.Et01messages.map((item) => {
-                            switch (item.Type) {
-                                case "E":
-                                    return "Error: " + item.Message;
-                                case "W":
-                                    return "Warning: " + item.Message;
-                                case "S":
-                                    return "Success: " + item.Message;
-                                default:
-                                    return item.Message;
+        try {
+            apiServices.applyLeave(session.conversationData.apply, session.userData.apiToken)
+                .then((response) => {
+                    try {
+                        if (response.Et01messages) {
+                            var messages = response.Et01messages.map((item) => {
+                                switch (item.Type) {
+                                    case "E":
+                                        return "Error: " + item.Message;
+                                    case "W":
+                                        return "Warning: " + item.Message;
+                                    case "S":
+                                        return "Success: " + item.Message;
+                                    default:
+                                        return item.Message;
+                                }
+                            });
+                            if (response.Et01messages[0].Type === "E") {
+                                session.send(messages.join("\n"));
+                                session.cancelDialog(0, '/');
+                            } else if (response.Et01messages[0].Type === "W") {
+                                session.send(messages.join("\n"));
+                                builder.Prompts.confirm(session, "Proceed with warning?", { listStyle: 3 });
+                            } else if (response.Et01messages[0].Type === "S") {
+                                session.send(messages.join("\n"));
+                                session.cancelDialog(0, '/');
                             }
-                        });
-                        if (response.Et01messages[0].Type === "E") {
-                            session.send(messages.join("\n"));
-                            session.cancelDialog(0, '/');
-                        } else if (response.Et01messages[0].Type === "W") {
-                            session.send(messages.join("\n"));
-                            builder.Prompts.confirm(session, "Proceed with warning?", { listStyle: 3 });
-                        } else if (response.Et01messages[0].Type === "S") {
-                            session.send(messages.join("\n"));
+                        } else if (response) {
+                            session.send(`Unexpected Error: ${JSON.stringify(response)}`);
                             session.cancelDialog(0, '/');
                         }
-                    } else if (response) {
-                        session.send(`Unexpected Error: ${JSON.stringify(response)}`);
+                    }
+                    catch (err) {
+                        session.send(`Unexpected Error from API service: ${JSON.stringify(err)}`);
                         session.cancelDialog(0, '/');
                     }
-                }
-                catch (err) {
-                    session.send(`Unexpected Error from API service: ${JSON.stringify(err)}`);
-                    session.cancelDialog(0, '/');
-                }
-            })
-        // }
-        // catch (err) {
-        //     session.send(`err: ${JSON.stringify(err)}`);
-        // }
+                })
+        }
+        catch (err) {
+            session.send(`err: ${JSON.stringify(err)}`);
+            session.cancelDialog(0, '/');
+        }
+
     },
     function (session, results) {
         if (results.response) {
-            session.replaceDialog('ApplyConfirmed','Y');
+            session.replaceDialog('ApplyConfirmed', 'Y');
         } else {
             session.send("The application is canceled");
             session.cancelDialog(0, '/');
