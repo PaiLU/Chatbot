@@ -906,8 +906,9 @@ bot.dialog('ApplyConfirmed', [
         session.conversationData.apply = {
             "leaveType": matchLeaveApplicationCode(session.conversationData.received.leaveType),
             "startDate": moment(session.conversationData.processing.dateInfo.start.value).format('YYYY[-]M[-]D'),
-            "startType": session.conversationData.processing.dateInfo.start.type,
             "endDate": moment(session.conversationData.processing.dateInfo.end.value).format('YYYY[-]M[-]D'),
+            "dayType": session.conversationData.processing.dateInfo.start.type,
+            // "startType": session.conversationData.processing.dateInfo.start.type,
             // "endType": "XX", //"FD"||"AM"||"PM"
             "notes": "",
             //if have, or otherwise it is an empty string
