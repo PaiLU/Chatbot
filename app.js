@@ -217,8 +217,8 @@ bot.dialog('CheckLeaveBalance', [
                     } else if (response && response.Type === "E") {
                         session.send(`Error: ${response.Message}`);
                         session.cancelDialog(0, '/');
-                    } else if (response) {
-                        session.send(`Unexpected Error: ${JSON.stringify(response)}`);
+                    } else {
+                        session.send(JSON.stringify(response));
                         session.cancelDialog(0, '/');
                     }
                 });
@@ -917,7 +917,7 @@ bot.dialog('ApplyConfirmed', [
             //     "text": ""
             // }
             "attachments": attachments,
-            "confirmation": args
+            "confirmation": ""
         }
         //
         try {
@@ -947,8 +947,8 @@ bot.dialog('ApplyConfirmed', [
                                 session.send(messages.join("\n"));
                                 session.cancelDialog(0, '/');
                             }
-                        } else if (response) {
-                            session.send(`Unexpected Error: ${JSON.stringify(response)}`);
+                        } else {
+                            session.send(JSON.stringify(response));
                             // session.send(`Unexpected Error from API service`);
                             session.cancelDialog(0, '/');
                         }
