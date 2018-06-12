@@ -948,7 +948,7 @@ bot.dialog('ApplyConfirmed', [
                                 session.cancelDialog(0, '/');
                             }
                         } else if (response) {
-                            session.send(`Unexpected Error: ${response}`);
+                            session.send(`Unexpected Error: ${JSON.stringify(response)}`);
                             // session.send(`Unexpected Error from API service`);
                             session.cancelDialog(0, '/');
                         }
