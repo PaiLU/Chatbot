@@ -20,6 +20,13 @@ module.exports = {
                     res.on('end', (err) => {
                         resolve(JSON.parse(response));
                     })
+                } else {
+                    res.on('data', function (buffer) {
+                        response += buffer;
+                    });
+                    res.on('end', (err) => {
+                        resolve(response);
+                    })
                 }
             }).end();
         });
@@ -43,6 +50,13 @@ module.exports = {
                     });
                     res.on('end', (err) => {
                         resolve(JSON.parse(response));
+                    })
+                } else {
+                    res.on('data', function (buffer) {
+                        response += buffer;
+                    });
+                    res.on('end', (err) => {
+                        resolve(response);
                     })
                 }
             });

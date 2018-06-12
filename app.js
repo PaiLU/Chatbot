@@ -227,9 +227,10 @@ bot.dialog('CheckLeaveBalance', [
             session.send(`err: ${JSON.stringify(err)}`);
         }
     }
-]).triggerAction({
-    matches: ['CheckLeaveBalance']
-});
+]);
+// .triggerAction({
+//     matches: ['CheckLeaveBalance']
+// });
 bot.dialog('OCR', [
     function (session, args) {
         builder.Prompts.attachment(session, "Please upload your attachment.");
@@ -409,9 +410,10 @@ bot.dialog('ApplyLeave', [
         session.conversationData.apply = new Object();
         session.beginDialog('ApplyConfirmed', 'N');
     }
-]).triggerAction({
-    matches: ['ApplyLeave']
-});
+]);
+// .triggerAction({
+//     matches: ['ApplyLeave']
+// });
 bot.dialog('ConvertingData', [
     function (session, args, next) {
         console.log(JSON.stringify(args));
@@ -476,7 +478,11 @@ bot.dialog('AskDateType', [
         }
         session.endDialog();
     }
-]);
+])
+    .cancelAction({
+        matches: /^cancel$|^abort$/i,
+        confirmPrompt: "This will cancel your current request. Are you sure?"
+    });;
 bot.dialog('Daterange', [
     function (session) {
         var min = new Array();
@@ -531,17 +537,22 @@ bot.dialog('DateAndDuration', [
         }
         session.endDialog();
     }
-]);
+])
+    .cancelAction({
+        matches: /^cancel$|^abort$/i,
+        confirmPrompt: "This will cancel your current request. Are you sure?"
+    });;
 bot.dialog('Date', [
     function (session) {
         session.conversationData.processing.dateInfo.start = session.conversationData.processing.dateInfo.dateTime[0];
         session.conversationData.processing.dateInfo.end = session.conversationData.processing.dateInfo.dateTime[0];
         session.endDialog();
     }
-]).cancelAction({
-    matches: /^cancel$|^abort$/i,
-    confirmPrompt: "This will cancel your current request. Are you sure?"
-});
+])
+    .cancelAction({
+        matches: /^cancel$|^abort$/i,
+        confirmPrompt: "This will cancel your current request. Are you sure?"
+    });
 bot.dialog('Duration', [
     function (session) {
         session.send('You are applying a leave for %s days.', session.conversationData.processing.dateInfo.duration[0] / 24 / 3600 / 1000);
@@ -568,10 +579,11 @@ bot.dialog('Duration', [
         }
         session.endDialog();
     }
-]).cancelAction({
-    matches: /^cancel$|^abort$/i,
-    confirmPrompt: "This will cancel your current request. Are you sure?"
-});
+])
+    .cancelAction({
+        matches: /^cancel$|^abort$/i,
+        confirmPrompt: "This will cancel your current request. Are you sure?"
+    });
 bot.dialog('NoDateInfo', [
     function (session) {
         session.conversationData.processing.dateInfo.start = { "value": moment(), "type": "FD" };
@@ -592,10 +604,11 @@ bot.dialog('NoDateInfo', [
     function (session, args) {
         session.endDialog();
     }
-]).cancelAction({
-    matches: /^cancel$|^abort$/i,
-    confirmPrompt: "This will cancel your current request. Are you sure?"
-});
+])
+    .cancelAction({
+        matches: /^cancel$|^abort$/i,
+        confirmPrompt: "This will cancel your current request. Are you sure?"
+    });
 bot.dialog('CheckLeaveType', [
     function (session, args) {
         var check = false;
@@ -636,10 +649,11 @@ bot.dialog('AskLeaveType', [
         session.conversationData.received.leaveType = results.response.entity;
         session.endDialog();
     },
-]).cancelAction({
-    matches: /^cancel$|^abort$/i,
-    confirmPrompt: "This will cancel your current request. Are you sure?"
-});
+])
+    .cancelAction({
+        matches: /^cancel$|^abort$/i,
+        confirmPrompt: "This will cancel your current request. Are you sure?"
+    });
 bot.dialog('AskSpecificType', [
     function (session) {
         switch (session.conversationData.received.leaveType) {
@@ -661,7 +675,11 @@ bot.dialog('AskSpecificType', [
         session.conversationData.received.leaveType = results.response.entity.toLowerCase();
         session.endDialog();
     }
-]);
+])
+    .cancelAction({
+        matches: /^cancel$|^abort$/i,
+        confirmPrompt: "This will cancel your current request. Are you sure?"
+    });
 bot.dialog('Attachments', [
     function (session, args, next) {
         session.beginDialog('ListAttachments')
@@ -891,11 +909,11 @@ bot.dialog('ApplyConfirmed', [
             "startType": session.conversationData.processing.dateInfo.start.type,
             "endDate": moment(session.conversationData.processing.dateInfo.end.value).format('YYYY[-]M[-]D'),
             // "endType": "XX", //"FD"||"AM"||"PM"
-            "notes": [ //if have, or otherwise it is an empty array
-                // {
-                //     "text": ""
-                // }
-            ],
+            "notes": "",
+            //if have, or otherwise it is an empty string
+            // {
+            //     "text": ""
+            // }
             "attachments": attachments,
             "confirmation": args
         }
@@ -928,12 +946,12 @@ bot.dialog('ApplyConfirmed', [
                                 session.cancelDialog(0, '/');
                             }
                         } else if (response) {
-                            session.send(`Unexpected Error: ${JSON.stringify(response)}`);
+                            session.send(`Unexpected Error from API service`);
                             session.cancelDialog(0, '/');
                         }
                     }
                     catch (err) {
-                        session.send(`Unexpected Error from API service: ${JSON.stringify(err)}`);
+                        session.send(`Unexpected Error of submitting the application`);
                         session.cancelDialog(0, '/');
                     }
                 })
@@ -1184,36 +1202,6 @@ function checkEntity(string, list) {
     }
     return check;
 };
-function findCompositeEntities(compositeEntities, entities, parentType, childType) {
-    var matched;
-    // find entity word from compositeEntities
-    if (compositeEntities.length != 0) {
-        for (var a in compositeEntities) {
-            if (compositeEntities[a].children && compositeEntities[a].children.length != 0) {
-                for (var b in compositeEntities[a].children) {
-                    if (parentType == compositeEntities[a].parentType && childType == compositeEntities[a].children[b].type) {
-                        // find startIndex and endIndex from entities use parentType
-                        if (entities.length != 0) {
-                            for (var c in entities) {
-                                if (entities[c].type == parentType && entities[c].entity == compositeEntities[a].value) {
-                                    // match result from children type
-                                    for (var d in entities) {
-                                        if (entities[d].type == compositeEntities[a].children[b].type && entities[d].entity == entities[c].entity && entities[d].startIndex == entities[c].startIndex && entities[d].endIndex == entities[c].endIndex) {
-                                            // save matched result
-                                            matched = (entities[d]);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return matched;
-    } else
-        return null;
-}
 function deleteAttachment(attachmentArray, n) {
     if (attachmentArray && attachmentArray > 0) {
         attachmentArray.splice(n, 1);
