@@ -227,10 +227,11 @@ bot.dialog('CheckLeaveBalance', [
             session.send(`err: ${JSON.stringify(err)}`);
         }
     }
-]);
-// .triggerAction({
-//     matches: ['CheckLeaveBalance']
-// });
+])
+    .cancelAction({
+        matches: /^cancel$|^abort$/i,
+        confirmPrompt: "This will cancel your current request. Are you sure?"
+    });
 bot.dialog('OCR', [
     function (session, args) {
         builder.Prompts.attachment(session, "Please upload your attachment.");
@@ -411,9 +412,6 @@ bot.dialog('ApplyLeave', [
         session.beginDialog('ApplyConfirmed', 'N');
     }
 ]);
-// .triggerAction({
-//     matches: ['ApplyLeave']
-// });
 bot.dialog('ConvertingData', [
     function (session, args, next) {
         console.log(JSON.stringify(args));
@@ -837,13 +835,12 @@ bot.dialog('CorrectingInfo', [
                 session.beginDialog('AddAttachments');
                 break;
             }
-            case "cancel application": {
-                session.send("Request cancelled");
-                session.cancelDialog(0, '/');
-                break;
-            }
+            // case "cancel application": {
+            //     session.cancelDialog(0, '/');
+            //     break;
+            // }
             default: {
-                session.endConversation();
+                session.send("Request cancelled").cancelDialog(0, '/');
                 break;
             }
         };
@@ -855,6 +852,10 @@ bot.dialog('CorrectingInfo', [
         session.replaceDialog("CheckApplyInfo");
     }
 ])
+    .cancelAction({
+        matches: /^cancel$|^abort$/i,
+        confirmPrompt: "This will cancel your current request. Are you sure?"
+    });
 bot.dialog('ApplyConfirmed', [
     function (session, args) {
         var attachments = [];
@@ -947,7 +948,8 @@ bot.dialog('ApplyConfirmed', [
                                 session.cancelDialog(0, '/');
                             }
                         } else if (response) {
-                            session.send(`Unexpected Error from API service`);
+                            session.send(`Unexpected Error: ${response}`);
+                            // session.send(`Unexpected Error from API service`);
                             session.cancelDialog(0, '/');
                         }
                     }
