@@ -59,10 +59,11 @@ var bot = new builder.UniversalBot(connector, [
         // session.send(`Args: ${JSON.stringify(args)}`)
         if (args) {
             session.userData.apiToken = args;
+            next();
         }
         if (!session.userData.apiToken)
-            session.endConversation(`API service is currently unavailable`);
-        next();
+            session.endConversation(`Bot service is currently unavailable`);
+        // next();
     },
     function (session) {
         // session.send(`apiToken: ${JSON.stringify(session.userData.apiToken)}`);
@@ -101,7 +102,7 @@ bot.dialog('Help', [
     function (session) {
         session.conversationData.attachments = [];
         var msg = new builder.Message(session)
-            .text("Hi, I am Leave Bot. \nYou can apply leave by typing 'take annual leave today afternoon' or 'take child care leave on 11 Jun'. \nType 'check annual leave balance' to find out the leave balance.\nType 'cancel' anywhere to return to here.\n<br\>You may also do these step by step:")
+            .text("Hi, I am Leave Bot. \nYou can apply leave by typing \n* 'take annual leave today afternoon'\n* 'take child care leave on 11 Jun'\n \nCheck leave balance with\n* 'check annual leave balance'\n \n* Type 'cancel' anywhere to return to here\n> \n \n You may also do these step by step:")
             .attachmentLayout(builder.AttachmentLayout.list)
             .attachments([
                 new builder.HeroCard(session)
