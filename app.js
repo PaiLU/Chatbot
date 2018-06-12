@@ -59,11 +59,11 @@ var bot = new builder.UniversalBot(connector, [
         // session.send(`Args: ${JSON.stringify(args)}`)
         if (args) {
             session.userData.apiToken = args;
-            next();
         }
         if (!session.userData.apiToken)
             session.endConversation(`Bot service is currently unavailable`);
-        // next();
+        else
+            next();
     },
     function (session) {
         // session.send(`apiToken: ${JSON.stringify(session.userData.apiToken)}`);
