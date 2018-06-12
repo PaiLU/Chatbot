@@ -64,7 +64,7 @@ var bot = new builder.UniversalBot(connector, [
             session.endConversation(`API service is currently unavailable`);
         next();
     },
-    function (session, args, next) {
+    function (session) {
         // session.send(`apiToken: ${JSON.stringify(session.userData.apiToken)}`);
         session.beginDialog('Help');
     }
@@ -406,7 +406,7 @@ bot.dialog('ApplyLeave', [
     },
     function (session) {
         session.conversationData.apply = new Object();
-        session.beginDialog('ApplyConfirmed');
+        session.beginDialog('ApplyConfirmed', 'N');
     }
 ]).triggerAction({
     matches: ['ApplyLeave']
@@ -884,7 +884,7 @@ bot.dialog('ApplyConfirmed', [
         //         "confirmation": "N"
         //     }
         // }
-            session.conversationData.apply = {
+        session.conversationData.apply = {
             "leaveType": matchLeaveApplicationCode(session.conversationData.received.leaveType),
             "startDate": moment(session.conversationData.processing.dateInfo.start.value).format('YYYY[-]M[-]D'),
             "startType": session.conversationData.processing.dateInfo.start.type,
@@ -896,81 +896,54 @@ bot.dialog('ApplyConfirmed', [
                 // }
             ],
             "attachments": attachments,
-            "confirmation": "N"
+            "confirmation": args
         }
         //
-        try {
-            apiServices.applyLeave(session.conversationData.apply, session.userData.apiToken)
-                .then((response) => {
-                    try {
-                        if (response.Et01messages) {
-                            var messages = response.Et01messages.map((item) => {
-                                switch (item.Type) {
-                                    case "E":
-                                        return "Error: " + item.Message;
-                                    case "W":
-                                        return "Warning: " + item.Message;
-                                    case "S":
-                                        return "Success: " + item.Message;
-                                    default:
-                                        return item.Message;
-                                }
-                            });
-                            if (response.Et01messages[0].Type === "E") {
-                                session.send(messages.join("\n"));
-                                session.cancelDialog(0, '/');
-                            } else if (response.Et01messages[0].Type === "W") {
-                                session.send(messages.join("\n"));
-                                builder.Prompts.confirm(session, "Proceed with warning?", { listStyle: 3 });
-                            } else if (response.Et01messages[0].Type === "S") {
-                                session.send(messages.join("\n"));
-                                session.cancelDialog(0, '/');
+        // try {
+        apiServices.applyLeave(session.conversationData.apply, session.userData.apiToken)
+            .then((response) => {
+                try {
+                    if (response.Et01messages) {
+                        var messages = response.Et01messages.map((item) => {
+                            switch (item.Type) {
+                                case "E":
+                                    return "Error: " + item.Message;
+                                case "W":
+                                    return "Warning: " + item.Message;
+                                case "S":
+                                    return "Success: " + item.Message;
+                                default:
+                                    return item.Message;
                             }
-                        } else if (response) {
-                            session.send(`Unexpected Error: ${JSON.stringify(response)}`);
+                        });
+                        if (response.Et01messages[0].Type === "E") {
+                            session.send(messages.join("\n"));
+                            session.cancelDialog(0, '/');
+                        } else if (response.Et01messages[0].Type === "W") {
+                            session.send(messages.join("\n"));
+                            builder.Prompts.confirm(session, "Proceed with warning?", { listStyle: 3 });
+                        } else if (response.Et01messages[0].Type === "S") {
+                            session.send(messages.join("\n"));
                             session.cancelDialog(0, '/');
                         }
+                    } else if (response) {
+                        session.send(`Unexpected Error: ${JSON.stringify(response)}`);
+                        session.cancelDialog(0, '/');
                     }
-                    catch (err) {
-                        session.send(`err: ${JSON.stringify(err)}`);
-                    }
-                })
-        }
-        catch (err) {
-            session.send(`err: ${JSON.stringify(err)}`);
-        }
+                }
+                catch (err) {
+                    session.send(`Unexpected Error from API service: ${JSON.stringify(err)}`);
+                    session.cancelDialog(0, '/');
+                }
+            })
+        // }
+        // catch (err) {
+        //     session.send(`err: ${JSON.stringify(err)}`);
+        // }
     },
-    function (session, results, next) {
+    function (session, results) {
         if (results.response) {
-            session.conversationData.apply.confirmation = "Y"
-            try {
-                apiServices.applyLeave(session.conversationData.apply, session.userData.apiToken)
-                    .then((response) => {
-                        try {
-                            if (response.Et01messages) {
-                                if (response.Et01messages[0].Type === "E") {
-                                    session.send(`Error: ${response.Et01messages[0].Message}`);
-                                    session.cancelDialog(0, '/');
-                                } else if (response.Et01messages[0].Type === "W") {
-                                    session.send(`Warning: ${response.Et01messages[0].Message}`);
-                                    builder.Prompts.confirm(session, "Proceed with warning?", { listStyle: 3 });
-                                } else if (response.Et01messages[0].Type === "S") {
-                                    session.send(`Success: ${response.Et01messages[0].Message}`);
-                                    session.cancelDialog(0, '/');
-                                }
-                            } else if (response) {
-                                session.send(`Unexpected Error: ${JSON.stringify(response)}`);
-                                session.cancelDialog(0, '/');
-                            }
-                        }
-                        catch (err) {
-                            session.send(`err: ${JSON.stringify(err)}`);
-                        }
-                    })
-            }
-            catch (err) {
-                session.send(`err: ${JSON.stringify(err)}`);
-            }
+            session.replaceDialog('ApplyConfirmed','Y');
         } else {
             session.send("The application is canceled");
             session.cancelDialog(0, '/');
