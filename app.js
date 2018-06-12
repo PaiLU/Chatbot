@@ -102,7 +102,7 @@ bot.dialog('Help', [
     function (session) {
         session.conversationData.attachments = [];
         var msg = new builder.Message(session)
-            .text("Hi, I am Leave Bot. \nYou can apply leave by typing \n* 'take annual leave today afternoon'\n* 'take child care leave on 11 Jun'\nCheck leave balance with\n* 'check annual leave balance'\n* Type 'cancel' anywhere to return to here\n> \n You may also do these step by step:")
+            .text("Hi, I am Leave Bot. \nYou can apply leave by typing \n* 'take annual leave today afternoon'\n* 'take child care leave on 11 Jun'\n \nCheck leave balance with\n* 'check annual leave balance'\n* Type 'cancel' anywhere to return to here\n> \n You may also do these step by step:")
             .attachmentLayout(builder.AttachmentLayout.list)
             .attachments([
                 new builder.HeroCard(session)
