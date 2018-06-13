@@ -100,7 +100,7 @@ bot.dialog('Error', function (session, args) {
 bot.dialog('dialogApiToken', require('./dialogApiToken'));
 bot.dialog('Help', [
     function (session) {
-        session.conversationData.attachments = [];
+        session.privateConversationData.attachments = [];
         var msg = new builder.Message(session)
             .text("Hi, I am Leave Bot. \nYou can apply leave by typing \n* 'take annual leave today afternoon'\n* 'take child care leave on 11 Jun'\n> \nCheck leave balance with\n* 'check annual leave balance'\n> \nType 'cancel' anywhere to return to here\n \nYou may also do these step by step:")
             .attachmentLayout(builder.AttachmentLayout.list)
@@ -170,7 +170,7 @@ bot.dialog('Help', [
 });
 bot.dialog('CheckLeaveBalance', [
     function (session, args, next) {
-        session.conversationData.request = new Object();
+        session.privateConversationData.request = new Object();
         if (args) {
             console.log(JSON.stringify(args));
             session.beginDialog('ConvertingData', args);
@@ -178,8 +178,8 @@ bot.dialog('CheckLeaveBalance', [
         next();
     },
     function (session, args, next) {
-        if (session.conversationData.received && session.conversationData.received.leaveType) {
-            session.conversationData.request.leaveType = session.conversationData.received.leaveType;
+        if (session.privateConversationData.received && session.privateConversationData.received.leaveType) {
+            session.privateConversationData.request.leaveType = session.privateConversationData.received.leaveType;
             next();
         } else {
 
@@ -190,10 +190,10 @@ bot.dialog('CheckLeaveBalance', [
         if (results.response) {
             // add patrameter
             if (results.response.entity == "show all balances") {
-                session.conversationData.request.leaveType = "";
+                session.privateConversationData.request.leaveType = "";
                 next();
             } else {
-                session.conversationData.request.leaveType = results.response.entity.toLowerCase();
+                session.privateConversationData.request.leaveType = results.response.entity.toLowerCase();
                 next();
             }
         } else {
@@ -201,13 +201,13 @@ bot.dialog('CheckLeaveBalance', [
         }
     },
     function (session) {
-        console.log(`${matchLeaveQuotaCode(session.conversationData.request.leaveType)} type: ${typeof (matchLeaveQuotaCode(session.conversationData.request.leaveType))}`);
+        console.log(`${matchLeaveQuotaCode(session.privateConversationData.request.leaveType)} type: ${typeof (matchLeaveQuotaCode(session.privateConversationData.request.leaveType))}`);
 
         // session.endConversation("The API is currently not responding");
         // API goes here
         try {
             // session.send(session.userData.apiToken ? session.userData.apiToken : "aaa");
-            apiServices.checkLeaveBalance(matchLeaveQuotaCode(session.conversationData.request.leaveType), session.userData.apiToken)
+            apiServices.checkLeaveBalance(matchLeaveQuotaCode(session.privateConversationData.request.leaveType), session.userData.apiToken)
                 .then((response) => {
                     // session.send(JSON.stringify(response));
                     if (Array.isArray(response)) {
@@ -306,7 +306,7 @@ bot.dialog('OCR', [
                                                                     }
                                                                 };
                                                                 console.log(JSON.stringify(session.dialogData.ocrArgs));
-                                                                session.conversationData.attachments.push({
+                                                                session.privateConversationData.attachments.push({
                                                                     contentType: attachment.contentType,
                                                                     contentUrl: 'data:' + attachment.contentType + ';base64,' + session.dialogData.imageBase64Sting,
                                                                     name: attachment.name
@@ -353,7 +353,7 @@ bot.dialog('OCR', [
         }
     }, function (session, results, next) {
         if (results.response) {
-            session.conversationData.attachments.push({
+            session.privateConversationData.attachments.push({
                 contentType: attachment.contentType,
                 contentUrl: 'data:' + attachment.contentType + ';base64,' + session.dialogData.imageBase64Sting,
                 name: attachment.name
@@ -368,12 +368,12 @@ bot.dialog('ApplyLeave', [
     function (session, args) {
         console.log(JSON.stringify(args));
         var now = new Date();
-        session.conversationData.offset = now.getTimezoneOffset() * 60 * 1000;
-        session.send("offset is " + session.conversationData.offset / 60 / 60 / 1000 + " hours");
+        session.privateConversationData.offset = now.getTimezoneOffset() * 60 * 1000;
+        session.send("offset is " + session.privateConversationData.offset / 60 / 60 / 1000 + " hours");
         session.beginDialog('ConvertingData', args);
     },
     function (session, results, next) {
-        if (session.conversationData.received.leaveType) {
+        if (session.privateConversationData.received.leaveType) {
             session.beginDialog('AskSpecificType');
         }
         else {
@@ -381,25 +381,25 @@ bot.dialog('ApplyLeave', [
         }
     },
     function (session) {
-        session.conversationData.processing.dateInfo.start = new Object();
-        session.conversationData.processing.dateInfo.end = new Object();
-        if (session.conversationData.processing.dateInfo.dateTime.length >= 2) {
+        session.privateConversationData.processing.dateInfo.start = new Object();
+        session.privateConversationData.processing.dateInfo.end = new Object();
+        if (session.privateConversationData.processing.dateInfo.dateTime.length >= 2) {
             session.beginDialog('Daterange')
-        } else if (session.conversationData.processing.dateInfo.dateTime.length == 1 && session.conversationData.processing.dateInfo.duration.length > 0) {
+        } else if (session.privateConversationData.processing.dateInfo.dateTime.length == 1 && session.privateConversationData.processing.dateInfo.duration.length > 0) {
             session.beginDialog('DateAndDuration');
-        } else if (session.conversationData.processing.dateInfo.dateTime.length == 1) {
+        } else if (session.privateConversationData.processing.dateInfo.dateTime.length == 1) {
             session.beginDialog('Date');
-        } else if (session.conversationData.processing.dateInfo.duration.length > 0) {
+        } else if (session.privateConversationData.processing.dateInfo.duration.length > 0) {
             session.beginDialog('Duration');
         } else {
             session.beginDialog('NoDateInfo');
         }
     },
     function (session) {
-        console.log(session.conversationData.processing);
-        console.log(session.conversationData.processing);
+        console.log(session.privateConversationData.processing);
+        console.log(session.privateConversationData.processing);
         // currerently using list Entity in LUIS, this step is a dupilicate checking
-        session.beginDialog('CheckLeaveType', session.conversationData.received.leaveType);
+        session.beginDialog('CheckLeaveType', session.privateConversationData.received.leaveType);
     },
     function (session) {
         session.beginDialog('CheckAttachment');
@@ -408,28 +408,28 @@ bot.dialog('ApplyLeave', [
         session.beginDialog('CheckApplyInfo');
     },
     function (session) {
-        session.conversationData.apply = new Object();
+        session.privateConversationData.apply = new Object();
         session.beginDialog('ApplyConfirmed', '');
     }
 ]);
 bot.dialog('ConvertingData', [
     function (session, args, next) {
         console.log(JSON.stringify(args));
-        session.conversationData.received = new Object();
-        session.conversationData.processing = new Object();
-        session.conversationData.received.dateInfo = new Object();
-        session.conversationData.processing.dateInfo = new Object();
-        session.conversationData.received.leaveType = entityExtract(builder.EntityRecognizer.findEntity(args.intent.entities || {}, "leaveType"));
-        // session.conversationData.received.startDayType = entityExtract(findCompositeEntities(args.intent.compositeEntities || {}, args.intent.entities || {}, 'startDay', 'dayType')) || "FD";
-        // session.conversationData.received.endDayType = entityExtract(findCompositeEntities(args.intent.compositeEntities || {}, args.intent.entities || {}, 'endDay', 'dayType')) || "FD";
+        session.privateConversationData.received = new Object();
+        session.privateConversationData.processing = new Object();
+        session.privateConversationData.received.dateInfo = new Object();
+        session.privateConversationData.processing.dateInfo = new Object();
+        session.privateConversationData.received.leaveType = entityExtract(builder.EntityRecognizer.findEntity(args.intent.entities || {}, "leaveType"));
+        // session.privateConversationData.received.startDayType = entityExtract(findCompositeEntities(args.intent.compositeEntities || {}, args.intent.entities || {}, 'startDay', 'dayType')) || "FD";
+        // session.privateConversationData.received.endDayType = entityExtract(findCompositeEntities(args.intent.compositeEntities || {}, args.intent.entities || {}, 'endDay', 'dayType')) || "FD";
 
         const datetimeV2Types = ["daterange", "date", "duration", "datetime", "datetimerange"];
         for (var o in datetimeV2Types) {
-            session.conversationData.received.dateInfo[datetimeV2Types[o]] = builder.EntityRecognizer.findAllEntities(args.intent.entities || {}, 'builtin.datetimeV2.' + datetimeV2Types[o]);
+            session.privateConversationData.received.dateInfo[datetimeV2Types[o]] = builder.EntityRecognizer.findAllEntities(args.intent.entities || {}, 'builtin.datetimeV2.' + datetimeV2Types[o]);
         };
-        session.conversationData.processing.dateInfo = dateExtract(session.conversationData.received.dateInfo);
-        console.log(`received: ${JSON.stringify(session.conversationData.received)}`);
-        console.log(`processing: ${JSON.stringify(session.conversationData.processing)}`);
+        session.privateConversationData.processing.dateInfo = dateExtract(session.privateConversationData.received.dateInfo);
+        console.log(`received: ${JSON.stringify(session.privateConversationData.received)}`);
+        console.log(`processing: ${JSON.stringify(session.privateConversationData.processing)}`);
         session.endDialog();
     }
 ]);
@@ -439,14 +439,14 @@ bot.dialog('AskDate', [
         builder.Prompts.time(session, "Please enter a leave " + session.dialogData.type + " date");
     },
     function (session, results) {
-        session.send("Entered date: %s",  moment(results.response.resolution.start).utcOffset());
-        session.conversationData.processing.dateInfo[session.dialogData.type].value = moment(results.response.resolution.start).subtract(session.conversationData.offset, 'ms').set({ h: 0, m: 0, s: 0, ms: 0 });
-        if (session.conversationData.processing.dateInfo.end.hasOwnProperty()) {
-            if (moment(session.conversationData.processing.dateInfo.end.value).isBefore(session.conversationData.processing.dateInfo.start)) {
+        // session.send("Entered date: %s", moment(results.response.resolution.start).utcOffset());
+        session.privateConversationData.processing.dateInfo[session.dialogData.type].value = moment(results.response.resolution.start).subtract(session.privateConversationData.offset, 'ms').set({ h: 0, m: 0, s: 0, ms: 0 });
+        if (session.privateConversationData.processing.dateInfo.end.hasOwnProperty()) {
+            if (moment(session.privateConversationData.processing.dateInfo.end.value).isBefore(session.privateConversationData.processing.dateInfo.start)) {
                 session.send("Sorry, I can't proceed with leave end date ahead of leave start date. Please re-enter.");
                 session.replaceDialog('AskDate', session, dialogData.type);
-            } else if (moment(session.conversationData.processing.dateInfo.end.value).isSame(session.conversationData.processing.dateInfo.start)) {
-                if (session.conversationData.processing.dateInfo.end.type == "AM" && session.conversationData.processing.dateInfo.start.type == "PM") {
+            } else if (moment(session.privateConversationData.processing.dateInfo.end.value).isSame(session.privateConversationData.processing.dateInfo.start)) {
+                if (session.privateConversationData.processing.dateInfo.end.type == "AM" && session.privateConversationData.processing.dateInfo.start.type == "PM") {
                     session.send("Sorry, I can't proceed with leave end date ahead of leave start date. Please re-enter.");
                     session.replaceDialog('AskDate', session, dialogData.type);
                 }
@@ -462,13 +462,13 @@ bot.dialog('AskDateType', [
     },
     function (session, results) {
         console.log("Entered type: %s", JSON.stringify(results.response.entity));
-        session.conversationData.processing.dateInfo[session.dialogData.type].type = results.response.entity;
-        if (session.conversationData.processing.dateInfo.end) {
-            if (moment(session.conversationData.processing.dateInfo.end.value).isBefore(session.conversationData.processing.dateInfo.start.value)) {
+        session.privateConversationData.processing.dateInfo[session.dialogData.type].type = results.response.entity;
+        if (session.privateConversationData.processing.dateInfo.end) {
+            if (moment(session.privateConversationData.processing.dateInfo.end.value).isBefore(session.privateConversationData.processing.dateInfo.start.value)) {
                 session.send("Sorry, I can't proceed with leave end date ahead of leave start date. Please re-enter.");
                 session.replaceDialog('AskDateType', session, dialogData.type);
-            } else if (moment(session.conversationData.processing.dateInfo.end.value).isSame(session.conversationData.processing.dateInfo.start.value)) {
-                if (session.conversationData.processing.dateInfo.end.type == "AM" && session.conversationData.processing.dateInfo.start.type == "PM") {
+            } else if (moment(session.privateConversationData.processing.dateInfo.end.value).isSame(session.privateConversationData.processing.dateInfo.start.value)) {
+                if (session.privateConversationData.processing.dateInfo.end.type == "AM" && session.privateConversationData.processing.dateInfo.start.type == "PM") {
                     session.send("Sorry, I can't proceed with leave end date ahead of leave start date. Please re-enter.");
                     session.replaceDialog('AskDateType', session, dialogData.type);
                 }
@@ -485,7 +485,7 @@ bot.dialog('Daterange', [
     function (session) {
         var min = new Array();
         var minEntity = new Array();
-        session.conversationData.processing.dateInfo.dateTime.forEach((item) => {
+        session.privateConversationData.processing.dateInfo.dateTime.forEach((item) => {
             var diff = Math.abs(moment(item.value).diff(moment()))
             if (!min[0] || diff < min[0]) {
                 min[1] = min[0];
@@ -507,31 +507,31 @@ bot.dialog('Daterange', [
             minEntity[0] = temp;
         }
 
-        session.conversationData.processing.dateInfo.start = minEntity[0];
-        session.conversationData.processing.dateInfo.end = minEntity[1];
+        session.privateConversationData.processing.dateInfo.start = minEntity[0];
+        session.privateConversationData.processing.dateInfo.end = minEntity[1];
         session.endDialog();
     }
 ]);
 bot.dialog('DateAndDuration', [
     function (session) {
-        session.conversationData.processing.dateInfo.start = session.conversationData.processing.dateInfo.dateTime[0];
-        var durationDays = session.conversationData.processing.dateInfo.duration[0] / 1000 / 3600 / 24;
-        if (session.conversationData.processing.dateInfo.start.type === "AM" || session.conversationData.processing.dateInfo.start.type === "FD") {
-            session.conversationData.processing.dateInfo.end = {
-                "value": moment(session.conversationData.processing.dateInfo.start.value).add(Math.ceil(durationDays - 1), 'days')
+        session.privateConversationData.processing.dateInfo.start = session.privateConversationData.processing.dateInfo.dateTime[0];
+        var durationDays = session.privateConversationData.processing.dateInfo.duration[0] / 1000 / 3600 / 24;
+        if (session.privateConversationData.processing.dateInfo.start.type === "AM" || session.privateConversationData.processing.dateInfo.start.type === "FD") {
+            session.privateConversationData.processing.dateInfo.end = {
+                "value": moment(session.privateConversationData.processing.dateInfo.start.value).add(Math.ceil(durationDays - 1), 'days')
             }
             if (durationDays % 1 != 0)
-                session.conversationData.processing.dateInfo.end.type = "AM";
+                session.privateConversationData.processing.dateInfo.end.type = "AM";
             else
-                session.conversationData.processing.dateInfo.end.type = "FD";
+                session.privateConversationData.processing.dateInfo.end.type = "FD";
         } else {//"PM"
-            session.conversationData.processing.dateInfo.end = {
-                "value": moment(session.conversationData.processing.dateInfo.start.value).add(Math.floor(durationDays), 'days')
+            session.privateConversationData.processing.dateInfo.end = {
+                "value": moment(session.privateConversationData.processing.dateInfo.start.value).add(Math.floor(durationDays), 'days')
             }
             if (durationDays % 1 != 0) {
-                session.conversationData.processing.dateInfo.end.type = durationDays <= 0.5 ? "PM" : "FD";
+                session.privateConversationData.processing.dateInfo.end.type = durationDays <= 0.5 ? "PM" : "FD";
             } else
-                session.conversationData.processing.dateInfo.end.type = "AM";
+                session.privateConversationData.processing.dateInfo.end.type = "AM";
         }
         session.endDialog();
     }
@@ -542,8 +542,8 @@ bot.dialog('DateAndDuration', [
     });;
 bot.dialog('Date', [
     function (session) {
-        session.conversationData.processing.dateInfo.start = session.conversationData.processing.dateInfo.dateTime[0];
-        session.conversationData.processing.dateInfo.end = session.conversationData.processing.dateInfo.dateTime[0];
+        session.privateConversationData.processing.dateInfo.start = session.privateConversationData.processing.dateInfo.dateTime[0];
+        session.privateConversationData.processing.dateInfo.end = session.privateConversationData.processing.dateInfo.dateTime[0];
         session.endDialog();
     }
 ])
@@ -553,27 +553,28 @@ bot.dialog('Date', [
     });
 bot.dialog('Duration', [
     function (session) {
-        session.send('You are applying a leave for %s days.', session.conversationData.processing.dateInfo.duration[0] / 24 / 3600 / 1000);
+        session.send('You are applying a leave for %s days.', session.privateConversationData.processing.dateInfo.duration[0] / 24 / 3600 / 1000);
+        session.privateConversationData.processing.dateInfo.start = { "value": moment(), "type": "FD" };
         session.beginDialog('AskDate', "start");
     },
     function (session) {
-        var durationDays = session.conversationData.processing.dateInfo.duration[0] / 1000 / 3600 / 24;
-        if (session.conversationData.processing.dateInfo.start.type === "AM" || session.conversationData.processing.dateInfo.start.type === "FD") {
-            session.conversationData.processing.dateInfo.end = {
-                "value": moment(session.conversationData.processing.dateInfo.start.value).add(Math.ceil(durationDays - 1), 'days')
+        var durationDays = session.privateConversationData.processing.dateInfo.duration[0] / 1000 / 3600 / 24;
+        if (session.privateConversationData.processing.dateInfo.start.type === "AM" || session.privateConversationData.processing.dateInfo.start.type === "FD") {
+            session.privateConversationData.processing.dateInfo.end = {
+                "value": moment(session.privateConversationData.processing.dateInfo.start.value).add(Math.ceil(durationDays - 1), 'days')
             }
             if (durationDays % 1)
-                session.conversationData.processing.dateInfo.end.type = "AM";
+                session.privateConversationData.processing.dateInfo.end.type = "AM";
             else
-                session.conversationData.processing.dateInfo.end.type = "FD";
+                session.privateConversationData.processing.dateInfo.end.type = "FD";
         } else {//"PM"
-            session.conversationData.processing.dateInfo.end = {
-                "value": moment(session.conversationData.processing.dateInfo.start.value).add(Math.floor(durationDays), 'days')
+            session.privateConversationData.processing.dateInfo.end = {
+                "value": moment(session.privateConversationData.processing.dateInfo.start.value).add(Math.floor(durationDays), 'days')
             }
             if (durationDays % 1)
-                session.conversationData.processing.dateInfo.end.type = "FD";
+                session.privateConversationData.processing.dateInfo.end.type = "FD";
             else
-                session.conversationData.processing.dateInfo.end.type = "AM";
+                session.privateConversationData.processing.dateInfo.end.type = "AM";
         }
         session.endDialog();
     }
@@ -584,16 +585,16 @@ bot.dialog('Duration', [
     });
 bot.dialog('NoDateInfo', [
     function (session) {
-        session.conversationData.processing.dateInfo.start = { "value": moment(), "type": "FD" };
+        session.privateConversationData.processing.dateInfo.start = { "value": moment(), "type": "FD" };
         session.beginDialog('AskDate', "start");
     },
     function (session) {
         builder.Prompts.choice(session, "Are you applying the leave for one day or multiple days", ["one day", "multiple days"], { listStyle: 3 })
     },
     function (session, results, next) {
-        session.conversationData.processing.dateInfo.end = { "value": moment(), "type": "FD" };
+        session.privateConversationData.processing.dateInfo.end = { "value": moment(), "type": "FD" };
         if (results.response.entity == "one day") {
-            session.conversationData.processing.dateInfo.end = session.conversationData.processing.dateInfo.start;
+            session.privateConversationData.processing.dateInfo.end = session.privateConversationData.processing.dateInfo.start;
             next();
         } else if (results.response.entity == "multiple days") {
             session.beginDialog('AskDate', "end");
@@ -620,7 +621,7 @@ bot.dialog('CheckLeaveType', [
             console.log("Checked the applying leave type is %s", args.toLowerCase());
             session.endDialog();
         } else {
-            session.send("Please check the leave type. You have entered %s <br\>which is not in SIT leave type", session.conversationData.leaveType);
+            session.send("Please check the leave type. You have entered %s <br\>which is not in SIT leave type", session.privateConversationData.leaveType);
             session.replaceDialog('AskLeaveType', "all");
         };
     }
@@ -639,12 +640,12 @@ bot.dialog('AskLeaveType', [
         if (results.response.entity.toLowerCase() == "show all leave types")
             session.replaceDialog('AskLeaveType', "all")
         else {
-            session.conversationData.received.leaveType = results.response.entity.toLowerCase();
+            session.privateConversationData.received.leaveType = results.response.entity.toLowerCase();
             session.endDialog();
         }
     },
     function (session, results) {
-        session.conversationData.received.leaveType = results.response.entity;
+        session.privateConversationData.received.leaveType = results.response.entity;
         session.endDialog();
     },
 ])
@@ -654,7 +655,7 @@ bot.dialog('AskLeaveType', [
     });
 bot.dialog('AskSpecificType', [
     function (session) {
-        switch (session.conversationData.received.leaveType) {
+        switch (session.privateConversationData.received.leaveType) {
             case "medical leave": {
                 builder.Prompts.choice(session, "Please specify your medical leave, whether it is " + leaveTypeDisplayConvert("'Medical Leave (UC)'") + " or " + leaveTypeDisplayConvert("'Medical Leave (C)'"), ["Medical Leave(UC)", "Medical Leave(C)"], { listStyle: 3 });
                 break;
@@ -670,7 +671,7 @@ bot.dialog('AskSpecificType', [
         }
     },
     function (session, results) {
-        session.conversationData.received.leaveType = results.response.entity.toLowerCase();
+        session.privateConversationData.received.leaveType = results.response.entity.toLowerCase();
         session.endDialog();
     }
 ])
@@ -685,8 +686,8 @@ bot.dialog('Attachments', [
 ]);
 bot.dialog('CheckAttachment', [
     function (session, args, next) {
-        if (checkEntity(session.conversationData.received.leaveType, reqAttTypes) && session.conversationData.attachments.length == 0) {
-            session.send(`An attachment for applying ${leaveTypeDisplayConvert(session.conversationData.received.leaveType)} is required`);
+        if (checkEntity(session.privateConversationData.received.leaveType, reqAttTypes) && session.privateConversationData.attachments.length == 0) {
+            session.send(`An attachment for applying ${leaveTypeDisplayConvert(session.privateConversationData.received.leaveType)} is required`);
             session.beginDialog('AddAttachment');
         }
         next();
@@ -711,7 +712,7 @@ bot.dialog('AddAttachment', [
                     if (validateAttachment(attachment, fileResponse.length)) {
                         // convert to base64 string and save
                         session.dialogData.imageBase64Sting = new Buffer(fileResponse, 'binary').toString('base64');
-                        session.conversationData.attachments.push({
+                        session.privateConversationData.attachments.push({
                             contentType: attachment.contentType,
                             contentUrl: 'data:' + attachment.contentType + ';base64,' + session.dialogData.imageBase64Sting,
                             name: attachment.name
@@ -736,7 +737,7 @@ bot.dialog('AddAttachment', [
 ]);
 bot.dialog('DeleteAttachment', [
     function (session, args, next) {
-        builder.Prompts.choice(session, "which attachment do you want to delete?", session.conversationData.attachments, { listStyle: 3 });
+        builder.Prompts.choice(session, "which attachment do you want to delete?", session.privateConversationData.attachments, { listStyle: 3 });
     },
     function (session, results, next) {
         console.log(JSON.stringify(results.response));
@@ -745,13 +746,13 @@ bot.dialog('DeleteAttachment', [
 ])
 bot.dialog('ListAttachments', [
     function (session, args, next) {
-        if (session.conversationData.attachments) {
+        if (session.privateConversationData.attachments) {
             var listAttachment1 = new builder.Message(session)
-                .text("You have uploaded " + session.conversationData.attachments.length + "attachment(s)")
+                .text("You have uploaded " + session.privateConversationData.attachments.length + "attachment(s)")
                 // session.send(listAttachment1);
                 // var listAttachment2 = new builder.Message(session)
                 .attachmentLayout("list")//or carousel
-                .attachments(session.conversationData.attachments);
+                .attachments(session.privateConversationData.attachments);
             session.send(listAttachment1);
         } else {
             var listAttachment3 = new builder.Message(session)
@@ -781,7 +782,7 @@ bot.dialog('ListAttachments', [
 ]);
 bot.dialog('CheckApplyInfo', [
     function (session) {
-        session.send(`Hi ${session.message.user.name}, you are applying ${leaveTypeDisplayConvert(session.conversationData.received.leaveType)} from ${moment(session.conversationData.processing.dateInfo.start.value).format("DD-MMM-YYYY")} ${session.conversationData.processing.dateInfo.start.type} to ${moment(session.conversationData.processing.dateInfo.end.value).format("DD-MMM-YYYY")} ${session.conversationData.processing.dateInfo.end.type}`);
+        session.send(`Hi ${session.message.user.name}, you are applying ${leaveTypeDisplayConvert(session.privateConversationData.received.leaveType)} from ${moment(session.privateConversationData.processing.dateInfo.start.value).format("DD-MMM-YYYY")} ${session.privateConversationData.processing.dateInfo.start.type} to ${moment(session.privateConversationData.processing.dateInfo.end.value).format("DD-MMM-YYYY")} ${session.privateConversationData.processing.dateInfo.end.type}`);
         builder.Prompts.confirm(session, "Please confirm if your application information is correct", { listStyle: 3 });
     },
     function (session, results) {
@@ -859,69 +860,114 @@ bot.dialog('CorrectingInfo', [
 bot.dialog('ApplyConfirmed', [
     function (session, args) {
         var attachments = [];
-        if (session.conversationData.attachments.length > 0) {
-            attachments = session.conversationData.attachments.map((item) => {
+        var startDate = moment(session.privateConversationData.processing.dateInfo.start.value)
+        var endDate = moment(session.privateConversationData.processing.dateInfo.end.value)
+        var startType = session.privateConversationData.processing.dateInfo.start.type
+        var endType = session.privateConversationData.processing.dateInfo.end.type
+        session.privateConversationData.applications = [];
+
+        if (session.privateConversationData.attachments.length > 0) {
+            attachments = session.privateConversationData.attachments.map((item) => {
                 return {
                     FileName: item.name,
                     Contents: item.contentUrl.split(";")[1].split(",")[1]
                 };
             });
         }
-        // var requests = [];
-        // if (startType === "PM") {
-        //     // First request here
-        //     // var application = {
-        //     //     "leaveType": matchLeaveApplicationCode(session.conversationData.received.leaveType),
-        //     //     "startDate": startDate.format("YYYY-MM-DD"),
-        //     //     "startType": "PM",
-        //     //     "endDate": startDate.format("YYYY-MM-DD"),
-        //     //     "notes": [],
-        //     //     "attachments": attachments,
-        //     //     "confirmation": "N"
-        //     // }
-        // }
-        // if (endDate > startDate) {
-        //     // Second request
-        //     var application = {
-        //         "leaveType": matchLeaveApplicationCode(session.conversationData.received.leaveType),
-        //         "startDate": startDate.add(1, 'days').format("YYYY-MM-DD"),
-        //         "startType": "FD",
-        //         "endDate": endType === "AM" ? endDate.add(-1, 'days').format("YYYY-MM-DD") : endDate.format("YYYY-MM-DD"),
-        //         "notes": [],
-        //         "attachments": attachments,
-        //         "confirmation": "N"
-        //     }
-        // }
-        // if (endDate > startDate && endType === "AM") {
-        //     // Third request here
-        //     var application = {
-        //         "leaveType": matchLeaveApplicationCode(session.conversationData.received.leaveType),
-        //         "startDate": endDate.add(1, 'days').format("YYYY-MM-DD"),
-        //         "startType": "AM",
-        //         "endDate": endDate.format("YYYY-MM-DD"),
-        //         "notes": [],
-        //         "attachments": attachments,
-        //         "confirmation": "N"
-        //     }
-        // }
-        session.conversationData.apply = {
-            "leaveType": matchLeaveApplicationCode(session.conversationData.received.leaveType),
-            "startDate": moment(session.conversationData.processing.dateInfo.start.value).format('YYYY[-]M[-]D'),
-            "endDate": moment(session.conversationData.processing.dateInfo.end.value).format('YYYY[-]M[-]D'),
-            "dayType": session.conversationData.processing.dateInfo.start.type,
-            // "startType": session.conversationData.processing.dateInfo.start.type,
-            // "endType": "XX", //"FD"||"AM"||"PM"
-            "notes": "",
-            //if have, or otherwise it is an empty string
-            // {
-            //     "text": ""
-            // }
-            "attachments": attachments,
-            "confirmation": args
+        if (startType === "FD" | "AM" && endType === "FD" | "PM") {
+
+        } else {
+            if (startDate.isSame(endDate, 'days')) {
+                session.privateConversationData.applications.push({
+                    "leaveType": matchLeaveApplicationCode(session.privateConversationData.received.leaveType),
+                    "startDate": startDate.format('YYYY[-]M[-]D'),
+                    "endDate": emdDate.format('YYYY[-]M[-]D'),
+                    "dayType": startType,
+                    "notes": "",
+                    "attachments": attachments,
+                    "confirmation": ""
+                })
+            } else {
+                if (startType === "AM" | "FD" && endType === "AM") {
+                    session.privateConversationData.applications = [{
+                        "leaveType": matchLeaveApplicationCode(session.privateConversationData.received.leaveType),
+                        "startDate": startDate.format('YYYY[-]M[-]D'),
+                        "endDate": moment(endDate).subtract(1, 'day').format('YYYY[-]M[-]D'),
+                        "dayType": "FD",
+                        "notes": "",
+                        "attachments": attachments,
+                        "confirmation": ""
+                    },
+                    {
+                        "leaveType": matchLeaveApplicationCode(session.privateConversationData.received.leaveType),
+                        "startDate": endDate.format('YYYY[-]M[-]D'),
+                        "endDate": endDate.format('YYYY[-]M[-]D'),
+                        "dayType": "AM",
+                        "notes": "",
+                        "attachments": attachments,
+                        "confirmation": ""
+                    }];
+                } else if (startType === "PM" && endType === "PM" | "FD") {
+                    session.privateConversationData.applications = [{
+                        "leaveType": matchLeaveApplicationCode(session.privateConversationData.received.leaveType),
+                        "startDate": startDate.format('YYYY[-]M[-]D'),
+                        "endDate": startDate.format('YYYY[-]M[-]D'),
+                        "dayType": "PM",
+                        "notes": "",
+                        "attachments": attachments,
+                        "confirmation": ""
+                    },
+                    {
+                        "leaveType": matchLeaveApplicationCode(session.privateConversationData.received.leaveType),
+                        "startDate": moment(startDate).add(1, 'day').format('YYYY[-]M[-]D'),
+                        "endDate": endDate.format('YYYY[-]M[-]D'),
+                        "dayType": "FD",
+                        "notes": "",
+                        "attachments": attachments,
+                        "confirmation": ""
+                    }];
+                } else {
+                    session.privateConversationData.applications = [{
+                        "leaveType": matchLeaveApplicationCode(session.privateConversationData.received.leaveType),
+                        "startDate": startDate.format('YYYY[-]M[-]D'),
+                        "endDate": startDate.format('YYYY[-]M[-]D'),
+                        "dayType": "PM",
+                        "notes": "",
+                        "attachments": attachments,
+                        "confirmation": ""
+                    },
+                    {
+                        "leaveType": matchLeaveApplicationCode(session.privateConversationData.received.leaveType),
+                        "startDate": endDate.format('YYYY[-]M[-]D'),
+                        "endDate": endDate.format('YYYY[-]M[-]D'),
+                        "dayType": "AM",
+                        "notes": "",
+                        "attachments": attachments,
+                        "confirmation": ""
+                    }]
+                    if (moment(startDate).add(1, 'd').isSameOrBefore(moment(endDate).subtract(1, 'd'))) {
+                        session.privateConversationData.applications.splice(1, 0, {
+                            "leaveType": matchLeaveApplicationCode(session.privateConversationData.received.leaveType),
+                            "startDate": moment(startDate).add(1, 'd').format('YYYY[-]M[-]D'),
+                            "endDate": moment(endDate).subtract(1, 'd').format('YYYY[-]M[-]D'),
+                            "dayType": "FD",
+                            "notes": "",
+                            "attachments": attachments,
+                            "confirmation": ""
+                        })
+                    }
+                }
+            }
         }
-        //
+        session.beginDialog('LeaveApplication', [0, ""]);
+    }
+]);
+bot.dialog('LeaveApplication', [
+    function (session, args, next) {
+        session.dialogData.args = args
         try {
-            apiServices.applyLeave(session.conversationData.apply, session.userData.apiToken)
+            session.privateConversationData.applications[args[0]].confirmation = args[1];
+            apiServices.applyLeave(session.privateConversationData.applications[args[0]], session.userData.apiToken)
                 .then((response) => {
                     try {
                         if (response.Et01messages) {
@@ -944,8 +990,12 @@ bot.dialog('ApplyConfirmed', [
                                 session.send(messages.join("\n"));
                                 builder.Prompts.confirm(session, "Proceed with warning?", { listStyle: 3 });
                             } else if (response.Et01messages[0].Type === "S") {
-                                session.send(messages.join("\n"));
+                                if (args[0] >= session.privateConversationData.applications.length - 1) {
+                                session.send(messages.join("\n")); 
                                 session.cancelDialog(0, '/');
+                                } else {
+                                    session.replaceDialog('LeaveApplication',[args[0]+1,""])
+                                }
                             }
                         } else {
                             session.send(JSON.stringify(response));
@@ -967,7 +1017,7 @@ bot.dialog('ApplyConfirmed', [
     },
     function (session, results) {
         if (results.response) {
-            session.replaceDialog('ApplyConfirmed', "Y");
+            session.replaceDialog('LeaveApplication', [session.dialogData.args[0], "Y"]);
         } else {
             session.send("The application is canceled");
             session.cancelDialog(0, '/');
@@ -1274,11 +1324,11 @@ function matchLeaveApplicationCode(leaveType) {
 }
 
 /* 
-conversationData.received : save all information from the first message
+privateConversationData.received : save all information from the first message
     .leaveType : should be lowercase leave type description.
     .dateInfo : currerntly is the entity Object, should be futher replaced by Date Object or the millisecond number value
     .starDateType & endDateType : currerently is the entity Object, should be futher replaced by string ("AM|PM|FD")
-conversationData.attachment : save the attachment Object with base 64 string
+privateConversationData.attachment : save the attachment Object with base 64 string
     [
         {
             contentType: attachment.contentType,
@@ -1286,10 +1336,10 @@ conversationData.attachment : save the attachment Object with base 64 string
             name: attachment.name
         }
     ]
-conversationData.processing : save the middle information during processing with the Data, should only be used when needed
+privateConversationData.processing : save the middle information during processing with the Data, should only be used when needed
 
-conversationData.apply : used in leave application, save all "ready to send" information, should be used after user confirmation, should not be modified in middle
-conversationData.request: used in leave quota request, save all "ready to send information"
+privateConversationData.apply : used in leave application, save all "ready to send" information, should be used after user confirmation, should not be modified in middle
+privateConversationData.request: used in leave quota request, save all "ready to send information"
     .leaveType : should be lowercase leave type description.
 
 dateExtract builtin.datetimeV2.
