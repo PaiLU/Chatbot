@@ -409,7 +409,7 @@ bot.dialog('ApplyLeave', [
     },
     function (session) {
         session.conversationData.apply = new Object();
-        session.beginDialog('ApplyConfirmed', 'N');
+        session.beginDialog('ApplyConfirmed', '');
     }
 ]);
 bot.dialog('ConvertingData', [
@@ -917,7 +917,7 @@ bot.dialog('ApplyConfirmed', [
             //     "text": ""
             // }
             "attachments": attachments,
-            "confirmation": ""
+            "confirmation": args
         }
         //
         try {
