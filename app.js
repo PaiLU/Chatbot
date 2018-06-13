@@ -183,7 +183,7 @@ bot.dialog('CheckLeaveBalance', [
             next();
         } else {
 
-            builder.Prompts.choice(session, "Which balance are you looking for?", sitLeaveQuotaTypes.concat(["show all balances"]), { listStyle: 3 });
+            builder.Prompts.choice(session, "Which balance are you looking for?", sitLeaveQuotaShortlistTypes.concat(["show all balances"]), { listStyle: 3 });
         }
     },
     function (session, results, next) {
@@ -439,7 +439,7 @@ bot.dialog('AskDate', [
         builder.Prompts.time(session, "Please enter a leave " + session.dialogData.type + " date");
     },
     function (session, results) {
-        session.send("Entered date: %s", JSON.stringify(results.response));
+        session.send("Entered date: %s",  moment(results.response.resolution.start).utcOffset());
         session.conversationData.processing.dateInfo[session.dialogData.type].value = moment(results.response.resolution.start).subtract(session.conversationData.offset, 'ms').set({ h: 0, m: 0, s: 0, ms: 0 });
         if (session.conversationData.processing.dateInfo.end.hasOwnProperty()) {
             if (moment(session.conversationData.processing.dateInfo.end.value).isBefore(session.conversationData.processing.dateInfo.start)) {
@@ -967,7 +967,7 @@ bot.dialog('ApplyConfirmed', [
     },
     function (session, results) {
         if (results.response) {
-            session.replaceDialog('ApplyConfirmed', 'Y');
+            session.replaceDialog('ApplyConfirmed', "Y");
         } else {
             session.send("The application is canceled");
             session.cancelDialog(0, '/');

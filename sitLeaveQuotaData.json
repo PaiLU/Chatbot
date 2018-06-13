@@ -32,7 +32,7 @@
     {
         "Leave Quota": "Child Care Leave",
         "Leave Quota Code": "23",
-        "Shortlist": "N"
+        "Shortlist": "Y"
     },
     {
         "Leave Quota": "Marriage Leave",
@@ -67,7 +67,7 @@
     {
         "Leave Quota": "Family Care Leave",
         "Leave Quota Code": "30",
-        "Shortlist": "N"
+        "Shortlist": "Y"
     },
     {
         "Leave Quota": "Unpaid Infant Care Leave",
