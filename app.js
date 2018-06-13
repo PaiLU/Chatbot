@@ -439,7 +439,7 @@ bot.dialog('AskDate', [
         builder.Prompts.time(session, "Please enter a leave " + session.dialogData.type + " date");
     },
     function (session, results) {
-        console.log("Entered date: %s", JSON.stringify(results.response));
+        session.send("Entered date: %s", JSON.stringify(results.response));
         session.conversationData.processing.dateInfo[session.dialogData.type].value = moment(results.response.resolution.start).subtract(session.conversationData.offset, 'ms').set({ h: 0, m: 0, s: 0, ms: 0 });
         if (session.conversationData.processing.dateInfo.end.hasOwnProperty()) {
             if (moment(session.conversationData.processing.dateInfo.end.value).isBefore(session.conversationData.processing.dateInfo.start)) {
