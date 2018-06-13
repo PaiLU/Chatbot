@@ -227,11 +227,7 @@ bot.dialog('CheckLeaveBalance', [
             session.send(`err: ${JSON.stringify(err)}`);
         }
     }
-])
-    .cancelAction({
-        matches: /^cancel$|^abort$/i,
-        confirmPrompt: "This will cancel your current request. Are you sure?"
-    });
+]);
 bot.dialog('OCR', [
     function (session, args) {
         builder.Prompts.attachment(session, "Please upload your attachment.");
@@ -476,11 +472,7 @@ bot.dialog('AskDateType', [
         }
         session.endDialog();
     }
-])
-    .cancelAction({
-        matches: /^cancel$|^abort$/i,
-        confirmPrompt: "This will cancel your current request. Are you sure?"
-    });;
+]);
 bot.dialog('Daterange', [
     function (session) {
         var min = new Array();
@@ -535,22 +527,14 @@ bot.dialog('DateAndDuration', [
         }
         session.endDialog();
     }
-])
-    .cancelAction({
-        matches: /^cancel$|^abort$/i,
-        confirmPrompt: "This will cancel your current request. Are you sure?"
-    });;
+]);
 bot.dialog('Date', [
     function (session) {
         session.privateConversationData.processing.dateInfo.start = session.privateConversationData.processing.dateInfo.dateTime[0];
         session.privateConversationData.processing.dateInfo.end = session.privateConversationData.processing.dateInfo.dateTime[0];
         session.endDialog();
     }
-])
-    .cancelAction({
-        matches: /^cancel$|^abort$/i,
-        confirmPrompt: "This will cancel your current request. Are you sure?"
-    });
+]);
 bot.dialog('Duration', [
     function (session) {
         session.send('You are applying a leave for %s days.', session.privateConversationData.processing.dateInfo.duration[0] / 24 / 3600 / 1000);
@@ -578,11 +562,7 @@ bot.dialog('Duration', [
         }
         session.endDialog();
     }
-])
-    .cancelAction({
-        matches: /^cancel$|^abort$/i,
-        confirmPrompt: "This will cancel your current request. Are you sure?"
-    });
+]);
 bot.dialog('NoDateInfo', [
     function (session) {
         session.privateConversationData.processing.dateInfo.start = { "value": moment(), "type": "FD" };
@@ -603,11 +583,7 @@ bot.dialog('NoDateInfo', [
     function (session, args) {
         session.endDialog();
     }
-])
-    .cancelAction({
-        matches: /^cancel$|^abort$/i,
-        confirmPrompt: "This will cancel your current request. Are you sure?"
-    });
+]);
 bot.dialog('CheckLeaveType', [
     function (session, args) {
         var check = false;
@@ -648,11 +624,7 @@ bot.dialog('AskLeaveType', [
         session.privateConversationData.received.leaveType = results.response.entity;
         session.endDialog();
     },
-])
-    .cancelAction({
-        matches: /^cancel$|^abort$/i,
-        confirmPrompt: "This will cancel your current request. Are you sure?"
-    });
+]);
 bot.dialog('AskSpecificType', [
     function (session) {
         switch (session.privateConversationData.received.leaveType) {
@@ -674,11 +646,7 @@ bot.dialog('AskSpecificType', [
         session.privateConversationData.received.leaveType = results.response.entity.toLowerCase();
         session.endDialog();
     }
-])
-    .cancelAction({
-        matches: /^cancel$|^abort$/i,
-        confirmPrompt: "This will cancel your current request. Are you sure?"
-    });
+]);
 bot.dialog('Attachments', [
     function (session, args, next) {
         session.beginDialog('ListAttachments')
@@ -782,7 +750,7 @@ bot.dialog('ListAttachments', [
 ]);
 bot.dialog('CheckApplyInfo', [
     function (session) {
-        session.send(`Hi ${session.message.user.name}, you are applying ${leaveTypeDisplayConvert(session.privateConversationData.received.leaveType)} from ${moment(session.privateConversationData.processing.dateInfo.start.value).format("DD-MMM-YYYY")} ${session.privateConversationData.processing.dateInfo.start.type} to ${moment(session.privateConversationData.processing.dateInfo.end.value).format("DD-MMM-YYYY")} ${session.privateConversationData.processing.dateInfo.end.type}`);
+        session.send(`Hi ${session.message.user.name}, you are applying ${leaveTypeDisplayConvert(session.privateConversationData.received.leaveType)} from ${moment(session.privateConversationData.processing.dateInfo.start.value).format("DD-MMM-YYYY")} ${dateTypeDisplayConvert(session.privateConversationData.processing.dateInfo.start.type)} to ${moment(session.privateConversationData.processing.dateInfo.end.value).format("DD-MMM-YYYY")} ${dateTypeDisplayConvert(session.privateConversationData.processing.dateInfo.end.type)}`);
         builder.Prompts.confirm(session, "Please confirm if your application information is correct", { listStyle: 3 });
     },
     function (session, results) {
@@ -852,11 +820,7 @@ bot.dialog('CorrectingInfo', [
     function (session) {
         session.replaceDialog("CheckApplyInfo");
     }
-])
-    .cancelAction({
-        matches: /^cancel$|^abort$/i,
-        confirmPrompt: "This will cancel your current request. Are you sure?"
-    });
+]);
 bot.dialog('ApplyConfirmed', [
     function (session, args) {
         var attachments = [];
@@ -1263,12 +1227,6 @@ function checkEntity(string, list) {
     }
     return check;
 };
-function deleteAttachment(attachmentArray, n) {
-    if (attachmentArray && attachmentArray > 0) {
-        attachmentArray.splice(n, 1);
-    }
-    return attachmentArray;
-}
 function validateAttachment(attachmentEntity, attachmentSize) {
     var fileTypeLimit = ["image/jpg", "image/jpeg", "image/png", "image/bmp", "image/gif", "image/tiff", "application/pdf"];
     var fileSizeLimit = 3 * 1024 * 1024; // 3 Mega Bites
@@ -1330,6 +1288,17 @@ function matchLeaveApplicationCode(leaveType) {
     }
     return code;
 }
+function dateTypeDisplayConvert(t){
+    switch(t){
+        case "FD":{
+            return "full day";
+        }
+        default:{
+            return t;
+        }
+    }
+}
+
 
 /* 
 privateConversationData.received : save all information from the first message
