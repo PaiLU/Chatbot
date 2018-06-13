@@ -47,11 +47,11 @@ server.listen(process.env.port || 3978, function () {
 })
 
 // Table storage
-var tableName = "LeaveBotStorage"; // You define
-var storageName = process.env["Table-Storage-Name"]; // Obtain from Azure Portal
-var storageKey = process.env["Azure-Table-Key"]; // Obtain from Azure Portal
-var azureTableClient = new azure.AzureTableClient(tableName, storageName, storageKey);
-var tableStorage = new azure.AzureBotStorage({ gzipData: false }, azureTableClient);
+// var tableName = "LeaveBotStorage"; // You define
+// var storageName = process.env["Table-Storage-Name"]; // Obtain from Azure Portal
+// var storageKey = process.env["Azure-Table-Key"]; // Obtain from Azure Portal
+// var azureTableClient = new azure.AzureTableClient(tableName, storageName, storageKey);
+// var tableStorage = new azure.AzureBotStorage({ gzipData: false }, azureTableClient);
 var inMemoryStorage = new builder.MemoryBotStorage();
 
 var bot = new builder.UniversalBot(connector, [
@@ -409,7 +409,7 @@ bot.dialog('ApplyLeave', [
     },
     function (session) {
         session.privateConversationData.apply = new Object();
-        session.beginDialog('ApplyConfirmed', '');
+        session.replaceDialog('ApplyConfirmed');
     }
 ]);
 bot.dialog('ConvertingData', [
@@ -878,7 +878,7 @@ bot.dialog('ApplyConfirmed', [
             session.privateConversationData.applications.push({
                 "leaveType": matchLeaveApplicationCode(session.privateConversationData.received.leaveType),
                 "startDate": startDate.format('YYYY[-]M[-]D'),
-                "endDate": emdDate.format('YYYY[-]M[-]D'),
+                "endDate": endDate.format('YYYY[-]M[-]D'),
                 "dayType": "FD",
                 "notes": "",
                 "attachments": attachments,
@@ -889,7 +889,7 @@ bot.dialog('ApplyConfirmed', [
                 session.privateConversationData.applications.push({
                     "leaveType": matchLeaveApplicationCode(session.privateConversationData.received.leaveType),
                     "startDate": startDate.format('YYYY[-]M[-]D'),
-                    "endDate": emdDate.format('YYYY[-]M[-]D'),
+                    "endDate": endDate.format('YYYY[-]M[-]D'),
                     "dayType": startType,
                     "notes": "",
                     "attachments": attachments,
@@ -967,7 +967,7 @@ bot.dialog('ApplyConfirmed', [
                 }
             }
         }
-        session.beginDialog('LeaveApplication', [0, ""]);
+        session.replaceDialog('LeaveApplication', [0, ""]);
     }
 ]);
 bot.dialog('LeaveApplication', [
