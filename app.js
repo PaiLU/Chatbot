@@ -875,7 +875,15 @@ bot.dialog('ApplyConfirmed', [
             });
         }
         if (startType === "FD" | "AM" && endType === "FD" | "PM") {
-
+            session.privateConversationData.applications.push({
+                "leaveType": matchLeaveApplicationCode(session.privateConversationData.received.leaveType),
+                "startDate": startDate.format('YYYY[-]M[-]D'),
+                "endDate": emdDate.format('YYYY[-]M[-]D'),
+                "dayType": "FD",
+                "notes": "",
+                "attachments": attachments,
+                "confirmation": ""
+            })
         } else {
             if (startDate.isSame(endDate, 'days')) {
                 session.privateConversationData.applications.push({
