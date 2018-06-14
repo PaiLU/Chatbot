@@ -365,7 +365,7 @@ bot.dialog('ApplyLeave', [
         console.log(JSON.stringify(args));
         var now = new Date();
         session.privateConversationData.offset = now.getTimezoneOffset() * 60 * 1000;
-        session.send("offset is " + session.privateConversationData.offset / 60 / 60 / 1000 + " hours");
+        // session.send("offset is " + session.privateConversationData.offset / 60 / 60 / 1000 + " hours");
         session.beginDialog('ConvertingData', args);
     },
     function (session, results, next) {
@@ -433,10 +433,14 @@ bot.dialog('AskDate', [
     function (session, args) {
         session.dialogData.type = args;
         builder.Prompts.time(session, "Please enter a leave " + session.dialogData.type + " date");
+        // builder.Prompts.text(session, "Please enter a leave " + session.dialogData.type + " date");
     },
     function (session, results) {
-        // session.send("Entered date: %s", moment(results.response.resolution.start).utcOffset());
         session.privateConversationData.processing.dateInfo[session.dialogData.type].value = moment(results.response.resolution.start).subtract(session.privateConversationData.offset, 'ms').set({ h: 0, m: 0, s: 0, ms: 0 });
+        // var recognized = builder.EntityRecognizer.recognizeTime(session.message.text);
+        // if (session.message.text && recognized) {
+        //     console.log(`${JSON.stringify(recognized)}`);
+        //     session.privateConversationData.processing.dateInfo[session.dialogData.type].value = moment(recognized.resolution.start).subtract(session.privateConversationData.offset, 'ms').set({ h: 0, m: 0, s: 0, ms: 0 });
         if (session.privateConversationData.processing.dateInfo.end.hasOwnProperty()) {
             if (moment(session.privateConversationData.processing.dateInfo.end.value).isBefore(session.privateConversationData.processing.dateInfo.start)) {
                 session.send("Sorry, I can't proceed with leave end date ahead of leave start date. Please re-enter.");
@@ -448,6 +452,10 @@ bot.dialog('AskDate', [
                 }
             }
         }
+        // } else {
+        //     session.send("I didn't recognize the time you entered. Please try again using a format of DD-MMM-YYYY, (e.g: 14-Jun-2018)");
+        //     session.replaceDialog('AskDate', session, dialogData.type);
+        // }
         session.endDialog();
     }
 ]);
@@ -963,10 +971,10 @@ bot.dialog('LeaveApplication', [
                                 builder.Prompts.confirm(session, "Proceed with warning?", { listStyle: 3 });
                             } else if (response.Et01messages[0].Type === "S") {
                                 if (args[0] >= session.privateConversationData.applications.length - 1) {
-                                session.send(messages.join("\n")); 
-                                session.cancelDialog(0, '/');
+                                    session.send(messages.join("\n"));
+                                    session.cancelDialog(0, '/');
                                 } else {
-                                    session.replaceDialog('LeaveApplication',[args[0]+1,""])
+                                    session.replaceDialog('LeaveApplication', [args[0] + 1, ""])
                                 }
                             }
                         } else {
@@ -1288,12 +1296,12 @@ function matchLeaveApplicationCode(leaveType) {
     }
     return code;
 }
-function dateTypeDisplayConvert(t){
-    switch(t){
-        case "FD":{
+function dateTypeDisplayConvert(t) {
+    switch (t) {
+        case "FD": {
             return "full day";
         }
-        default:{
+        default: {
             return t;
         }
     }
