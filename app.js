@@ -59,9 +59,9 @@ var bot = new builder.UniversalBot(connector, [
         // session.send(`Args: ${JSON.stringify(args)}`)
         if (args) {
             session.userData.apiToken = args;
-            var msg = `Hi, I am Leave Bot.`
+            var msg = `Hi, I am Leave Bot.`;
         } else
-            var msg = `What else can I help you?`
+            var msg = `What else can I help you with?`;
         if (!session.userData.apiToken)
             session.endConversation(`Bot service is currently unavailable`);
         else {
