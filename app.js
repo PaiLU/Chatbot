@@ -65,7 +65,7 @@ var bot = new builder.UniversalBot(connector, [
         if (!session.userData.apiToken)
             session.endConversation(`Bot service is currently unavailable`);
         else {
-            if (args){
+            if (args) {
                 session.send(msg);
                 session.cancelDialog(0, 'Help');
             }
@@ -235,13 +235,13 @@ bot.dialog('CheckLeaveBalance', [
                     if (Array.isArray(response)) {
                         var messages = response.map((item) => { return `${item.LeaveQuotaDesc}: ${item.LeaveRemainder} day(s)` }).join("\n");
                         session.send(messages);
-                        session.cancelDialog(0, '/');
+                        session.replaceDialog('/');
                     } else if (response && response.Type === "E") {
                         session.send(`Error: ${response.Message}`);
-                        session.cancelDialog(0, '/');
+                        session.replaceDialog('/');
                     } else {
                         session.send(JSON.stringify(response));
-                        session.cancelDialog(0, '/');
+                        session.replaceDialog('/');
                     }
                 });
         }
@@ -329,7 +329,7 @@ bot.dialog('OCR', [
                                                                     contentUrl: 'data:' + attachment.contentType + ';base64,' + session.dialogData.imageBase64Sting,
                                                                     name: attachment.name
                                                                 });
-                                                                session.cancelDialog(0, 'ApplyLeave', session.dialogData.ocrArgs);
+                                                                session.replaceDialog('ApplyLeave', session.dialogData.ocrArgs);
                                                             } else {
                                                                 builder.Prompts.confirm(session, "I didn't recognize any key words, like medical certificate, in the attachment. Do you still want to proceed the appliciation with this attachment?", { listStyle: 3 })
                                                             };
@@ -357,7 +357,7 @@ bot.dialog('OCR', [
                         req.end();
                     } else {
                         session.send("The attachment for bot to recognize should be image type within 3MB. Please try again.");
-                        session.cancelDialog(0, 'Help');
+                        session.replaceDialog('Help');
                     }
                 }).catch(function (err) {
                     console.log('Error downloading attachment:', JSON.stringify(err));
@@ -367,7 +367,7 @@ bot.dialog('OCR', [
             // No attachments were sent
             var reply = new builder.Message(session)
                 .text('Please try again sending an attachment.');
-            session.cancelDialog(0, 'Help');
+            session.replaceDialog('Help');
         }
     }, function (session, results, next) {
         if (results.response) {
@@ -1250,7 +1250,7 @@ function leaveTypeDisplayConvert(t) {
 function checkEntity(string, list) {
     var check = false;
     for (var a in list) {
-        if (string.toString().toLowerCase() == list[a].toString().toLowerCase()) {
+        if (string && string.toString().toLowerCase() == list[a].toString().toLowerCase()) {
             check = list[a].toString();
             break;
         }
