@@ -59,15 +59,38 @@ var bot = new builder.UniversalBot(connector, [
         // session.send(`Args: ${JSON.stringify(args)}`)
         if (args) {
             session.userData.apiToken = args;
-        }
+            var msg = `Hi, I am Leave Bot.`
+        } else
+            var msg = `What else can I help you?`
         if (!session.userData.apiToken)
             session.endConversation(`Bot service is currently unavailable`);
-        else
-            next();
+        else {
+            if (args){
+                session.send(msg);
+                session.cancelDialog(0, 'Help');
+            }
+            else
+                builder.Prompts.text(session, msg);
+        }
     },
     function (session) {
-        // session.send(`apiToken: ${JSON.stringify(session.userData.apiToken)}`);
-        session.beginDialog('Help');
+        builder.LuisRecognizer.recognize(session.message.text, LuisModelUrl, function (err, intents, entities, compositeEntities) {
+            switch (intents[0].intent) {
+                case 'ApplyLeave': {
+                    session.cancelDialog(0, 'ApplyLeave', { "intent": { "intent": "ApplyLeave", "entities": [...entities] } });
+                    break;
+                }
+                case 'CheckLeaveBalance': {
+                    session.cancelDialog(0, 'CheckLeaveBalance', { "intent": { "intent": "CheckLeaveBalance", "entities": [...entities] } });
+                    break;
+                }
+                default: {
+                    session.send(`Sorry I didn't get you.`)
+                    session.cancelDialog(0, 'Help');
+                    break;
+                }
+            }
+        });
     }
 ]).set('storage', inMemoryStorage);
 // ]).set('storage', tableStorage);
@@ -102,7 +125,7 @@ bot.dialog('Help', [
     function (session) {
         session.privateConversationData.attachments = [];
         var msg = new builder.Message(session)
-            .text("Hi, I am Leave Bot. \nYou can apply leave by typing \n* 'take annual leave today afternoon'\n* 'take child care leave on 11 Jun'\n> \nCheck leave balance with\n* 'check annual leave balance'\n> \nType 'cancel' anywhere to return to here\n \nYou may also do these step by step:")
+            .text("You can apply leave by typing \n* 'take annual leave today afternoon'\n* 'take child care leave on 11 Jun'\n> \nCheck leave balance with\n* 'check annual leave balance'\n> \nType 'cancel' anywhere to return to here\n \nYou may also do these step by step:")
             .attachmentLayout(builder.AttachmentLayout.list)
             .attachments([
                 new builder.HeroCard(session)
@@ -151,7 +174,7 @@ bot.dialog('Help', [
                 }
             }
         } else
-            session.cancelDialog(0, '/');
+            session.cancelDialog(0, 'Help');
         // console.log("chosen result: %s", JSON.stringify(results));
         // if (results.response.entity.toLowerCase() == "apply leave") {
         //     session.cancelDialog(0, 'ApplyLeave', defaultArgs);
@@ -178,11 +201,10 @@ bot.dialog('CheckLeaveBalance', [
         next();
     },
     function (session, args, next) {
-        if (session.privateConversationData.received && session.privateConversationData.received.leaveType) {
+        if (session.privateConversationData.received && checkEntity(session.privateConversationData.received.leaveType, sitLeaveQuotaTypes)) {
             session.privateConversationData.request.leaveType = session.privateConversationData.received.leaveType;
             next();
         } else {
-
             builder.Prompts.choice(session, "Which balance are you looking for?", sitLeaveQuotaShortlistTypes.concat(["show all balances"]), { listStyle: 3 });
         }
     },
@@ -252,7 +274,7 @@ bot.dialog('OCR', [
                                 path: '/vision/v2.0/ocr?language=en&detectOrientation=true',
                                 method: 'POST',
                                 headers: {
-                                    'Ocp-Apim-Subscription-Key': process.env.OCRKey,
+                                    'Ocp-Apim-Subscription-Key': OCRKey,
                                     'Content-Type': 'application/octet-stream'
                                 }
                             }, function (res) {
@@ -326,7 +348,7 @@ bot.dialog('OCR', [
                                     });
                                     res.on('end', (err) => {
                                         session.send(ocrResponseStr.message || `Input data is not a valid image`);
-                                        session.cancelDialog(0, '/');
+                                        session.cancelDialog(0, 'Help');
                                     })
                                 }
                             }
@@ -335,7 +357,7 @@ bot.dialog('OCR', [
                         req.end();
                     } else {
                         session.send("The attachment for bot to recognize should be image type within 3MB. Please try again.");
-                        session.cancelDialog(0, '/');
+                        session.cancelDialog(0, 'Help');
                     }
                 }).catch(function (err) {
                     console.log('Error downloading attachment:', JSON.stringify(err));
@@ -432,31 +454,31 @@ bot.dialog('ConvertingData', [
 bot.dialog('AskDate', [
     function (session, args) {
         session.dialogData.type = args;
-        builder.Prompts.time(session, "Please enter a leave " + session.dialogData.type + " date");
-        // builder.Prompts.text(session, "Please enter a leave " + session.dialogData.type + " date");
+        // builder.Prompts.time(session, "Please enter a leave " + session.dialogData.type + " date");
+        builder.Prompts.text(session, "Please enter a leave " + session.dialogData.type + " date");
     },
     function (session, results) {
-        session.privateConversationData.processing.dateInfo[session.dialogData.type].value = moment(results.response.resolution.start).subtract(session.privateConversationData.offset, 'ms').set({ h: 0, m: 0, s: 0, ms: 0 });
-        // var recognized = builder.EntityRecognizer.recognizeTime(session.message.text);
-        // if (session.message.text && recognized) {
-        //     console.log(`${JSON.stringify(recognized)}`);
-        //     session.privateConversationData.processing.dateInfo[session.dialogData.type].value = moment(recognized.resolution.start).subtract(session.privateConversationData.offset, 'ms').set({ h: 0, m: 0, s: 0, ms: 0 });
-        if (session.privateConversationData.processing.dateInfo.end.hasOwnProperty()) {
-            if (moment(session.privateConversationData.processing.dateInfo.end.value).isBefore(session.privateConversationData.processing.dateInfo.start)) {
-                session.send("Sorry, I can't proceed with leave end date ahead of leave start date. Please re-enter.");
-                session.replaceDialog('AskDate', session, dialogData.type);
-            } else if (moment(session.privateConversationData.processing.dateInfo.end.value).isSame(session.privateConversationData.processing.dateInfo.start)) {
-                if (session.privateConversationData.processing.dateInfo.end.type == "AM" && session.privateConversationData.processing.dateInfo.start.type == "PM") {
+        // session.privateConversationData.processing.dateInfo[session.dialogData.type].value = moment(results.response.resolution.start).subtract(session.privateConversationData.offset, 'ms').set({ h: 0, m: 0, s: 0, ms: 0 });
+        var recognized = builder.EntityRecognizer.recognizeTime(session.message.text);
+        if (session.message.text && recognized) {
+            console.log(`${JSON.stringify(recognized)}`);
+            session.privateConversationData.processing.dateInfo[session.dialogData.type].value = moment(recognized.resolution.start).subtract(session.privateConversationData.offset, 'ms').set({ h: 0, m: 0, s: 0, ms: 0 });
+            if (session.privateConversationData.processing.dateInfo.end.hasOwnProperty()) {
+                if (moment(session.privateConversationData.processing.dateInfo.end.value).isBefore(session.privateConversationData.processing.dateInfo.start)) {
                     session.send("Sorry, I can't proceed with leave end date ahead of leave start date. Please re-enter.");
-                    session.replaceDialog('AskDate', session, dialogData.type);
+                    session.replaceDialog('AskDate', session.dialogData.type);
+                } else if (moment(session.privateConversationData.processing.dateInfo.end.value).isSame(session.privateConversationData.processing.dateInfo.start)) {
+                    if (session.privateConversationData.processing.dateInfo.end.type == "AM" && session.privateConversationData.processing.dateInfo.start.type == "PM") {
+                        session.send("Sorry, I can't proceed with leave end date ahead of leave start date. Please re-enter.");
+                        session.replaceDialog('AskDate', session.dialogData.type);
+                    }
                 }
             }
+            session.endDialog();
+        } else {
+            session.send("I didn't recognize the time you entered. Please try again using a format of DD-MMM-YYYY, (e.g: 14-Jun-2018)");
+            session.replaceDialog('AskDate', session.dialogData.type);
         }
-        // } else {
-        //     session.send("I didn't recognize the time you entered. Please try again using a format of DD-MMM-YYYY, (e.g: 14-Jun-2018)");
-        //     session.replaceDialog('AskDate', session, dialogData.type);
-        // }
-        session.endDialog();
     }
 ]);
 bot.dialog('AskDateType', [
@@ -470,11 +492,11 @@ bot.dialog('AskDateType', [
         if (session.privateConversationData.processing.dateInfo.end) {
             if (moment(session.privateConversationData.processing.dateInfo.end.value).isBefore(session.privateConversationData.processing.dateInfo.start.value)) {
                 session.send("Sorry, I can't proceed with leave end date ahead of leave start date. Please re-enter.");
-                session.replaceDialog('AskDateType', session, dialogData.type);
+                session.replaceDialog('AskDateType', session.dialogData.type);
             } else if (moment(session.privateConversationData.processing.dateInfo.end.value).isSame(session.privateConversationData.processing.dateInfo.start.value)) {
                 if (session.privateConversationData.processing.dateInfo.end.type == "AM" && session.privateConversationData.processing.dateInfo.start.type == "PM") {
                     session.send("Sorry, I can't proceed with leave end date ahead of leave start date. Please re-enter.");
-                    session.replaceDialog('AskDateType', session, dialogData.type);
+                    session.replaceDialog('AskDateType', session.dialogData.type);
                 }
             }
         }
