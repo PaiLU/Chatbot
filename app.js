@@ -125,7 +125,7 @@ bot.dialog('Help', [
     function (session) {
         session.privateConversationData.attachments = [];
         var msg = new builder.Message(session)
-            .text("You can apply leave by typing \n* 'take annual leave today afternoon'\n* 'take child care leave on 11 Jun'\n> \nCheck leave balance with\n* 'check annual leave balance'\n> \nType 'cancel' anywhere to return to here\n \nYou may also do these step by step:")
+            .text("You can apply leave by typing \n* 'take annual leave today afternoon'\n* 'take child care leave on 11 Jun'\n> \nCheck leave balance with\n* 'check annual leave balance'\n> \nType 'cancel' anywhere to return here\n \nYou may also do these step by step:")
             .attachmentLayout(builder.AttachmentLayout.list)
             .attachments([
                 new builder.HeroCard(session)
@@ -173,8 +173,114 @@ bot.dialog('Help', [
                     });
                 }
             }
+        } else if (session.message.attachments && session.message.attachments.length > 0) {
+            var attachment = session.message.attachments[0];
+            var fileDownload = request(attachment.contentUrl);
+            fileDownload.then(
+                function (fileResponse) {
+                    // validate the attachment
+                    if (validateOCRAttachment(attachment, fileResponse.length)) {
+                        // convert to base64 string and save
+                        session.dialogData.imageBase64Sting = new Buffer(fileResponse, 'binary').toString('base64');
+                        // https calls to OCR
+                        var ocrResponseStr = '';
+                        var req = https.request(
+                            {
+                                host: 'southeastasia.api.cognitive.microsoft.com',
+                                path: '/vision/v2.0/ocr?language=en&detectOrientation=true',
+                                method: 'POST',
+                                headers: {
+                                    'Ocp-Apim-Subscription-Key': OCRKey,
+                                    'Content-Type': 'application/octet-stream'
+                                }
+                            }, function (res) {
+                                res.setEncoding('utf8');
+                                if (res.statusCode === 200) {
+                                    res.on('data', function (data) {
+                                        ocrResponseStr += data;
+                                    });
+                                    res.on('end', (err) => {
+                                        var ocrResponseObj = JSON.parse(ocrResponseStr);
+                                        var ocrStr = parseOcrObject(ocrResponseObj);
+                                        console.log(ocrStr.length);
+                                        var allIntents = [];
+                                        var allEntities = [];
+                                        var count = 0;
+                                        for (var index in ocrStr) {
+                                            var num = index;
+                                            setTimeout(function (num) {
+                                                builder.LuisRecognizer.recognize(ocrStr[num].toString(), LuisModelUrl, function (err, intents, entities) {
+                                                    if (err) {
+                                                        console.log(err);
+                                                    }
+                                                    allIntents.push(...(intents.filter(i => i.score > 0.6 && i.intent !== "None")));
+                                                    allEntities.push(...entities);
+                                                    count++;
+                                                    console.log(count);
+                                                    if (count === ocrStr.length) {
+                                                        if (allEntities) {
+                                                            var entity = builder.EntityRecognizer.findEntity(allEntities, "leaveType");
+                                                            if (entity && entityExtract(entity) == "medical leave") {
+                                                                // call 'ApplyLeave' Dialog with all recognized entities
+                                                                // dont save the time type entity & leave type entity
+                                                                var desiredEntities = []
+                                                                allEntities.forEach((item) => {
+                                                                    if (item.type.match(/^builtin/))
+                                                                        desiredEntities.push(item);
+                                                                })
+                                                                session.dialogData.ocrArgs = {
+                                                                    "intent": {
+                                                                        "intent": "ApplyLeave", "entities": [{
+                                                                            entity: 'medical certificate',
+                                                                            type: 'leaveType',
+                                                                            startIndex: 1,
+                                                                            endIndex: 19,
+                                                                            resolution: { values: ['medical leave(c)'] }
+                                                                        }, ...desiredEntities]
+                                                                    }
+                                                                };
+                                                                console.log(JSON.stringify(session.dialogData.ocrArgs));
+                                                                session.privateConversationData.attachments.push({
+                                                                    contentType: attachment.contentType,
+                                                                    contentUrl: 'data:' + attachment.contentType + ';base64,' + session.dialogData.imageBase64Sting,
+                                                                    name: attachment.name
+                                                                });
+                                                                session.replaceDialog('ApplyLeave', session.dialogData.ocrArgs);
+                                                            } else {
+                                                                builder.Prompts.confirm(session, "I didn't recognize any key words, like medical certificate, in the attachment. Do you still want to proceed the appliciation with this attachment?", { listStyle: 3 })
+                                                            };
+                                                        } else {
+                                                            builder.Prompts.confirm(session, "I didn't recognize any key words, like medical certificate, in the attachment. Do you still want to proceed the appliciation with this attachment?", { listStyle: 3 })
+                                                        }
+                                                    }
+                                                });
+                                            }, 300 * index, num);
+                                        }
+                                        session.send("Please wait for a few seconds while I read through your attachment");
+                                    })
+                                } else {
+                                    res.on('data', (data) => {
+                                        ocrResponseStr += data;
+                                    });
+                                    res.on('end', (err) => {
+                                        session.send(ocrResponseStr.message || `Input data is not a valid image`);
+                                        session.cancelDialog(0, 'Help');
+                                    })
+                                }
+                            }
+                        );
+                        req.write(new Buffer(fileResponse, 'binary'));
+                        req.end();
+                    } else {
+                        session.send("The attachment for bot to recognize should be image type within 3MB. Please try again.");
+                        session.replaceDialog('Help');
+                    }
+                }).catch(function (err) {
+                    console.log('Error downloading attachment:', JSON.stringify(err));
+                    session.endConversation("Sorry an error occured during downloading attachment");
+                });
         } else
-            session.cancelDialog(0, 'Help');
+            session.replaceDialog('Help');
         // console.log("chosen result: %s", JSON.stringify(results));
         // if (results.response.entity.toLowerCase() == "apply leave") {
         //     session.cancelDialog(0, 'ApplyLeave', defaultArgs);
@@ -267,7 +373,6 @@ bot.dialog('OCR', [
                         session.dialogData.imageBase64Sting = new Buffer(fileResponse, 'binary').toString('base64');
                         // https calls to OCR
                         var ocrResponseStr = '';
-                        var LUISResString = '';
                         var req = https.request(
                             {
                                 host: 'southeastasia.api.cognitive.microsoft.com',
