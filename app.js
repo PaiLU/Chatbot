@@ -462,7 +462,7 @@ bot.dialog('OCR', [
                         req.end();
                     } else {
                         session.send("The attachment for bot to recognize should be image type within 3MB. Please try again.");
-                        session.replaceDialog('Help');
+                        session.replaceDialog('OCR');
                     }
                 }).catch(function (err) {
                     console.log('Error downloading attachment:', JSON.stringify(err));
@@ -973,7 +973,7 @@ bot.dialog('ApplyConfirmed', [
                 };
             });
         }
-        if (startType === "FD" | "AM" && endType === "FD" | "PM") {
+        if ((startType === "FD" || startType === "AM") && (endType === "FD" || endType === "PM")) {
             session.privateConversationData.applications.push({
                 "leaveType": matchLeaveApplicationCode(session.privateConversationData.received.leaveType),
                 "startDate": startDate.format('YYYY[-]M[-]D'),
@@ -995,7 +995,7 @@ bot.dialog('ApplyConfirmed', [
                     "confirmation": ""
                 })
             } else {
-                if (startType === "AM" | "FD" && endType === "AM") {
+                if ((startType === "AM" || startType === "FD") && endType === "AM") {
                     session.privateConversationData.applications = [{
                         "leaveType": matchLeaveApplicationCode(session.privateConversationData.received.leaveType),
                         "startDate": startDate.format('YYYY[-]M[-]D'),
@@ -1014,7 +1014,7 @@ bot.dialog('ApplyConfirmed', [
                         "attachments": attachments,
                         "confirmation": ""
                     }];
-                } else if (startType === "PM" && endType === "PM" | "FD") {
+                } else if (startType === "PM" && (endType === "PM" || endType === "FD")) {
                     session.privateConversationData.applications = [{
                         "leaveType": matchLeaveApplicationCode(session.privateConversationData.received.leaveType),
                         "startDate": startDate.format('YYYY[-]M[-]D'),
