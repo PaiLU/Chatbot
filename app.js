@@ -112,9 +112,9 @@ bot.on("event", function (event) {
     }
 });
 
-bot.on('error', function (err) {
-    bot.beginDialog(err.address, 'Error', err);
-})
+// bot.on('error', function (err) {
+//     bot.beginDialog(err.address, 'Error', err);
+// })
 bot.dialog('Error', function (session, args) {
     session.send(`${JSON.stringify(args)}`);
     session.endConversation();
