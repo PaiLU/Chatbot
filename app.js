@@ -1091,12 +1091,10 @@ bot.dialog('LeaveApplication', [
                                 }
                             });
                             if (response.Et01messages[0].Type === "E") {
-                                session.send(messages.map((item) => {
+                                session.send(response.Et01messages.map((item) => {
                                     switch (item.Type) {
                                         case "E":
                                             return "Error: " + item.Message;
-                                        default:
-                                            return item.Message;
                                     }
                                 }).join("\n"));
                                 session.cancelDialog(0, '/');
