@@ -74,24 +74,40 @@ var bot = new builder.UniversalBot(connector, [
         }
     },
     function (session) {
-        builder.LuisRecognizer.recognize(session.message.text, LuisModelUrl, function (err, intents, entities, compositeEntities) {
-            switch (intents[0].intent) {
-                case 'ApplyLeave': {
-                    session.privateConversationData.attachments = [];
-                    session.cancelDialog(0, 'ApplyLeave', { "intent": { "intent": "ApplyLeave", "entities": [...entities] } });
-                    break;
-                }
-                case 'CheckLeaveBalance': {
-                    session.cancelDialog(0, 'CheckLeaveBalance', { "intent": { "intent": "CheckLeaveBalance", "entities": [...entities] } });
-                    break;
-                }
-                default: {
-                    session.send(`Sorry I didn't get you.`)
-                    session.cancelDialog(0, 'Help');
-                    break;
-                }
+        switch (session.message.text) {
+            case "apply leave": {
+                session.cancelDialog(0, 'ApplyLeave', defaultArgs);
+                break;
             }
-        });
+            case "check leave balance": {
+                session.cancelDialog(0, 'CheckLeaveBalance', defaultArgs);
+                break;
+            }
+            case "upload MC form": {
+                session.cancelDialog(0, 'OCR')
+                break;
+            }
+            default: {
+                builder.LuisRecognizer.recognize(session.message.text, LuisModelUrl, function (err, intents, entities, compositeEntities) {
+                    switch (intents[0].intent) {
+                        case 'ApplyLeave': {
+                            session.privateConversationData.attachments = [];
+                            session.cancelDialog(0, 'ApplyLeave', { "intent": { "intent": "ApplyLeave", "entities": [...entities] } });
+                            break;
+                        }
+                        case 'CheckLeaveBalance': {
+                            session.cancelDialog(0, 'CheckLeaveBalance', { "intent": { "intent": "CheckLeaveBalance", "entities": [...entities] } });
+                            break;
+                        }
+                        default: {
+                            session.send(`Sorry I didn't get you.`)
+                            session.cancelDialog(0, 'Help');
+                            break;
+                        }
+                    }
+                });
+            }
+        }
     }
 ]).set('storage', inMemoryStorage);
 // ]).set('storage', tableStorage);
@@ -126,7 +142,7 @@ bot.dialog('Help', [
     function (session) {
         session.privateConversationData.attachments = [];
         var msg = new builder.Message(session)
-            .text("You can apply leave by typing \n* 'take annual leave today afternoon'\n* 'take child care leave on 11 Jun'\n> \nCheck leave balance with\n* 'check annual leave balance'\n> \nType 'cancel' anywhere to return here\n \nYou may also do these step by step:")
+            .text("You can apply leave by typing \n* 'take annual leave today afternoon'\n* 'take child care leave on 11 Jun'\n> \nCheck leave balance with\n* 'check annual leave balance'\n> \nType **'cancel'** anywhere to return here\n \nYou may also do these step by step:")
             .attachmentLayout(builder.AttachmentLayout.list)
             .attachments([
                 new builder.HeroCard(session)
@@ -295,8 +311,7 @@ bot.dialog('Help', [
         //     session.endConversation("Invalid input, conversation has ended");
     }
 ]).triggerAction({
-    matches: /^help$|^main help$|^cancel$/i,
-    confirmPrompt: "This will cancel your current application. Do you want to proceed?"
+    matches: /^help$|^main help$|^cancel$/i
 });
 bot.dialog('CheckLeaveBalance', [
     function (session, args, next) {
@@ -447,6 +462,7 @@ bot.dialog('OCR', [
                                             }, 300 * index, num);
                                         }
                                         session.send("Please wait for a few seconds while I read through your attachment");
+                                        session.sendTyping();
                                     })
                                 } else {
                                     res.on('data', (data) => {
@@ -505,6 +521,10 @@ bot.dialog('ApplyLeave', [
         }
     },
     function (session) {
+        // currerently using list Entity in LUIS, this step is a dupilicate checking
+        session.beginDialog('CheckLeaveType', session.privateConversationData.received.leaveType);
+    },
+    function (session) {
         session.privateConversationData.processing.dateInfo.start = new Object();
         session.privateConversationData.processing.dateInfo.end = new Object();
         if (session.privateConversationData.processing.dateInfo.dateTime.length >= 2) {
@@ -522,10 +542,6 @@ bot.dialog('ApplyLeave', [
     function (session) {
         console.log(session.privateConversationData.processing);
         console.log(session.privateConversationData.processing);
-        // currerently using list Entity in LUIS, this step is a dupilicate checking
-        session.beginDialog('CheckLeaveType', session.privateConversationData.received.leaveType);
-    },
-    function (session) {
         session.beginDialog('CheckAttachment');
     },
     function (session) {
@@ -723,17 +739,14 @@ bot.dialog('NoDateInfo', [
 bot.dialog('CheckLeaveType', [
     function (session, args) {
         var check = false;
-        for (var a in sitLeaveApplicationTypes) {
-            if (args.toLowerCase() == sitLeaveApplicationTypes[a].toLowerCase()) {
-                check = true;
-                break;
-            }
-        };
-        if (check) {
+            if (checkEntity(args,sitLeaveApplicationTypes)){
             console.log("Checked the applying leave type is %s", args.toLowerCase());
             session.endDialog();
-        } else {
-            session.send("Please check the leave type. You have entered %s <br\>which is not in SIT leave type", session.privateConversationData.leaveType);
+        } else if(checkEntity(args,sitLeaveQuotaTypes)){
+            session.send("Please apply Exam/Study and Volunteer Leave via S-PORT.");
+            session.cancelDialog(0,'/');
+        }else{
+            session.send("Please check the leave type. You have entered %s <br\>which is not in SIT leave type", session.privateConversationData.received.leaveType);
             session.replaceDialog('AskLeaveType', "all");
         };
     }
@@ -886,10 +899,10 @@ bot.dialog('ListAttachments', [
 ]);
 bot.dialog('CheckApplyInfo', [
     function (session) {
-        if (moment(session.privateConversationData.processing.dateInfo.start.value).isSame(moment(session.privateConversationData.processing.dateInfo.end.value)))
-            var msg = `Hi ${session.message.user.name}, you are applying ${leaveTypeDisplayConvert(session.privateConversationData.received.leaveType)} on ${moment(session.privateConversationData.processing.dateInfo.end.value).format("DD-MMM-YYYY")} ${dateTypeDisplayConvert(session.privateConversationData.processing.dateInfo.end.type)}`;
-        else
-            var msg = `Hi ${session.message.user.name}, you are applying ${leaveTypeDisplayConvert(session.privateConversationData.received.leaveType)} from ${moment(session.privateConversationData.processing.dateInfo.start.value).format("DD-MMM-YYYY")} ${dateTypeDisplayConvert(session.privateConversationData.processing.dateInfo.start.type)} to ${moment(session.privateConversationData.processing.dateInfo.end.value).format("DD-MMM-YYYY")} ${dateTypeDisplayConvert(session.privateConversationData.processing.dateInfo.end.type)}`;
+        // if (moment(session.privateConversationData.processing.dateInfo.start.value).isSame(moment(session.privateConversationData.processing.dateInfo.end.value)))
+        //     var msg = `Hi ${session.message.user.name}, you are applying ${leaveTypeDisplayConvert(session.privateConversationData.received.leaveType)} on ${moment(session.privateConversationData.processing.dateInfo.end.value).format("DD-MMM-YYYY")} ${dateTypeDisplayConvert(session.privateConversationData.processing.dateInfo.end.type)}`;
+        // else
+        var msg = `Hi ${session.message.user.name}, you are applying ${leaveTypeDisplayConvert(session.privateConversationData.received.leaveType)} from ${moment(session.privateConversationData.processing.dateInfo.start.value).format("DD-MMM-YYYY")} ${dateTypeDisplayConvert(session.privateConversationData.processing.dateInfo.start.type)} to ${moment(session.privateConversationData.processing.dateInfo.end.value).format("DD-MMM-YYYY")} ${dateTypeDisplayConvert(session.privateConversationData.processing.dateInfo.end.type)}`;
         session.send(msg);
         builder.Prompts.confirm(session, "Please confirm if your application information is correct", { listStyle: 3 });
     },
@@ -905,7 +918,7 @@ bot.dialog('CorrectingInfo', [
     function (session, args) {
         switch (args) {
             case "date": {
-                builder.Prompts.choice(session, "Please update your information", ["leave start date", "start day type", "leave end date", "end day type", "cancel application"], { listStyle: 3 });
+                builder.Prompts.choice(session, "Please update your information", ["leave start date", "start day type", "leave end date", "end day type", "back"], { listStyle: 3 });
                 break;
             }
             default: {
@@ -915,7 +928,7 @@ bot.dialog('CorrectingInfo', [
         }
     },
     function (session, results) {
-        switch (results.response.entity) {
+        switch (results.response.entity.toLowerCase()) {
             case "leave start date": {
                 session.beginDialog('AskDate', "start");
                 break;
@@ -933,7 +946,7 @@ bot.dialog('CorrectingInfo', [
                 break;
             }
             case "date information": {
-                session.replaceDialog('CorrectingInfo', "date")
+                session.replaceDialog('CorrectingInfo', "date");
                 break;
             }
             case "leave type": {
@@ -943,6 +956,9 @@ bot.dialog('CorrectingInfo', [
             case "add attachments": {
                 session.beginDialog('AddAttachment');
                 break;
+            }
+            case "back": {
+                session.replaceDialog('CorrectingInfo');
             }
             // case "cancel application": {
             //     session.cancelDialog(0, '/');
@@ -1099,7 +1115,7 @@ bot.dialog('LeaveApplication', [
                                 session.send(response.Et01messages.map((item) => {
                                     switch (item.Type) {
                                         case "E":
-                                            return "Error: " + item.Message;
+                                            return `**Error: + ${item.Message}**`;
                                     }
                                 }).join("\n"));
                                 session.cancelDialog(0, '/');
