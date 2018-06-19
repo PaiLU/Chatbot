@@ -986,7 +986,7 @@ bot.dialog('LeaveApplication', [
                                 }
                             });
                             if (response.Et01messages[0].Type === "E") {
-                                response.Et01messages.send(messages.map((item) => {
+                                session.send(messages.map((item) => {
                                     switch (item.Type) {
                                         case "E":
                                             return "Error: " + item.Message;
