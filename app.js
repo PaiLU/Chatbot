@@ -461,7 +461,7 @@ bot.dialog('OCR', [
                         req.write(new Buffer(fileResponse, 'binary'));
                         req.end();
                     } else {
-                        session.send("The attachment for bot to recognize should be image type within 3MB. Please try again.");
+                        session.send("The attachment should be of file type JPG, JPEG, PNG, BMP or GIF and within 3MB. Please try again.");
                         session.replaceDialog('OCR');
                     }
                 }).catch(function (err) {
@@ -823,7 +823,7 @@ bot.dialog('AddAttachment', [
                         console.log(`The attachment has been saved`);
                         session.endDialog();
                     } else {
-                        session.send("The attachment should be image type or a PDF file within 3MB. Please try again.");
+                        session.send("The attachment should be of file type JPG, JPEG, PNG, BMP, GIF, TIFF, or PDF and within 3MB. Please try again.");
                         session.replaceDialog('AddAttachment');
                     }
                 }).catch(function (err) {
@@ -885,7 +885,11 @@ bot.dialog('ListAttachments', [
 ]);
 bot.dialog('CheckApplyInfo', [
     function (session) {
-        session.send(`Hi ${session.message.user.name}, you are applying ${leaveTypeDisplayConvert(session.privateConversationData.received.leaveType)} from ${moment(session.privateConversationData.processing.dateInfo.start.value).format("DD-MMM-YYYY")} ${dateTypeDisplayConvert(session.privateConversationData.processing.dateInfo.start.type)} to ${moment(session.privateConversationData.processing.dateInfo.end.value).format("DD-MMM-YYYY")} ${dateTypeDisplayConvert(session.privateConversationData.processing.dateInfo.end.type)}`);
+        if (moment(session.privateConversationData.processing.dateInfo.start.value).isSame(moment(session.privateConversationData.processing.dateInfo.end.value)))
+            var msg = `Hi ${session.message.user.name}, you are applying ${leaveTypeDisplayConvert(session.privateConversationData.received.leaveType)} on ${moment(session.privateConversationData.processing.dateInfo.end.value).format("DD-MMM-YYYY")} ${dateTypeDisplayConvert(session.privateConversationData.processing.dateInfo.end.type)}`;
+        else
+            var msg = `Hi ${session.message.user.name}, you are applying ${leaveTypeDisplayConvert(session.privateConversationData.received.leaveType)} from ${moment(session.privateConversationData.processing.dateInfo.start.value).format("DD-MMM-YYYY")} ${dateTypeDisplayConvert(session.privateConversationData.processing.dateInfo.start.type)} to ${moment(session.privateConversationData.processing.dateInfo.end.value).format("DD-MMM-YYYY")} ${dateTypeDisplayConvert(session.privateConversationData.processing.dateInfo.end.type)}`;
+        session.send(msg);
         builder.Prompts.confirm(session, "Please confirm if your application information is correct", { listStyle: 3 });
     },
     function (session, results) {
@@ -936,7 +940,7 @@ bot.dialog('CorrectingInfo', [
                 break;
             }
             case "add attachments": {
-                session.beginDialog('AddAttachments');
+                session.beginDialog('AddAttachment');
                 break;
             }
             // case "cancel application": {
