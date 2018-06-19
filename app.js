@@ -1095,6 +1095,8 @@ bot.dialog('LeaveApplication', [
                                     switch (item.Type) {
                                         case "E":
                                             return "Error: " + item.Message;
+                                        default:
+                                            return item.Message;
                                     }
                                 }).join("\n"));
                                 session.cancelDialog(0, '/');
@@ -1110,7 +1112,7 @@ bot.dialog('LeaveApplication', [
                                 }
                             }
                         } else {
-                            session.send(JSON.stringify(response));
+                            session.send(`err:${JSON.stringify(response)}`);
                             // session.send(`Unexpected Error from API service`);
                             session.cancelDialog(0, '/');
                         }
