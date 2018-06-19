@@ -77,6 +77,7 @@ var bot = new builder.UniversalBot(connector, [
         builder.LuisRecognizer.recognize(session.message.text, LuisModelUrl, function (err, intents, entities, compositeEntities) {
             switch (intents[0].intent) {
                 case 'ApplyLeave': {
+                    session.privateConversationData.attachments = [];
                     session.cancelDialog(0, 'ApplyLeave', { "intent": { "intent": "ApplyLeave", "entities": [...entities] } });
                     break;
                 }
@@ -311,7 +312,7 @@ bot.dialog('CheckLeaveBalance', [
             session.privateConversationData.request.leaveType = session.privateConversationData.received.leaveType;
             next();
         } else {
-            builder.Prompts.choice(session, "Which balance are you looking for?", sitLeaveQuotaShortlistTypes.concat(["show all balances"]), { listStyle: 3 });
+            builder.Prompts.choice(session, "Which leave balance are you looking for?", sitLeaveQuotaShortlistTypes.concat(["show all balances"]), { listStyle: 3 });
         }
     },
     function (session, results, next) {
@@ -908,7 +909,7 @@ bot.dialog('CorrectingInfo', [
                 break;
             }
             default: {
-                builder.Prompts.choice(session, "Please specify the part your want to update", ["date information", "leave type", "add attachments", "cancel application"], { listStyle: 3 });
+                builder.Prompts.choice(session, "Please specify the part you want to update", ["date information", "leave type", "add attachments", "cancel application"], { listStyle: 3 });
                 break;
             }
         }
