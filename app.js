@@ -986,7 +986,12 @@ bot.dialog('LeaveApplication', [
                                 }
                             });
                             if (response.Et01messages[0].Type === "E") {
-                                session.send(messages.join("\n"));
+                                session.send(messages.map((item) => {
+                                    switch (item.Type) {
+                                        case "E":
+                                            return "Error: " + item.Message;
+                                    }
+                                }).join("\n"));
                                 session.cancelDialog(0, '/');
                             } else if (response.Et01messages[0].Type === "W") {
                                 session.send(messages.join("\n"));
