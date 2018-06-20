@@ -359,7 +359,7 @@ bot.dialog('CheckLeaveBalance', [
                         session.send(messages);
                         session.replaceDialog('/');
                     } else if (response && response.Type === "E") {
-                        session.send(`Error: ${response.Message}`);
+                        session.send(`**Error:** ${response.Message}`);
                         session.replaceDialog('/');
                     } else {
                         session.send(JSON.stringify(response));
@@ -1115,7 +1115,7 @@ bot.dialog('LeaveApplication', [
                                 session.send(response.Et01messages.map((item) => {
                                     switch (item.Type) {
                                         case "E":
-                                            return `**Error: + ${item.Message}**`;
+                                            return `**Error:** ${item.Message}`;
                                     }
                                 }).join("\n"));
                                 session.cancelDialog(0, '/');
