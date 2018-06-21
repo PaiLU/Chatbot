@@ -61,7 +61,7 @@ var bot = new builder.UniversalBot(connector, [
             session.userData.apiToken = args;
             var msg = `Hi, I am Leave Bot.`;
         } else
-            var msg = `What else can I help you with?`;
+            var msg = `Anything else I can help you with?`;
         if (!session.userData.apiToken)
             session.endConversation(`Bot service is currently unavailable`);
         else {
@@ -97,6 +97,10 @@ var bot = new builder.UniversalBot(connector, [
                         }
                         case 'CheckLeaveBalance': {
                             session.cancelDialog(0, 'CheckLeaveBalance', { "intent": { "intent": "CheckLeaveBalance", "entities": [...entities] } });
+                            break;
+                        }
+                        case 'OCR':{
+                            session.cancelDialog(0, 'OCR', { "intent": { "intent": "CheckLeaveBalance", "entities": [...entities] } });
                             break;
                         }
                         default: {
@@ -180,6 +184,10 @@ bot.dialog('Help', [
                             }
                             case 'CheckLeaveBalance': {
                                 session.cancelDialog(0, 'CheckLeaveBalance', { "intent": { "intent": "CheckLeaveBalance", "entities": [...entities] } });
+                                break;
+                            }
+                            case 'OCR':{
+                                session.cancelDialog(0, 'OCR', { "intent": { "intent": "CheckLeaveBalance", "entities": [...entities] } });
                                 break;
                             }
                             default: {

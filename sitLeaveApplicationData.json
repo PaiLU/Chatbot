@@ -127,13 +127,13 @@
     },
     {
         "Leave Type": "Consultancy Leave",
-        "Require Attachment": "N",
+        "Require Attachment": "Y",
         "Shortlist": "N",
         "Type Code": "PCON"
     },
     {
         "Leave Type": "Non-Consultancy Leave",
-        "Require Attachment": "N",
+        "Require Attachment": "Y",
         "Shortlist": "N",
         "Type Code": "PNCO"
     }
