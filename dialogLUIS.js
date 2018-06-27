@@ -22,7 +22,7 @@ module.exports = [
                     session.cancelDialog(0, 'CheckLeaveBalance', { "intent": { "intent": "CheckLeaveBalance", "entities": [...entities] } });
                     break;
                 }
-                case 'OCR': {
+                case 'ocr': {
                     session.privateConversationData.attachments = [];
                     session.cancelDialog(0, 'OCR', { "intent": { "intent": "CheckLeaveBalance", "entities": [...entities] } });
                     break;
