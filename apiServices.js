@@ -12,6 +12,8 @@ module.exports = {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/json',
+                    "Content-Type": `application/json`,
                 }
             }, function (res) {
                 res.setEncoding('utf8');
@@ -42,7 +44,8 @@ module.exports = {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
-                    "Content-Type": `application/json`
+                    "Content-Type": `application/json`,
+                    'Accept': 'application/json'
                 }
             }, function (res) {
                 res.setEncoding('utf8');

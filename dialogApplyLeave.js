@@ -6,6 +6,8 @@ var request = require('request-promise').defaults({ encoding: null });
 var checkEntity = require('./functionDefault').checkEntity;
 var leaveTypeDisplayConvert = require('./functionDefault').leaveTypeDisplayConvert;
 var apiServices = require('./apiServices');
+var logger = require('./logger');
+
 const sitLeaveApplicationData = JSON.parse(fs.readFileSync('./sitLeaveApplicationData.json', 'utf8'));
 var sitLeaveApplicationTypes = [];
 var shortlistTypes = [];
@@ -600,8 +602,8 @@ module.exports.LeaveApplication = [
                                 }
                             }
                         } else {
-                            session.send(`err:${JSON.stringify(response)}`);
-                            // session.send(`Unexpected Error from API service`);
+                            session.send(`Error:${JSON.stringify(response)}`);
+                            
                             session.cancelDialog(0, '/');
                         }
                     }
