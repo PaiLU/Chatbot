@@ -2,6 +2,8 @@
 var builder = require('botbuilder');
 var fs = require('fs');
 const sitLeaveQuotaData = JSON.parse(fs.readFileSync('./sitLeaveQuotaData.json', 'utf8'));
+var checkEntity = require('./functionDefault').checkEntity;
+var leaveTypeDisplayConvert = require('./functionDefault').leaveTypeDisplayConvert;
 
 var sitLeaveQuotaTypes = [];
 var sitLeaveQuotaShortlistTypes = [];

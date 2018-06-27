@@ -69,6 +69,17 @@ function dateExtract(receivedDateEntityList) {
                             }]
                         }
                     } else {
+                        if (x.isBefore(moment(x).set({ h: 0, m: 0, s: 0, ms: 0 }))) {
+                            return {
+                                "value": x.set({ h: 0, m: 0, s: 0, ms: 0 }),
+                                "type": "FD"
+                            }
+                        } else {
+                            return {
+                                "value": x.set({ h: 0, m: 0, s: 0, ms: 0 }),
+                                "type": "PM"
+                            }
+                        }
                         return [correctDateType(item.start, "start"), correctDateType(item.end, "end")];
                     }
                 })
@@ -198,7 +209,7 @@ function correctDateType(entity, startOrEnd) {
     }
 }
 function getNearestDateEntity(fromList) {
-    var now = new Date();
+    var now = moment();
     var minDiff = 0;
     var entity = new Object();
     for (var i in fromList) {

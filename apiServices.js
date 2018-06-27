@@ -1,3 +1,5 @@
+"use strict";
+require('dotenv-extended').load();
 var https = require('https');
 
 module.exports = {

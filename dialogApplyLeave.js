@@ -3,7 +3,9 @@ var builder = require('botbuilder');
 var fs = require('fs');
 var moment = require('moment');
 var request = require('request-promise').defaults({ encoding: null });
-
+var checkEntity = require('./functionDefault').checkEntity;
+var leaveTypeDisplayConvert = require('./functionDefault').leaveTypeDisplayConvert;
+var apiServices = require('./apiServices');
 const sitLeaveApplicationData = JSON.parse(fs.readFileSync('./sitLeaveApplicationData.json', 'utf8'));
 var sitLeaveApplicationTypes = [];
 var shortlistTypes = [];
@@ -86,6 +88,7 @@ module.exports.Duration = [
         session.beginDialog('AskDate', "start");
     },
     function (session) {
+        session.beginDialog('AddDuration', duration)
         var durationDays = session.privateConversationData.processing.dateInfo.duration[0] / 1000 / 3600 / 24;
         if (session.privateConversationData.processing.dateInfo.start.type === "AM" || session.privateConversationData.processing.dateInfo.start.type === "FD") {
             session.privateConversationData.processing.dateInfo.end = {
@@ -107,6 +110,11 @@ module.exports.Duration = [
         session.endDialog();
     }
 ];
+module.exports.AddDuration = [
+    function (session, args) {
+
+    }
+]
 module.exports.NoDateInfo = [
     function (session) {
         session.privateConversationData.processing.dateInfo.start = { "value": moment(), "type": "FD" };
@@ -180,6 +188,34 @@ module.exports.AskDateType = [
         session.endDialog();
     }
 ];
+module.exports.AskRemark = [
+    function (session) {
+        session.privateConversationData.processing.remarks = ""
+        var msg = new builder.Message(session)
+            .text(`Please enter any remarks for this application.`)
+            .attachmentLayout(builder.AttachmentLayout.list)
+            .attachments([
+                new builder.HeroCard(session)
+                    .buttons([
+                        builder.CardAction.imBack(session, "no remark", "no remark")
+                    ])
+            ])
+        builder.Prompts.text(session, msg);
+    },
+    function (session, results) {
+        switch (session.message.text) {
+            case "no remark": {
+                session.privateConversationData.processing.remarks = "";
+                break;
+            }
+            default :{
+                session.privateConversationData.processing.remarks = session.message.text;
+                break;
+            }
+        }
+        session.endDialog();
+    }
+]
 module.exports.CheckLeaveType = [
     function (session, args) {
         var check = false;
@@ -240,11 +276,6 @@ module.exports.AskSpecificType = [
         session.endDialog();
     }
 ];
-// bot.dialog('Attachments', [
-//     function (session, args, next) {
-//         session.beginDialog('ListAttachments')
-//     }
-// ]);
 module.exports.CheckAttachment = [
     function (session, args, next) {
         if (checkEntity(session.privateConversationData.received.leaveType, reqAttTypes) && session.privateConversationData.attachments.length == 0) {
@@ -334,10 +365,10 @@ module.exports.ListAttachments = [
 ];
 module.exports.CheckApplyInfo = [
     function (session) {
-        // if (moment(session.privateConversationData.processing.dateInfo.start.value).isSame(moment(session.privateConversationData.processing.dateInfo.end.value)))
-        //     var msg = `Hi ${session.message.user.name}, you are applying ${leaveTypeDisplayConvert(session.privateConversationData.received.leaveType)} on ${moment(session.privateConversationData.processing.dateInfo.end.value).format("DD-MMM-YYYY")} ${dateTypeDisplayConvert(session.privateConversationData.processing.dateInfo.end.type)}`;
-        // else
-        var msg = `Hi ${session.message.user.name}, you are applying ${leaveTypeDisplayConvert(session.privateConversationData.received.leaveType)} from ${moment(session.privateConversationData.processing.dateInfo.start.value).format("DD-MMM-YYYY")} ${dateTypeDisplayConvert(session.privateConversationData.processing.dateInfo.start.type)} to ${moment(session.privateConversationData.processing.dateInfo.end.value).format("DD-MMM-YYYY")} ${dateTypeDisplayConvert(session.privateConversationData.processing.dateInfo.end.type)}`;
+        if (moment(session.privateConversationData.processing.dateInfo.start.value).isSame(moment(session.privateConversationData.processing.dateInfo.end.value)))
+            var msg = `Hi ${session.message.user.name}, you are applying ${leaveTypeDisplayConvert(session.privateConversationData.received.leaveType)} on ${moment(session.privateConversationData.processing.dateInfo.start.value).format("DD-MMM-YYYY")} ${dateTypeDisplayConvert(session.privateConversationData.processing.dateInfo.start.type)}`;
+        else
+            var msg = `Hi ${session.message.user.name}, you are applying ${leaveTypeDisplayConvert(session.privateConversationData.received.leaveType)} from ${moment(session.privateConversationData.processing.dateInfo.start.value).format("DD-MMM-YYYY")} ${dateTypeDisplayConvert(session.privateConversationData.processing.dateInfo.start.type)} to ${moment(session.privateConversationData.processing.dateInfo.end.value).format("DD-MMM-YYYY")} ${dateTypeDisplayConvert(session.privateConversationData.processing.dateInfo.end.type)}`;
         session.send(msg);
         builder.Prompts.confirm(session, "Please confirm if your application information is correct", { listStyle: 3 });
     },
@@ -435,7 +466,7 @@ module.exports.ApplyConfirmed = [
                 "startDate": startDate.format('YYYY[-]M[-]D'),
                 "endDate": endDate.format('YYYY[-]M[-]D'),
                 "dayType": "FD",
-                "notes": "",
+                "notes": session.privateConversationData.processing.remarks,
                 "attachments": attachments,
                 "confirmation": ""
             })
@@ -446,7 +477,7 @@ module.exports.ApplyConfirmed = [
                     "startDate": startDate.format('YYYY[-]M[-]D'),
                     "endDate": endDate.format('YYYY[-]M[-]D'),
                     "dayType": startType,
-                    "notes": "",
+                    "notes": session.privateConversationData.processing.remarks,
                     "attachments": attachments,
                     "confirmation": ""
                 })
@@ -457,7 +488,7 @@ module.exports.ApplyConfirmed = [
                         "startDate": startDate.format('YYYY[-]M[-]D'),
                         "endDate": moment(endDate).subtract(1, 'day').format('YYYY[-]M[-]D'),
                         "dayType": "FD",
-                        "notes": "",
+                        "notes": session.privateConversationData.processing.remarks,
                         "attachments": attachments,
                         "confirmation": ""
                     },
@@ -466,7 +497,7 @@ module.exports.ApplyConfirmed = [
                         "startDate": endDate.format('YYYY[-]M[-]D'),
                         "endDate": endDate.format('YYYY[-]M[-]D'),
                         "dayType": "AM",
-                        "notes": "",
+                        "notes": session.privateConversationData.processing.remarks,
                         "attachments": attachments,
                         "confirmation": ""
                     }];
@@ -476,7 +507,7 @@ module.exports.ApplyConfirmed = [
                         "startDate": startDate.format('YYYY[-]M[-]D'),
                         "endDate": startDate.format('YYYY[-]M[-]D'),
                         "dayType": "PM",
-                        "notes": "",
+                        "notes": session.privateConversationData.processing.remarks,
                         "attachments": attachments,
                         "confirmation": ""
                     },
@@ -485,7 +516,7 @@ module.exports.ApplyConfirmed = [
                         "startDate": moment(startDate).add(1, 'day').format('YYYY[-]M[-]D'),
                         "endDate": endDate.format('YYYY[-]M[-]D'),
                         "dayType": "FD",
-                        "notes": "",
+                        "notes": session.privateConversationData.processing.remarks,
                         "attachments": attachments,
                         "confirmation": ""
                     }];
@@ -495,7 +526,7 @@ module.exports.ApplyConfirmed = [
                         "startDate": startDate.format('YYYY[-]M[-]D'),
                         "endDate": startDate.format('YYYY[-]M[-]D'),
                         "dayType": "PM",
-                        "notes": "",
+                        "notes": session.privateConversationData.processing.remarks,
                         "attachments": attachments,
                         "confirmation": ""
                     },
@@ -504,7 +535,7 @@ module.exports.ApplyConfirmed = [
                         "startDate": endDate.format('YYYY[-]M[-]D'),
                         "endDate": endDate.format('YYYY[-]M[-]D'),
                         "dayType": "AM",
-                        "notes": "",
+                        "notes": session.privateConversationData.processing.remarks,
                         "attachments": attachments,
                         "confirmation": ""
                     }]
@@ -514,13 +545,16 @@ module.exports.ApplyConfirmed = [
                             "startDate": moment(startDate).add(1, 'd').format('YYYY[-]M[-]D'),
                             "endDate": moment(endDate).subtract(1, 'd').format('YYYY[-]M[-]D'),
                             "dayType": "FD",
-                            "notes": "",
+                            "notes": session.privateConversationData.processing.remarks,
                             "attachments": attachments,
                             "confirmation": ""
                         })
                     }
                 }
             }
+        }
+        if (session.privateConversationData.applications.length >= 2) {
+            session.send(`The leave application has been seperated into ${session.privateConversationData.applications.length} applications due to SAP limitation`)
         }
         session.replaceDialog('LeaveApplication', [0, ""]);
     }
@@ -659,8 +693,10 @@ module.exports.main = [
     },
     function (session) {
         console.log(session.privateConversationData.processing);
-        console.log(session.privateConversationData.processing);
         session.beginDialog('CheckAttachment');
+    },
+    function(session){
+        session.beginDialog('AskRemark');
     },
     function (session) {
         session.beginDialog('CheckApplyInfo');
