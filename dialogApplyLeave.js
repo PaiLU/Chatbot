@@ -21,7 +21,15 @@ for (var a in sitLeaveApplicationData) {
         reqAttTypes.push(sitLeaveApplicationData[a]["Leave Type"].toLowerCase());
     };
 };
+const sitLeaveQuotaData = JSON.parse(fs.readFileSync('./sitLeaveQuotaData.json', 'utf8'));
+var sitLeaveQuotaTypes = [];
+var sitLeaveQuotaShortlistTypes = [];
 for (var a in sitLeaveQuotaData) {
+    sitLeaveQuotaTypes.push(sitLeaveQuotaData[a]["Leave Quota"]);
+    if (sitLeaveQuotaData[a]["Shortlist"].toLowerCase() == "y") {
+        sitLeaveQuotaShortlistTypes.push(sitLeaveQuotaData[a]["Leave Quota"].toLowerCase());
+    };
+};
 module.exports.Daterange = [
     function (session) {
         var min = new Array();
@@ -211,7 +219,7 @@ module.exports.AskRemark = [
                 session.privateConversationData.processing.remarks = "";
                 break;
             }
-            default :{
+            default: {
                 session.privateConversationData.processing.remarks = session.message.text;
                 break;
             }
@@ -558,46 +566,81 @@ module.exports.ApplyConfirmed = [
             }
         }
         if (session.privateConversationData.applications.length >= 2) {
-            session.send(`The leave application has been seperated into ${session.privateConversationData.applications.length} applications.`)
+            session.send(`The leave application has been separated into ${session.privateConversationData.applications.length} applications.`)
         }
         session.replaceDialog('LeaveApplication', [0, ""]);
     }
 ];
 module.exports.LeaveApplication = [
     function (session, args, next) {
+        session.sendTyping();
         session.dialogData.args = args;
+        session.dialogData.messageType = "";
         try {
             session.privateConversationData.applications[args[0]].confirmation = args[1];
             apiServices.applyLeave(session.privateConversationData.applications[args[0]], session.userData.apiToken)
                 .then((response) => {
                     try {
                         if (response.Et01messages) {
-                            var messages = response.Et01messages.map((item) => {
-                                switch (item.Type) {
-                                    case "E":
-                                        return "Error: " + item.Message;
-                                    case "W":
-                                        return "Warning: " + item.Message;
-                                    case "S":
-                                        return "Success: " + item.Message;
-                                    default:
-                                        return item.Message;
-                                }
-                            });
+                            // var messages = response.Et01messages.map((item) => {
+                            //     switch (item.Type) {
+                            //         case "E":
+                            //             return "Error: " + item.Message;
+                            //         case "W":
+                            //             return "Warning: " + item.Message;
+                            //         case "S":
+                            //             return "Success: " + item.Message;
+                            //         default:
+                            //             return item.Message;
+                            //     }
+                            // });
                             if (response.Et01messages[0].Type === "E") {
-                                session.send(response.Et01messages.map((item) => {
+                                session.dialogData.messageType = "E";
+                                var message = response.Et01messages.map((item) => {
                                     switch (item.Type) {
                                         case "E":
                                             return `**Error:** ${item.Message}`;
                                     }
-                                }).join("\n"));
-                                session.cancelDialog(0, '/');
+                                }).join("\n");
+                                session.sendTyping();
+                                if (moment(session.privateConversationData.applications[args[0]].startDate).isSame(moment(session.privateConversationData.applications[args[0]].endDate)))
+                                    var msg = `Your ${leaveTypeDisplayConvert(session.privateConversationData.received.leaveType)} application on ${moment(session.privateConversationData.applications[args[0]].startDate).format("DD-MMM-YYYY")} ${dateTypeDisplayConvert(session.privateConversationData.applications[args[0]].dayType)} failed\n${message}`;
+                                else
+                                    var msg = `Your ${leaveTypeDisplayConvert(session.privateConversationData.received.leaveType)} application from ${moment(session.privateConversationData.applications[args[0]].startDate).format("DD-MMM-YYYY")} ${dateTypeDisplayConvert(session.privateConversationData.applications[args[0]].dayType)} to ${moment(session.privateConversationData.applications[args[0]].endDate).format("DD-MMM-YYYY")} ${dateTypeDisplayConvert(session.privateConversationData.applications[args[0]].dayType)} failed\n${message}`;
+                                session.send(msg);
+                                if (args[0] >= session.privateConversationData.applications.length - 1) {
+                                    session.cancelDialog(0, '/');
+                                } else {
+                                    builder.Prompts.confirm(session, "Proceed with the next application?", { listStyle: 3 });
+                                }
                             } else if (response.Et01messages[0].Type === "W") {
-                                session.send(messages.join("\n"));
+                                session.dialogData.messageType = "W";
+                                var message = response.Et01messages.map((item) => {
+                                    switch (item.Type) {
+                                        case "W":
+                                            return `Warning: ${item.Message}`;
+                                    }
+                                }).join("\n");
+                                if (moment(session.privateConversationData.applications[args[0]].startDate).isSame(moment(session.privateConversationData.applications[args[0]].endDate)))
+                                    var msg = `Your ${leaveTypeDisplayConvert(session.privateConversationData.received.leaveType)} application on ${moment(session.privateConversationData.applications[args[0]].startDate).format("DD-MMM-YYYY")} ${dateTypeDisplayConvert(session.privateConversationData.applications[args[0]].dayType)} got following warnings\n${message}`;
+                                else
+                                    var msg = `Your ${leaveTypeDisplayConvert(session.privateConversationData.received.leaveType)} application from ${moment(session.privateConversationData.applications[args[0]].startDate).format("DD-MMM-YYYY")} ${dateTypeDisplayConvert(session.privateConversationData.applications[args[0]].dayType)} to ${moment(session.privateConversationData.applications[args[0]].endDate).format("DD-MMM-YYYY")} ${dateTypeDisplayConvert(session.privateConversationData.applications[args[0]].dayType)} got following warnings\n${message}`;
+                                session.send(msg);
                                 builder.Prompts.confirm(session, "Proceed with warning?", { listStyle: 3 });
                             } else if (response.Et01messages[0].Type === "S") {
+
+                                var message = response.Et01messages.map((item) => {
+                                    switch (item.Type) {
+                                        case "S":
+                                            return `Success: ${item.Message}`;
+                                    }
+                                }).join("\n");
+                                if (moment(session.privateConversationData.applications[args[0]].startDate).isSame(moment(session.privateConversationData.applications[args[0]].endDate)))
+                                    var msg = `Your ${leaveTypeDisplayConvert(session.privateConversationData.received.leaveType)} application on ${moment(session.privateConversationData.applications[args[0]].startDate).format("DD-MMM-YYYY")} ${dateTypeDisplayConvert(session.privateConversationData.applications[args[0]].dayType)} was sent successfully`;
+                                else
+                                    var msg = `Your ${leaveTypeDisplayConvert(session.privateConversationData.received.leaveType)} application from ${moment(session.privateConversationData.applications[args[0]].startDate).format("DD-MMM-YYYY")} ${dateTypeDisplayConvert(session.privateConversationData.applications[args[0]].dayType)} to ${moment(session.privateConversationData.applications[args[0]].endDate).format("DD-MMM-YYYY")} ${dateTypeDisplayConvert(session.privateConversationData.applications[args[0]].dayType)} was sent successfully`;
+                                session.send(msg);
                                 if (args[0] >= session.privateConversationData.applications.length - 1) {
-                                    session.send(messages.join("\n"));
                                     session.cancelDialog(0, '/');
                                 } else {
                                     session.replaceDialog('LeaveApplication', [args[0] + 1, ""])
@@ -605,7 +648,7 @@ module.exports.LeaveApplication = [
                             }
                         } else {
                             session.send(`Error:${JSON.stringify(response)}`);
-                            
+
                             session.cancelDialog(0, '/');
                         }
                     }
@@ -622,7 +665,16 @@ module.exports.LeaveApplication = [
     },
     function (session, results) {
         if (results.response) {
-            session.replaceDialog('LeaveApplication', [session.dialogData.args[0], "Y"]);
+            switch (session.dialogData.messageType) {
+                case "E": {
+                    session.replaceDialog('LeaveApplication', [session.dialogData.args[0] + 1, ""]);
+                    break;
+                }
+                case "W": {
+                    session.replaceDialog('LeaveApplication', [session.dialogData.args[0], "Y"]);
+                    break;
+                }
+            }
         } else {
             session.send("The application is canceled");
             session.cancelDialog(0, '/');
@@ -699,7 +751,7 @@ module.exports.main = [
         console.log(session.privateConversationData.processing);
         session.beginDialog('CheckAttachment');
     },
-    function(session){
+    function (session) {
         session.beginDialog('AskRemark');
     },
     function (session) {
