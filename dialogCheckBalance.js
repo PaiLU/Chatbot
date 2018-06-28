@@ -3,7 +3,7 @@ var builder = require('botbuilder');
 var fs = require('fs');
 const sitLeaveQuotaData = JSON.parse(fs.readFileSync('./sitLeaveQuotaData.json', 'utf8'));
 var checkEntity = require('./functionDefault').checkEntity;
-var leaveTypeDisplayConvert = require('./functionDefault').leaveTypeDisplayConvert;
+var apiServices = require('./apiServices');
 
 var sitLeaveQuotaTypes = [];
 var sitLeaveQuotaShortlistTypes = [];
@@ -56,7 +56,7 @@ module.exports = [
     },
     function (session) {
         console.log(`${matchLeaveQuotaCode(session.privateConversationData.request.leaveType)} type: ${typeof (matchLeaveQuotaCode(session.privateConversationData.request.leaveType))}`);
-
+        session.sendTyping();
         // session.endConversation("The API is currently not responding");
         // API goes here
         try {
@@ -64,6 +64,7 @@ module.exports = [
             apiServices.checkLeaveBalance(matchLeaveQuotaCode(session.privateConversationData.request.leaveType), session.userData.apiToken)
                 .then((response) => {
                     // session.send(JSON.stringify(response));
+                    session.sendTyping();
                     if (Array.isArray(response)) {
                         var messages = response.map((item) => { return `${item.LeaveQuotaDesc}: ${item.LeaveRemainder} day(s)` }).join("\n");
                         session.send(messages);

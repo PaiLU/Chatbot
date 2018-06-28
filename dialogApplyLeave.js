@@ -427,6 +427,7 @@ module.exports.CorrectingInfo = [
             }
             case "back": {
                 session.replaceDialog('CorrectingInfo');
+                break;
             }
             // case "cancel application": {
             //     session.cancelDialog(0, '/');
@@ -556,14 +557,14 @@ module.exports.ApplyConfirmed = [
             }
         }
         if (session.privateConversationData.applications.length >= 2) {
-            session.send(`The leave application has been seperated into ${session.privateConversationData.applications.length} applications due to SAP limitation`)
+            session.send(`The leave application has been seperated into ${session.privateConversationData.applications.length} applications.`)
         }
         session.replaceDialog('LeaveApplication', [0, ""]);
     }
 ];
 module.exports.LeaveApplication = [
     function (session, args, next) {
-        session.dialogData.args = args
+        session.dialogData.args = args;
         try {
             session.privateConversationData.applications[args[0]].confirmation = args[1];
             apiServices.applyLeave(session.privateConversationData.applications[args[0]], session.userData.apiToken)

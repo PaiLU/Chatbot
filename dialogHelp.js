@@ -20,7 +20,7 @@ module.exports = [
     },
     function (session, results) {
         if (session.message.text) {
-            switch (session.message.text) {
+            switch (session.message.text.toLowerCase()) {
                 case "apply leave": {
                     session.privateConversationData.attachments = [];
                     session.cancelDialog(0, 'ApplyLeave', defaultArgs);
@@ -30,7 +30,7 @@ module.exports = [
                     session.cancelDialog(0, 'CheckLeaveBalance', defaultArgs);
                     break;
                 }
-                case "upload MC form": {
+                case "upload mc form": {
                     session.privateConversationData.attachments = [];
                     session.cancelDialog(0, 'OCR')
                     break;

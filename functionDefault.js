@@ -17,5 +17,12 @@ module.exports = {
             }
         }
         return check;
+    },
+    entityExtract: function entityExtract(receivedEntity) {
+        var o = new Object();
+        if (receivedEntity && receivedEntity.resolution.values) {
+            return receivedEntity.resolution.values[0].toLowerCase();
+        } else
+            return null;
     }
 }

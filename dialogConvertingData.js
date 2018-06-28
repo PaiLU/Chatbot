@@ -1,13 +1,7 @@
 "use strict"
 var builder = require('botbuilder');
 var moment = require('moment');
-function entityExtract(receivedEntity) {
-    var o = new Object();
-    if (receivedEntity && receivedEntity.resolution.values) {
-        return receivedEntity.resolution.values[0].toLowerCase();
-    } else
-        return null;
-};
+var entityExtract = require('./functionDefault').entityExtract;
 function dateExtract(receivedDateEntityList) {
     var o = {
         "dateTime": [],
