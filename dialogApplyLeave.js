@@ -21,6 +21,7 @@ for (var a in sitLeaveApplicationData) {
         reqAttTypes.push(sitLeaveApplicationData[a]["Leave Type"].toLowerCase());
     };
 };
+for (var a in sitLeaveQuotaData) {
 module.exports.Daterange = [
     function (session) {
         var min = new Array();

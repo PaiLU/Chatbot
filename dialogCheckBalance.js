@@ -1,10 +1,10 @@
 "use strict"
 var builder = require('botbuilder');
 var fs = require('fs');
-const sitLeaveQuotaData = JSON.parse(fs.readFileSync('./sitLeaveQuotaData.json', 'utf8'));
 var checkEntity = require('./functionDefault').checkEntity;
 var apiServices = require('./apiServices');
 
+const sitLeaveQuotaData = JSON.parse(fs.readFileSync('./sitLeaveQuotaData.json', 'utf8'));
 var sitLeaveQuotaTypes = [];
 var sitLeaveQuotaShortlistTypes = [];
 for (var a in sitLeaveQuotaData) {
