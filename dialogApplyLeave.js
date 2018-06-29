@@ -138,16 +138,30 @@ module.exports.NoDateInfo = [
 module.exports.AskDate = [
     function (session, args) {
         session.dialogData.type = args;
-        session.privateConversationData.offset = moment().utcOffset ()
+        session.privateConversationData.offset = moment().utcOffset()
         builder.Prompts.text(session, "Please enter a leave " + session.dialogData.type + " date. Better in a format of dd-MMM-yyyy (e.g: 14-Jun-2018)");
     },
     function (session, results) {
-        var recognized = builder.EntityRecognizer.recognizeTime(session.message.text);
+        var ampm = /\bam|pm\b/;
+        var matched = session.message.text.toLowerCase().match(ampm)
+        var text = session.message.text.toLowerCase().split(matched).join((matched == 'am') ? 'morning' : 'afternoon')
+        var recognized = builder.EntityRecognizer.recognizeTime(text);
+        session.dialogData.recognizedType = "FD";
         if (session.message.text && recognized) {
-            console.log(`${JSON.stringify(recognized)}`);
+            session.dialogData.recognizedUTC = moment(recognized.resolution.start).add(session.privateConversationData.offset, 'm');
+            console.log(`${JSON.stringify(session.dialogData.recognizedUTC)}`);
+            if (session.dialogData.recognizedUTC.isSame(moment(session.dialogData.recognizedUTC).set({ h: 12, m: 0, s: 0, ms: 0 }).add(session.privateConversationData.offset, 'm'))) {
+                session.dialogData.recognizedType = "FD";
+            } else if (session.dialogData.recognizedUTC.isBefore(moment(session.dialogData.recognizedUTC).set({ h: 12, m: 0, s: 0, ms: 0 }).add(session.privateConversationData.offset, 'm'))) {
+                session.dialogData.recognizedType = "AM";
+            } else {
+                session.dialogData.recognizedType = "PM";
+            }
+            session.dialogData.recognizedUTC.set({ h: 0, m: 0, s: 0, ms: 0 }).add(session.privateConversationData.offset, 'm');
             if (session.dialogData.type == "start" && session.privateConversationData.processing.dateInfo.duration[0]) {
-                session.privateConversationData.processing.dateInfo[session.dialogData.type].value = moment(recognized.resolution.start).add(session.privateConversationData.offset, 'm').set({ h: 0, m: 0, s: 0, ms: 0 });
-                session.beginDialog('AddDuration', session.privateConversationData.processing.dateInfo.duration[0])
+                session.privateConversationData.processing.dateInfo.start.value = moment(recognized.resolution.start).add(session.privateConversationData.offset, 'm').set({ h: 0, m: 0, s: 0, ms: 0 }).add(session.privateConversationData.offset, 'm');
+                session.privateConversationData.processing.dateInfo.start.type = session.dialogData.recognizedType;
+                session.beginDialog('AddDuration', session.privateConversationData.processing.dateInfo.duration[0]);
             } else {
                 // if (session.privateConversationData.processing.dateInfo.end.hasOwnProperty('value')) {
                 //     if (moment(session.privateConversationData.processing.dateInfo.end.value).isBefore(session.privateConversationData.processing.dateInfo.start.value)) {
@@ -158,7 +172,8 @@ module.exports.AskDate = [
                 //         session.replaceDialog('AskDate', session.dialogData.type);
                 //     }
                 // }
-                session.privateConversationData.processing.dateInfo[session.dialogData.type].value = moment(recognized.resolution.start).add(session.privateConversationData.offset, 'm').set({ h: 0, m: 0, s: 0, ms: 0 });
+                session.privateConversationData.processing.dateInfo[session.dialogData.type].value = moment(recognized.resolution.start).add(session.privateConversationData.offset, 'm').set({ h: 0, m: 0, s: 0, ms: 0 }).add(session.privateConversationData.offset, 'm');
+                session.privateConversationData.processing.dateInfo[session.dialogData.type].type = session.dialogData.recognizedType;
             }
             session.endDialog();
         } else {
@@ -385,11 +400,11 @@ module.exports.CorrectingInfo = [
     function (session, args) {
         switch (args) {
             case "date": {
-                builder.Prompts.choice(session, "Please update your information", ["start date", "start day type", "end date", "end day type", "back"], { listStyle: 3 });
+                builder.Prompts.choice(session, "Please update your information", ["start date", "end date"], { listStyle: 3 });
                 break;
             }
             default: {
-                builder.Prompts.choice(session, "Please specify the part you want to update", ["date information", "leave type", "add attachments", "cancel application"], { listStyle: 3 });
+                builder.Prompts.choice(session, "Please specify the part you want to update", ["start date", "end date", "leave type", "add attachments", "cancel application"], { listStyle: 3 });
                 break;
             }
         }
@@ -400,20 +415,8 @@ module.exports.CorrectingInfo = [
                 session.beginDialog('AskDate', "start");
                 break;
             }
-            case "start day type": {
-                session.beginDialog('AskDateType', "start");
-                break;
-            }
             case "end date": {
                 session.beginDialog('AskDate', "end");
-                break;
-            }
-            case "end day type": {
-                session.beginDialog('AskDateType', "end");
-                break;
-            }
-            case "date information": {
-                session.replaceDialog('CorrectingInfo', "date");
                 break;
             }
             case "leave type": {
@@ -422,10 +425,6 @@ module.exports.CorrectingInfo = [
             }
             case "add attachments": {
                 session.beginDialog('AddAttachment');
-                break;
-            }
-            case "back": {
-                session.replaceDialog('CorrectingInfo');
                 break;
             }
             // case "cancel application": {
