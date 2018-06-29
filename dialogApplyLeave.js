@@ -139,7 +139,7 @@ module.exports.AskDate = [
     function (session, args) {
         session.dialogData.type = args;
         session.privateConversationData.offset = moment().utcOffset()
-        builder.Prompts.text(session, "Please enter a leave " + session.dialogData.type + " date. Better in a format of dd-MMM-yyyy (e.g: 14-Jun-2018)");
+        builder.Prompts.text(session, "Please enter a leave " + session.dialogData.type + " date in a format of dd-MMM-yyyy (e.g: 14-Jun-2018)");
     },
     function (session, results) {
         var ampm = /\bam|pm\b/;
