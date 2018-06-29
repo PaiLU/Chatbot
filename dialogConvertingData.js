@@ -171,7 +171,7 @@ function correctDateType(entity, startOrEnd) {
     var x = moment(entity.value);
     switch (startOrEnd) {
         case "start": {
-            if (x.isBefore(moment(x).set({ h: 0, m: 0, s: 0, ms: 0 }))) {
+            if (x.isBefore(moment(x).set({ h: 12, m: 0, s: 0, ms: 0 }))) {
                 return {
                     "value": x.set({ h: 0, m: 0, s: 0, ms: 0 }),
                     "type": "FD"
@@ -185,7 +185,7 @@ function correctDateType(entity, startOrEnd) {
             break;
         };
         case "end": {
-            if (x.isAfter(moment(x).set({ h: 0, m: 0, s: 0, ms: 0 }))) {
+            if (x.isAfter(moment(x).set({ 12: 0, m: 0, s: 0, ms: 0 }))) {
                 return {
                     "value": x.set({ h: 0, m: 0, s: 0, ms: 0 }),
                     "type": "FD"
@@ -203,15 +203,15 @@ function correctDateType(entity, startOrEnd) {
     }
 }
 function getNearestDateEntity(fromList) {
-    var now = moment();
+    var now = new Date();
     var minDiff = 0;
     var entity = new Object();
     for (var i in fromList) {
         if (minDiff == 0) {
-            minDiff = Math.abs(new Date(fromList[i].value || fromList[i].start) - now);
+            minDiff = Math.abs((new Date(fromList[i].value || fromList[i].start)) - now);
             entity = fromList[i];
         } else {
-            var diff = Math.abs(new Date(fromList[i].value || fromList[i].start) - now)
+            var diff = Math.abs((new Date(fromList[i].value || fromList[i].start)) - now)
             if (diff < minDiff) {
                 minDiff = diff;
                 entity = fromList[i];

@@ -62,3 +62,4 @@ bot.dialog('DateAndDuration', require('./dialogApplyLeave').DateAndDuration);
 bot.dialog('Daterange', require('./dialogApplyLeave').Daterange);
 bot.dialog('CorrectingInfo', require('./dialogApplyLeave').CorrectingInfo);
 bot.dialog('AskRemark', require('./dialogApplyLeave').AskRemark);
+bot.dialog('AddDuration', require('./dialogApplyLeave').AddDuration);

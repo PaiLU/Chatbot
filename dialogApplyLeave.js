@@ -64,7 +64,35 @@ module.exports.Daterange = [
 module.exports.DateAndDuration = [
     function (session) {
         session.privateConversationData.processing.dateInfo.start = session.privateConversationData.processing.dateInfo.dateTime[0];
-        var durationDays = session.privateConversationData.processing.dateInfo.duration[0] / 1000 / 3600 / 24;
+        session.beginDialog('AddDuration', session.privateConversationData.processing.dateInfo.duration[0])
+    },
+    function (session) {
+        session.endDialog();
+    }
+];
+module.exports.Date = [
+    function (session) {
+        session.privateConversationData.processing.dateInfo.start = session.privateConversationData.processing.dateInfo.dateTime[0];
+        session.privateConversationData.processing.dateInfo.end = session.privateConversationData.processing.dateInfo.dateTime[0];
+        session.endDialog();
+    }
+];
+module.exports.Duration = [
+    function (session) {
+        session.send('You are applying a leave for %s days.', session.privateConversationData.processing.dateInfo.duration[0] / 24 / 3600 / 1000);
+        session.privateConversationData.processing.dateInfo.start = { "value": moment(), "type": "FD" };
+        session.beginDialog('AskDate', "start");
+    },
+    function (session) {
+        session.beginDialog('AddDuration', session.privateConversationData.processing.dateInfo.duration[0])
+    },
+    function (session) {
+        session.endDialog();
+    }
+];
+module.exports.AddDuration = [
+    function (session, args) {
+        var durationDays = args / 1000 / 3600 / 24;
         if (session.privateConversationData.processing.dateInfo.start.type === "AM" || session.privateConversationData.processing.dateInfo.start.type === "FD") {
             session.privateConversationData.processing.dateInfo.end = {
                 "value": moment(session.privateConversationData.processing.dateInfo.start.value).add(Math.ceil(durationDays - 1), 'days')
@@ -84,47 +112,6 @@ module.exports.DateAndDuration = [
         }
         session.endDialog();
     }
-];
-module.exports.Date = [
-    function (session) {
-        session.privateConversationData.processing.dateInfo.start = session.privateConversationData.processing.dateInfo.dateTime[0];
-        session.privateConversationData.processing.dateInfo.end = session.privateConversationData.processing.dateInfo.dateTime[0];
-        session.endDialog();
-    }
-];
-module.exports.Duration = [
-    function (session) {
-        session.send('You are applying a leave for %s days.', session.privateConversationData.processing.dateInfo.duration[0] / 24 / 3600 / 1000);
-        session.privateConversationData.processing.dateInfo.start = { "value": moment(), "type": "FD" };
-        session.beginDialog('AskDate', "start");
-    },
-    function (session) {
-        session.beginDialog('AddDuration', duration)
-        var durationDays = session.privateConversationData.processing.dateInfo.duration[0] / 1000 / 3600 / 24;
-        if (session.privateConversationData.processing.dateInfo.start.type === "AM" || session.privateConversationData.processing.dateInfo.start.type === "FD") {
-            session.privateConversationData.processing.dateInfo.end = {
-                "value": moment(session.privateConversationData.processing.dateInfo.start.value).add(Math.ceil(durationDays - 1), 'days')
-            }
-            if (durationDays % 1)
-                session.privateConversationData.processing.dateInfo.end.type = "AM";
-            else
-                session.privateConversationData.processing.dateInfo.end.type = "FD";
-        } else {//"PM"
-            session.privateConversationData.processing.dateInfo.end = {
-                "value": moment(session.privateConversationData.processing.dateInfo.start.value).add(Math.floor(durationDays), 'days')
-            }
-            if (durationDays % 1)
-                session.privateConversationData.processing.dateInfo.end.type = "FD";
-            else
-                session.privateConversationData.processing.dateInfo.end.type = "AM";
-        }
-        session.endDialog();
-    }
-];
-module.exports.AddDuration = [
-    function (session, args) {
-
-    }
 ]
 module.exports.NoDateInfo = [
     function (session) {
@@ -138,6 +125,7 @@ module.exports.NoDateInfo = [
         session.privateConversationData.processing.dateInfo.end = { "value": moment(), "type": "FD" };
         if (results.response.entity == "one day") {
             session.privateConversationData.processing.dateInfo.end = session.privateConversationData.processing.dateInfo.start;
+            session.privateConversationData.processing.dateInfo.duration[0] = 1 * 24 * 60 * 60 * 1000
             next();
         } else if (results.response.entity == "multiple days") {
             session.beginDialog('AskDate', "end");
@@ -150,29 +138,31 @@ module.exports.NoDateInfo = [
 module.exports.AskDate = [
     function (session, args) {
         session.dialogData.type = args;
-        // builder.Prompts.time(session, "Please enter a leave " + session.dialogData.type + " date");
-        builder.Prompts.text(session, "Please enter a leave " + session.dialogData.type + " date");
+        session.privateConversationData.offset = moment().utcOffset ()
+        builder.Prompts.text(session, "Please enter a leave " + session.dialogData.type + " date. Better in a format of dd-MMM-yyyy (e.g: 14-Jun-2018)");
     },
     function (session, results) {
-        // session.privateConversationData.processing.dateInfo[session.dialogData.type].value = moment(results.response.resolution.start).subtract(session.privateConversationData.offset, 'ms').set({ h: 0, m: 0, s: 0, ms: 0 });
         var recognized = builder.EntityRecognizer.recognizeTime(session.message.text);
         if (session.message.text && recognized) {
             console.log(`${JSON.stringify(recognized)}`);
-            session.privateConversationData.processing.dateInfo[session.dialogData.type].value = moment(recognized.resolution.start).subtract(session.privateConversationData.offset, 'ms').set({ h: 0, m: 0, s: 0, ms: 0 });
-            if (session.privateConversationData.processing.dateInfo.end.hasOwnProperty()) {
-                if (moment(session.privateConversationData.processing.dateInfo.end.value).isBefore(session.privateConversationData.processing.dateInfo.start)) {
-                    session.send("Sorry, I can't proceed with leave end date ahead of leave start date. Please re-enter.");
-                    session.replaceDialog('AskDate', session.dialogData.type);
-                } else if (moment(session.privateConversationData.processing.dateInfo.end.value).isSame(session.privateConversationData.processing.dateInfo.start)) {
-                    if (session.privateConversationData.processing.dateInfo.end.type == "AM" && session.privateConversationData.processing.dateInfo.start.type == "PM") {
-                        session.send("Sorry, I can't proceed with leave end date ahead of leave start date. Please re-enter.");
-                        session.replaceDialog('AskDate', session.dialogData.type);
-                    }
-                }
+            if (session.dialogData.type == "start" && session.privateConversationData.processing.dateInfo.duration[0]) {
+                session.privateConversationData.processing.dateInfo[session.dialogData.type].value = moment(recognized.resolution.start).add(session.privateConversationData.offset, 'm').set({ h: 0, m: 0, s: 0, ms: 0 });
+                session.beginDialog('AddDuration', session.privateConversationData.processing.dateInfo.duration[0])
+            } else {
+                // if (session.privateConversationData.processing.dateInfo.end.hasOwnProperty('value')) {
+                //     if (moment(session.privateConversationData.processing.dateInfo.end.value).isBefore(session.privateConversationData.processing.dateInfo.start.value)) {
+                //         session.send(`Sorry, I can't proceed with leave end date ahead of leave start date. Please change your leave ${(session.dialogData.type == "start") ? "end" : "start"} day first.`);
+                //         session.replaceDialog('AskDate', session.dialogData.type);
+                //     } else if ((moment(session.privateConversationData.processing.dateInfo.end.value).isSame(session.privateConversationData.processing.dateInfo.start.value)) && (session.privateConversationData.processing.dateInfo.end.type == "AM" && session.privateConversationData.processing.dateInfo.start.type == "PM")) {
+                //         session.send("Sorry, I can't proceed with leave end date ahead of leave start date. Please re-enter.");
+                //         session.replaceDialog('AskDate', session.dialogData.type);
+                //     }
+                // }
+                session.privateConversationData.processing.dateInfo[session.dialogData.type].value = moment(recognized.resolution.start).add(session.privateConversationData.offset, 'm').set({ h: 0, m: 0, s: 0, ms: 0 });
             }
             session.endDialog();
         } else {
-            session.send("I didn't recognize the time you entered. Please try again using a format of DD-MMM-YYYY, (e.g: 14-Jun-2018)");
+            session.send("I didn't recognize the time you entered. Please try again using a format of dd-MMM-yyyy, (e.g: 14-Jun-2018)");
             session.replaceDialog('AskDate', session.dialogData.type);
         }
     }
@@ -582,18 +572,6 @@ module.exports.LeaveApplication = [
                 .then((response) => {
                     try {
                         if (response.Et01messages) {
-                            // var messages = response.Et01messages.map((item) => {
-                            //     switch (item.Type) {
-                            //         case "E":
-                            //             return "Error: " + item.Message;
-                            //         case "W":
-                            //             return "Warning: " + item.Message;
-                            //         case "S":
-                            //             return "Success: " + item.Message;
-                            //         default:
-                            //             return item.Message;
-                            //     }
-                            // });
                             if (response.Et01messages[0].Type === "E") {
                                 session.dialogData.messageType = "E";
                                 var message = response.Et01messages.map((item) => {
