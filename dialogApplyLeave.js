@@ -385,7 +385,7 @@ module.exports.CorrectingInfo = [
     function (session, args) {
         switch (args) {
             case "date": {
-                builder.Prompts.choice(session, "Please update your information", ["leave start date", "start day type", "leave end date", "end day type", "back"], { listStyle: 3 });
+                builder.Prompts.choice(session, "Please update your information", ["start date", "start day type", "end date", "end day type", "back"], { listStyle: 3 });
                 break;
             }
             default: {
@@ -396,7 +396,7 @@ module.exports.CorrectingInfo = [
     },
     function (session, results) {
         switch (results.response.entity.toLowerCase()) {
-            case "leave start date": {
+            case "start date": {
                 session.beginDialog('AskDate', "start");
                 break;
             }
@@ -404,7 +404,7 @@ module.exports.CorrectingInfo = [
                 session.beginDialog('AskDateType', "start");
                 break;
             }
-            case "leave end date": {
+            case "end date": {
                 session.beginDialog('AskDate', "end");
                 break;
             }
