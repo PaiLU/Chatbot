@@ -158,20 +158,53 @@ module.exports.AskDate = [
                 session.dialogData.recognizedType = "PM";
             }
             session.dialogData.recognizedUTC.set({ h: 0, m: 0, s: 0, ms: 0 }).add(session.privateConversationData.offset, 'm');
+            // switch (session.dialogData.type) {
+            //     case "start": {
+            //         if (session.privateConversationData.processing.dateInfo.duration[0]) {
+            //             session.privateConversationData.processing.dateInfo.start.value = moment(recognized.resolution.start).add(session.privateConversationData.offset, 'm').set({ h: 0, m: 0, s: 0, ms: 0 }).add(session.privateConversationData.offset, 'm');
+            //             session.privateConversationData.processing.dateInfo.start.type = session.dialogData.recognizedType;
+            //             session.beginDialog('AddDuration', session.privateConversationData.processing.dateInfo.duration[0]);
+            //         }
+            //         if (session.privateConversationData.processing.dateInfo.end.hasOwnProperty('value')) {
+            //             if (moment(session.privateConversationData.processing.dateInfo.end.value).isBefore(moment(session.dialogData.recognizedUTC))) {
+            //                 session.replaceDialog('AskDate', session.dialogData.type);
+            //             };
+            //             if (moment(session.privateConversationData.processing.dateInfo.end.value).isSame(moment(session.dialogData.recognizedUTC))) {
+            //                 if ((session.privateConversationData.processing.dateInfo.end.type == "AM") && (session.dialogData.recognizedType == "PM"))
+            //                     session.replaceDialog('AskDate', session.dialogData.type);
+            //             };
+            //         }
+            //         session.privateConversationData.processing.dateInfo.start.value = moment(recognized.resolution.start).add(session.privateConversationData.offset, 'm').set({ h: 0, m: 0, s: 0, ms: 0 }).add(session.privateConversationData.offset, 'm');
+            //         session.privateConversationData.processing.dateInfo.start.type = session.dialogData.recognizedType;
+            //         break;
+            //     }
+            //     default: {//"end"
+            //         if (moment(session.dialogData.recognizedUTC).isBefore(moment(session.privateConversationData.processing.dateInfo.start.value))) {
+            //             session.replaceDialog('AskDate', session.dialogData.type);
+            //         };
+            //         if (moment(session.dialogData.recognizedUTC).isSame(moment(session.privateConversationData.processing.dateInfo.start.value))) {
+            //             if ((session.privateConversationData.processing.dateInfo.end.type == "AM") && (session.privateConversationData.processing.dateInfo.start.type == "PM"))
+            //                 session.replaceDialog('AskDate', session.dialogData.type);
+            //         };
+            //         session.privateConversationData.processing.dateInfo.end.value = moment(recognized.resolution.start).add(session.privateConversationData.offset, 'm').set({ h: 0, m: 0, s: 0, ms: 0 }).add(session.privateConversationData.offset, 'm');
+            //         session.privateConversationData.processing.dateInfo.end.type = session.dialogData.recognizedType;
+            //         break;
+            //     }
+            // }
             if (session.dialogData.type == "start" && session.privateConversationData.processing.dateInfo.duration[0]) {
                 session.privateConversationData.processing.dateInfo.start.value = moment(recognized.resolution.start).add(session.privateConversationData.offset, 'm').set({ h: 0, m: 0, s: 0, ms: 0 }).add(session.privateConversationData.offset, 'm');
                 session.privateConversationData.processing.dateInfo.start.type = session.dialogData.recognizedType;
                 session.beginDialog('AddDuration', session.privateConversationData.processing.dateInfo.duration[0]);
             } else {
-                // if (session.privateConversationData.processing.dateInfo.end.hasOwnProperty('value')) {
-                //     if (moment(session.privateConversationData.processing.dateInfo.end.value).isBefore(session.privateConversationData.processing.dateInfo.start.value)) {
-                //         session.send(`Sorry, I can't proceed with leave end date ahead of leave start date. Please change your leave ${(session.dialogData.type == "start") ? "end" : "start"} day first.`);
-                //         session.replaceDialog('AskDate', session.dialogData.type);
-                //     } else if ((moment(session.privateConversationData.processing.dateInfo.end.value).isSame(session.privateConversationData.processing.dateInfo.start.value)) && (session.privateConversationData.processing.dateInfo.end.type == "AM" && session.privateConversationData.processing.dateInfo.start.type == "PM")) {
-                //         session.send("Sorry, I can't proceed with leave end date ahead of leave start date. Please re-enter.");
-                //         session.replaceDialog('AskDate', session.dialogData.type);
+                //     if (session.privateConversationData.processing.dateInfo.end.hasOwnProperty('value')) {
+                //         if (moment(session.privateConversationData.processing.dateInfo.end.value).isBefore(session.privateConversationData.processing.dateInfo.start.value)) {
+                //             session.send(`Sorry, I can't proceed with leave end date ahead of leave start date. Please change your leave ${(session.dialogData.type == "start") ? "end" : "start"} day first.`);
+                //             session.replaceDialog('AskDate', session.dialogData.type);
+                //         } else if ((moment(session.privateConversationData.processing.dateInfo.end.value).isSame(session.privateConversationData.processing.dateInfo.start.value)) && (session.privateConversationData.processing.dateInfo.end.type == "AM" && session.privateConversationData.processing.dateInfo.start.type == "PM")) {
+                //             session.send("Sorry, I can't proceed with leave end date ahead of leave start date. Please re-enter.");
+                //             session.replaceDialog('AskDate', session.dialogData.type);
+                //         }
                 //     }
-                // }
                 session.privateConversationData.processing.dateInfo[session.dialogData.type].value = moment(recognized.resolution.start).add(session.privateConversationData.offset, 'm').set({ h: 0, m: 0, s: 0, ms: 0 }).add(session.privateConversationData.offset, 'm');
                 session.privateConversationData.processing.dateInfo[session.dialogData.type].type = session.dialogData.recognizedType;
             }
@@ -182,45 +215,23 @@ module.exports.AskDate = [
         }
     }
 ];
-module.exports.AskDateType = [
-    function (session, args) {
-        session.dialogData.type = args;
-        builder.Prompts.choice(session, "Please enter your " + session.dialogData.type + " date type", ["AM", "PM", "FD"]);
-    },
-    function (session, results) {
-        console.log("Entered type: %s", JSON.stringify(results.response.entity));
-        session.privateConversationData.processing.dateInfo[session.dialogData.type].type = results.response.entity;
-        if (session.privateConversationData.processing.dateInfo.end) {
-            if (moment(session.privateConversationData.processing.dateInfo.end.value).isBefore(session.privateConversationData.processing.dateInfo.start.value)) {
-                session.send("Sorry, I can't proceed with leave end date ahead of leave start date. Please re-enter.");
-                session.replaceDialog('AskDateType', session.dialogData.type);
-            } else if (moment(session.privateConversationData.processing.dateInfo.end.value).isSame(session.privateConversationData.processing.dateInfo.start.value)) {
-                if (session.privateConversationData.processing.dateInfo.end.type == "AM" && session.privateConversationData.processing.dateInfo.start.type == "PM") {
-                    session.send("Sorry, I can't proceed with leave end date ahead of leave start date. Please re-enter.");
-                    session.replaceDialog('AskDateType', session.dialogData.type);
-                }
-            }
-        }
-        session.endDialog();
-    }
-];
 module.exports.AskRemark = [
     function (session) {
         session.privateConversationData.processing.remarks = ""
         var msg = new builder.Message(session)
-            .text(`Please enter any remarks for this application.`)
+            .text(`Please enter any remarks for this application or type "No" if you don't have any remarks`)
             .attachmentLayout(builder.AttachmentLayout.list)
             .attachments([
                 new builder.HeroCard(session)
                     .buttons([
-                        builder.CardAction.imBack(session, "no remark", "no remark")
+                        builder.CardAction.imBack(session, "no", "no")
                     ])
             ])
         builder.Prompts.text(session, msg);
     },
     function (session, results) {
-        switch (session.message.text) {
-            case "no remark": {
+        switch (session.message.text.toLowerCase()) {
+            case "no": {
                 session.privateConversationData.processing.remarks = "";
                 break;
             }
@@ -446,6 +457,7 @@ module.exports.CorrectingInfo = [
 ];
 module.exports.ApplyConfirmed = [
     function (session, args) {
+        session.privateConversationData.apply = new Object();
         var attachments = [];
         var startDate = moment(session.privateConversationData.processing.dateInfo.start.value)
         var endDate = moment(session.privateConversationData.processing.dateInfo.end.value)
@@ -735,7 +747,7 @@ module.exports.main = [
         session.beginDialog('CheckApplyInfo');
     },
     function (session) {
-        session.privateConversationData.apply = new Object();
         session.replaceDialog('ApplyConfirmed');
     }
+    
 ]

@@ -53,7 +53,7 @@ bot.dialog('CheckAttachment', require('./dialogApplyLeave').CheckAttachment);
 bot.dialog('AskSpecificType', require('./dialogApplyLeave').AskSpecificType);
 bot.dialog('AskLeaveType', require('./dialogApplyLeave').AskLeaveType);
 bot.dialog('CheckLeaveType', require('./dialogApplyLeave').CheckLeaveType);
-bot.dialog('AskDateType', require('./dialogApplyLeave').AskDateType);
+// bot.dialog('AskDateType', require('./dialogApplyLeave').AskDateType);
 bot.dialog('AskDate', require('./dialogApplyLeave').AskDate);
 bot.dialog('NoDateInfo', require('./dialogApplyLeave').NoDateInfo);
 bot.dialog('Duration', require('./dialogApplyLeave').Duration);
