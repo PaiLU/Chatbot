@@ -4,7 +4,7 @@ const defaultArgs = { "intent": { "entities": [], "compositeEntities": [] } };
 module.exports = [
     function (session) {
         var msg = new builder.Message(session)
-            .text("You can apply leave by typing \n* 'take annual leave today afternoon'\n* 'take child care leave on 11 Jun'\n> \nCheck leave balance with\n* 'check annual leave balance'\n> \nType **'cancel'** anywhere to return here\n \nYou may also do these step by step:")
+            .text("You can apply/check leave by typing\n* 'take annual leave today afternoon'\n* 'take child care leave on 11 Jun'\n* 'check annual leave balance'\n> \nType **'cancel'** anywhere to return here\n \nYou may also do these step by step:")
             .attachmentLayout(builder.AttachmentLayout.list)
             .attachments([
                 new builder.HeroCard(session)

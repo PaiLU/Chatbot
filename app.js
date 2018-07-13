@@ -2,6 +2,7 @@
 require('dotenv-extended').load();
 var restify = require('restify');
 const builder = require('botbuilder');
+const logger = require('./logger');
 
 var server = restify.createServer();
 var connector = new builder.ChatConnector({
@@ -37,11 +38,11 @@ bot.dialog('dialogApiToken', require('./dialogApiToken'));
 bot.dialog('Help', require('./dialogHelp')).triggerAction({
     matches: /^help$|^main help$|^cancel$/i
 });
-bot.dialog('LUIS',require('./dialogLUIS'));
+bot.dialog('LUIS', require('./dialogLUIS'));
 bot.dialog('CheckLeaveBalance', require('./dialogCheckBalance'));
 bot.dialog('OCR', require('./dialogOCR'));
 
-bot.dialog('ConvertingData',require('./dialogConvertingData'));
+bot.dialog('ConvertingData', require('./dialogConvertingData'));
 
 bot.dialog('ApplyLeave', require('./dialogApplyLeave').main);
 bot.dialog('LeaveApplication', require('./dialogApplyLeave').LeaveApplication);

@@ -74,6 +74,7 @@ module.exports.Date = [
     function (session) {
         session.privateConversationData.processing.dateInfo.start = session.privateConversationData.processing.dateInfo.dateTime[0];
         session.privateConversationData.processing.dateInfo.end = session.privateConversationData.processing.dateInfo.dateTime[0];
+            session.privateConversationData.processing.dateInfo.duration[0] = 1 * 24 * 60 * 60 * 1000;
         session.endDialog();
     }
 ];
@@ -210,7 +211,7 @@ module.exports.AskDate = [
             }
             session.endDialog();
         } else {
-            session.send("I didn't recognize the time you entered. Please try again using a format of dd-MMM-yyyy, (e.g: 14-Jun-2018)");
+            session.send("I didn't recognize the date you entered. Please try again using a format of dd-MMM-yyyy, (e.g: 14-Jun-2018)");
             session.replaceDialog('AskDate', session.dialogData.type);
         }
     }
